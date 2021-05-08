@@ -13,7 +13,7 @@ public class ShieldController : MonoBehaviour
     public float throwForce;
     public float recallSpeed;
 
-    bool thrown;
+    public bool thrown;
 
     // Start is called before the first frame update
     void Start()
@@ -33,13 +33,12 @@ public class ShieldController : MonoBehaviour
             if (thrown)
             {
                 RecallShield();
-
             }
             else ThrowShield();
         }
     }
 
-    void ThrowShield()
+    public void ThrowShield()
     {
         shieldRB.isKinematic = false;
         shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
