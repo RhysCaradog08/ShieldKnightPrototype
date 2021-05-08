@@ -12,6 +12,9 @@ public class PlayerController : MonoBehaviour
     public float speed;
 
     public GameObject shield;
+    public Transform shieldHoldPos;
+    public float throwForce;
+    public float recallSpeed;
 
     bool thrown;
 
@@ -29,17 +32,50 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1"))
         {
-            ThrowShield();
+            if(thrown)
+            {
+                if(CheckDist() >= .1f)
+                {
+                    RecallShield();
+                }
+                else if(CheckDist() <= .1f)
+                {
+
+                }
+                
+            }
+            else ThrowShield();
         }
+    }
+
+    public float CheckDist()
+    {
+        float dist = Vector3.Distance(shield.transform.position, shieldHoldPos.transform.position);
+        return dist;
     }
 
     void ThrowShield()
     {
-        thrown = true;
-
         Rigidbody shieldRB = shield.GetComponent<Rigidbody>();
 
         shieldRB.isKinematic = false;
-        shieldRB.AddForce(transform.forward * 100, ForceMode.Impulse);
+        shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+
+        shield.transform.parent = null;
+
+        thrown = true;
+    }
+
+    void RecallShield()
+    {
+        shield.transform.position = Vector3.Lerp(shield.transform.position, shieldHoldPos.position, recallSpeed);
+        shield.transform.rotation = shieldHoldPos.rotation;
+
+        shield.transform.parent = shieldHoldPos;
+
+        Rigidbody shieldRB = shield.GetComponent<Rigidbody>();
+        shieldRB.isKinematic = true;
+
+        thrown = false;
     }
 }
