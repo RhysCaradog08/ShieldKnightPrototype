@@ -11,7 +11,8 @@ public class ShieldController : MonoBehaviour
     Transform shieldHoldPos;
 
     public float throwForce;
-    public float recallSpeed;
+
+    float lerpTime = 1f;
 
     public bool thrown;
 
@@ -32,7 +33,7 @@ public class ShieldController : MonoBehaviour
         {
             if (thrown)
             {
-                RecallShield();
+                StartCoroutine(RecallShield());
             }
             else ThrowShield();
         }
@@ -48,9 +49,23 @@ public class ShieldController : MonoBehaviour
         thrown = true;
     }
 
-    void RecallShield()
+    IEnumerator RecallShield()
     {
-        transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, recallSpeed);
+        Vector3 startPos = transform.position;
+        Vector3 endPos = shieldHoldPos.position;
+
+        Vector3 startRot = transform.eulerAngles;
+        Vector3 endRot = shieldHoldPos.eulerAngles;
+
+        float t = 0f;
+        while (t < lerpTime)
+        {
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, t / lerpTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t / lerpTime);
+            yield return null;
+        }
+        transform.position = shieldHoldPos.position;
         transform.rotation = shieldHoldPos.rotation;
 
         transform.parent = shieldHoldPos;
@@ -60,3 +75,4 @@ public class ShieldController : MonoBehaviour
         thrown = false;
     }
 }
+
