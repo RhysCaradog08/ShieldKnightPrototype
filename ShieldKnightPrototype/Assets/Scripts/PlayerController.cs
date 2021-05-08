@@ -29,23 +29,6 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(move * Time.deltaTime * speed);
         transform.LookAt(move + transform.position);
-
-        if (Input.GetButtonDown("Fire1"))
-        {
-            if(thrown)
-            {
-                if(CheckDist() >= .1f)
-                {
-                    RecallShield();
-                }
-                else if(CheckDist() <= .1f)
-                {
-
-                }
-                
-            }
-            else ThrowShield();
-        }
     }
 
     public float CheckDist()
@@ -54,7 +37,7 @@ public class PlayerController : MonoBehaviour
         return dist;
     }
 
-    void ThrowShield()
+    /*void ThrowShield()
     {
         Rigidbody shieldRB = shield.GetComponent<Rigidbody>();
 
@@ -77,5 +60,5 @@ public class PlayerController : MonoBehaviour
         shieldRB.isKinematic = true;
 
         thrown = false;
-    }
+    }*/
 }
