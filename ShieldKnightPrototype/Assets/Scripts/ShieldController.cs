@@ -11,15 +11,15 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public Transform target;
-    public float throwRange;
-    GameObject[] gos;
+
 
     [Header("Recall")]
     float lerpTime = 1f;
 
     [Header("Booleans")]
     public bool thrown;
-    bool hasTarget;
+    public bool hasTarget;
+    bool hitTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -33,22 +33,17 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        FindTargets();
-
-        Debug.Log("Has Target " + hasTarget);
-
-        float distance = Vector3.Distance(transform.position, target.transform.position);
-
-        if (distance < throwRange)
-        {
-            hasTarget = true;
-        }
-        else hasTarget = false;
+        Debug.Log(hitTarget);
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
+        if(hitTarget)
+        {
+            StartCoroutine(RecallShield());
+        }
+
         if (Input.GetButtonDown("Fire1"))
         {
             if (thrown)
@@ -103,19 +98,16 @@ public class ShieldController : MonoBehaviour
         shieldRB.isKinematic = true;
 
         thrown = false;
+        hitTarget = false;
     }
 
-    void FindTargets()
+    private void OnCollisionEnter(Collision collision)
     {
-        gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-
-        foreach (GameObject go in gos)
+        //Debug.Log("Shield Hit");
+        if(collision.gameObject.transform == target)
         {
-            if (go.layer == 8)
-            {
-                Debug.Log(go.name);
-                target = go.transform;
-            }
+            Debug.Log("Hit Target");
+            hitTarget = true;
         }
     }
 }

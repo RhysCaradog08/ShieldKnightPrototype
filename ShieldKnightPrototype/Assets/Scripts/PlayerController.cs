@@ -5,14 +5,17 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     CharacterController cc;
-
     Animator anim;
 
+    [Header("Movement")]
     Vector3 move;
-
     public float speed;
 
+    [Header("Shield")]
     public ShieldController shield;
+    public float throwRange;
+    GameObject[] shieldTargets;
+    public List<Transform> targets = new List<Transform>();
 
     private void Start()
     {
@@ -44,6 +47,31 @@ public class PlayerController : MonoBehaviour
                 //anim.SetTrigger("Throw");
             }
         }
+
+        FindTargets();
+
+
+        float distance = Vector3.Distance(transform.position, shield.target.transform.position);
+
+        if (distance < throwRange)
+        {
+            shield.hasTarget = true;
+        }
+        else shield.hasTarget = false;
     }
 
+    void FindTargets()
+    {
+        shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+
+        foreach (GameObject shieldTarget in shieldTargets)
+        {
+            if (shieldTarget.layer == 8)
+            {
+                Debug.Log(shieldTarget.name);
+                targets.Add(shieldTarget.transform);
+                shield.target = shieldTarget.transform;
+            }
+        }
+    }
 }
