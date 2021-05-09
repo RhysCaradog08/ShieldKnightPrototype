@@ -5,15 +5,17 @@ using UnityEngine;
 public class ShieldController : MonoBehaviour
 {
     GameObject player;
-
     Rigidbody shieldRB;
-
     Transform shieldHoldPos;
 
+    [Header("Throw")]
     public float throwForce;
+    public Transform target;
 
+    [Header("Recall")]
     float lerpTime = 1f;
 
+    [Header("Booleans")]
     public bool thrown;
 
     // Start is called before the first frame update
@@ -27,7 +29,7 @@ public class ShieldController : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (Input.GetButtonDown("Fire1"))
         {
@@ -42,7 +44,17 @@ public class ShieldController : MonoBehaviour
     public void ThrowShield()
     {
         shieldRB.isKinematic = false;
-        shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+
+        if (target != null)
+        {
+            Vector3 throwDirection = (target.position - transform.position).normalized;
+
+            shieldRB.AddForce(throwDirection * throwForce, ForceMode.Impulse);
+        }
+        else
+        {           
+            shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+        }
 
         transform.parent = null;
 
