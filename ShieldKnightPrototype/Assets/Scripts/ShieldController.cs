@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShieldController : MonoBehaviour
 {
     GameObject player;
+    PlayerController pc;
     Rigidbody shieldRB;
     Transform shieldHoldPos;
 
@@ -25,6 +26,7 @@ public class ShieldController : MonoBehaviour
     void Start()
     {
         player = transform.root.gameObject;
+        pc = player.GetComponent<PlayerController>();
 
         shieldRB = GetComponent<Rigidbody>();
 
@@ -33,7 +35,7 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(hitTarget);
+        Debug.Log(hasTarget);
     }
 
     // Update is called once per frame
@@ -108,6 +110,7 @@ public class ShieldController : MonoBehaviour
         {
             Debug.Log("Hit Target");
             hitTarget = true;
+            pc.targetsLeft -= 1;
         }
     }
 }

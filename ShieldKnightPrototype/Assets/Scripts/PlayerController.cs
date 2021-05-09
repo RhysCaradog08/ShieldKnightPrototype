@@ -12,16 +12,21 @@ public class PlayerController : MonoBehaviour
     public float speed;
 
     [Header("Shield")]
-    public ShieldController shield;
+    ShieldController shield;
     public float throwRange;
-    GameObject[] shieldTargets;
-    public List<Transform> targets = new List<Transform>();
+    float distance;
+    //GameObject[] shieldTargets;
+    public Transform[] shieldTargets;
+    public LayerMask targetMask;
+    public int targetsLeft;
 
     private void Start()
     {
         cc = GetComponent<CharacterController>();
 
         anim = GetComponent<Animator>();
+
+        shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
     }
 
     private void Update()
@@ -50,8 +55,7 @@ public class PlayerController : MonoBehaviour
 
         FindTargets();
 
-
-        float distance = Vector3.Distance(transform.position, shield.target.transform.position);
+        //float distance = Vector3.Distance(transform.position, shield.target.position);
 
         if (distance < throwRange)
         {
@@ -62,16 +66,50 @@ public class PlayerController : MonoBehaviour
 
     void FindTargets()
     {
-        shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        /*shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 
         foreach (GameObject shieldTarget in shieldTargets)
         {
             if (shieldTarget.layer == 8)
             {
                 Debug.Log(shieldTarget.name);
-                targets.Add(shieldTarget.transform);
+
                 shield.target = shieldTarget.transform;
+
+                targetsLeft = shieldTargets.Length;
+            }
+        }*/
+
+        RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.forward, throwRange, targetMask);
+        if(hits.Length > 0)
+        {
+            shieldTargets = new Transform[hits.Length];
+
+            for(int i = 0; i < hits.Length; i++)
+            {
+                shieldTargets[i] = hits[i].collider.gameObject.transform;
+            }
+
+            foreach(Transform shieldTarget in shieldTargets)
+            {
+                distance = Vector3.Distance(transform.position, shieldTarget.position);
+
+                if (distance <= throwRange)
+                {
+                    shield.target = shieldTarget;
+                    targetsLeft = shieldTargets.Length;
+
+                    shield.hasTarget = true;
+                }
+                else if(distance > throwRange)
+                {
+                    targetsLeft = 0;
+
+                    shield.hasTarget =false;
+                }
             }
         }
+
+        
     }
 }
