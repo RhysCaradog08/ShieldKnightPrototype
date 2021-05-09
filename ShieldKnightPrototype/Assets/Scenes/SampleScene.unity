@@ -617,13 +617,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.3420201, y: 0, z: 0, w: 0.9396927}
-  m_LocalPosition: {x: 0, y: 10, z: -25}
+  m_LocalRotation: {x: 0.38268343, y: 0, z: 0, w: 0.92387956}
+  m_LocalPosition: {x: 0, y: 15, z: -25}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 40, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 45, y: 0, z: 0}
 --- !u!1 &1027671244
 GameObject:
   m_ObjectHideFlags: 0
@@ -635,12 +635,12 @@ GameObject:
   - component: {fileID: 1027671245}
   - component: {fileID: 1027671247}
   - component: {fileID: 1027671246}
-  - component: {fileID: 1027671248}
   - component: {fileID: 1027671249}
+  - component: {fileID: 1027671248}
   - component: {fileID: 1027671250}
   m_Layer: 0
   m_Name: Shield
-  m_TagString: Untagged
+  m_TagString: Shield
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -750,8 +750,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   throwForce: 50
   target: {fileID: 0}
-  throwRange: 20
   thrown: 0
+  hasTarget: 0
 --- !u!4 &1366140974 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -147837933818791889, guid: cf29fe95f78b2f043a5bdf6f0ee452d7,
@@ -995,7 +995,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
-  shield: {fileID: 1027671250}
+  throwRange: 20
+  shieldTargets: []
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  targetsLeft: 0
 --- !u!143 &1759958972
 CharacterController:
   m_ObjectHideFlags: 0
