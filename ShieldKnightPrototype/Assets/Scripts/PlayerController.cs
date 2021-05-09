@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,6 +27,15 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(move * Time.deltaTime * speed);
         transform.LookAt(move + transform.position);
+
+        if(move.magnitude >= 0.05f)
+        {
+            anim.SetBool("Moving", true);
+        }
+        else
+        {
+            anim.SetBool("Moving", false);
+        }
 
         if (Input.GetButtonDown("Fire1"))
         {
