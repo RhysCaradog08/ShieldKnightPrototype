@@ -53,13 +53,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        FindTargets();
+        //FindTargets();
 
         //float distance = Vector3.Distance(transform.position, shield.target.position);
 
         if (distance < throwRange)
         {
-            shield.hasTarget = true;
+            FindTargets();
+            //shield.hasTarget = true;
         }
         else shield.hasTarget = false;
     }
@@ -83,6 +84,8 @@ public class PlayerController : MonoBehaviour
         RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.forward, throwRange, targetMask);
         if(hits.Length > 0)
         {
+            shield.hasTarget = true;
+
             shieldTargets = new Transform[hits.Length];
 
             for(int i = 0; i < hits.Length; i++)
