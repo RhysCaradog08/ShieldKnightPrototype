@@ -15,8 +15,9 @@ public class PlayerController : MonoBehaviour
     ShieldController shield;
     public float throwRange;
     float distance;
-    //GameObject[] shieldTargets;
     public Transform[] shieldTargets;
+    List<GameObject> targets = new List<GameObject>();
+    GameObject closestTarget;
     public LayerMask targetMask;
     public int targetsLeft;
 
@@ -86,7 +87,8 @@ public class PlayerController : MonoBehaviour
         {
             shield.hasTarget = true;
 
-            shieldTargets = new Transform[hits.Length];
+
+            /*shieldTargets = new Transform[hits.Length];
 
             for(int i = 0; i < hits.Length; i++)
             {
@@ -110,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
                     shield.hasTarget =false;
                 }
-            }
+            }*/
         }
 
         
