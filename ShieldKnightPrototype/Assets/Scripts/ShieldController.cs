@@ -35,7 +35,8 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log(hasTarget);
+        //Debug.Log("Has Target " + hasTarget);
+        //Debug.Log("Thrown " + thrown);
     }
 
     // Update is called once per frame

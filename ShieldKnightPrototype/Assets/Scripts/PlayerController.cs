@@ -10,6 +10,9 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     Vector3 move;
     public float speed;
+    public Transform pivot;
+    public GameObject model;
+    public float rotateSpeed;
 
     [Header("Shield")]
     ShieldController shield;
@@ -32,9 +35,10 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        move = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
+        move = (transform.right * Input.GetAxis("Horizontal")) + (transform.forward * Input.GetAxis("Vertical"));
+        move = move.normalized * speed;
 
-        cc.Move(move * Time.deltaTime * speed);
+        cc.Move(move * Time.deltaTime);
         transform.LookAt(move + transform.position);
 
         if(move.magnitude >= 0.05f)
@@ -44,6 +48,13 @@ public class PlayerController : MonoBehaviour
         else
         {
             anim.SetBool("Moving", false);
+        }
+
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+        {
+            transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
+            Quaternion newRotation = Quaternion.LookRotation(new Vector3(move.x, 0f, move.z));
+            model.transform.rotation = Quaternion.Slerp(model.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
 
         if (Input.GetButtonDown("Fire1"))
@@ -60,15 +71,15 @@ public class PlayerController : MonoBehaviour
 
         if (distance < throwRange)
         {
-            FindTargets();
+            //FindTargets();
             //shield.hasTarget = true;
         }
         else shield.hasTarget = false;
     }
 
-    void FindTargets()
+    /*void FindTargets()
     {
-        /*shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 
         foreach (GameObject shieldTarget in shieldTargets)
         {
@@ -80,7 +91,7 @@ public class PlayerController : MonoBehaviour
 
                 targetsLeft = shieldTargets.Length;
             }
-        }*/
+        }
 
         RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.forward, throwRange, targetMask);
         if(hits.Length > 0)
@@ -88,7 +99,7 @@ public class PlayerController : MonoBehaviour
             shield.hasTarget = true;
 
 
-            /*shieldTargets = new Transform[hits.Length];
+            shieldTargets = new Transform[hits.Length];
 
             for(int i = 0; i < hits.Length; i++)
             {
@@ -112,9 +123,9 @@ public class PlayerController : MonoBehaviour
 
                     shield.hasTarget =false;
                 }
-            }*/
+            }
         }
 
         
-    }
+    }*/
 }
