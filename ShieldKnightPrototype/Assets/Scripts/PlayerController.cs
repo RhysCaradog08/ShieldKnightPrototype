@@ -16,13 +16,6 @@ public class PlayerController : MonoBehaviour
 
     [Header("Shield")]
     ShieldController shield;
-    public float throwRange;
-    float distance;
-    public GameObject[] shieldTargets;
-    List<GameObject> targets = new List<GameObject>();
-    GameObject closestTarget;
-    public LayerMask targetMask;
-    public int targetsLeft;
 
     private void Start()
     {
@@ -64,68 +57,6 @@ public class PlayerController : MonoBehaviour
                 //anim.SetTrigger("Throw");
             }
         }
-
-        FindTargets();
-
-        float distance = Vector3.Distance(transform.position, shield.target.position);
-
-        if (distance < throwRange)
-        {
-            FindTargets();
-            shield.hasTarget = true;
-        }
-        else shield.hasTarget = false;
     }
 
-    void FindTargets()
-    {
-        shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-
-        foreach (GameObject shieldTarget in shieldTargets)
-        {
-            if (shieldTarget.layer == 8)
-            {
-                Debug.Log(shieldTarget.name);
-
-                shield.target = shieldTarget.transform;
-
-                targetsLeft = shieldTargets.Length;
-            }
-        }
-
-        /*RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.forward, throwRange, targetMask);
-        if(hits.Length > 0)
-        {
-            shield.hasTarget = true;
-
-
-            shieldTargets = new Transform[hits.Length];
-
-            for(int i = 0; i < hits.Length; i++)
-            {
-                shieldTargets[i] = hits[i].collider.gameObject.transform;
-            }
-
-            foreach(Transform shieldTarget in shieldTargets)
-            {
-                distance = Vector3.Distance(transform.position, shieldTarget.position);
-
-                if (distance <= throwRange)
-                {
-                    shield.target = shieldTarget;
-                    targetsLeft = shieldTargets.Length;
-
-                    shield.hasTarget = true;
-                }
-                else if(distance > throwRange)
-                {
-                    targetsLeft = 0;
-
-                    shield.hasTarget =false;
-                }
-            }
-        }*/
-
-        
-    }
 }

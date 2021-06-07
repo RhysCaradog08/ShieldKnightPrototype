@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ShieldController : MonoBehaviour
-{
-    GameObject player;
-    PlayerController pc;
+{ 
     Rigidbody shieldRB;
     Transform shieldHoldPos;
 
@@ -25,9 +23,6 @@ public class ShieldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = transform.root.gameObject;
-        pc = player.GetComponent<PlayerController>();
-
         shieldRB = GetComponent<Rigidbody>();
 
         shieldHoldPos = transform.parent.transform;
@@ -35,11 +30,9 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log("Has Target " + hasTarget);
-        //Debug.Log("Thrown " + thrown);
+    
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
         if(hitTarget)
@@ -111,7 +104,6 @@ public class ShieldController : MonoBehaviour
         {
             Debug.Log("Hit Target");
             hitTarget = true;
-            pc.targetsLeft -= 1;
         }
     }
 }

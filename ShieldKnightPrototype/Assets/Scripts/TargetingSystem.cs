@@ -4,49 +4,57 @@ using UnityEngine;
 
 public class TargetingSystem : MonoBehaviour
 {
-    public ShieldController shield;
+    ShieldController shield;
 
-    public float throwRange;
-    float distance;
-    public GameObject[] shieldTargets;
-    List<GameObject> targets = new List<GameObject>();
-    GameObject closestTarget;
-    public LayerMask targetMask;
-    public int targetsLeft;
+    public List<GameObject> targets = new List<GameObject>();
+
+    [SerializeField]
+    GameObject closest;
 
     private void Start()
     {
-        //shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
+        shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
     }
 
-    void Update()
+    private void Update()
     {
-        //FindTargets();
-
-        float distance = Vector3.Distance(transform.position, shield.target.position);
-
-        if (distance < throwRange)
+        if (targets.Count > 0)
         {
-            FindTargets();
+            shield.target = closest.transform;
+        }
+        else closest = null;
+
+
+        if (closest != null)
+        {
             shield.hasTarget = true;
         }
         else shield.hasTarget = false;
     }
 
-    void FindTargets()
+    private void OnTriggerEnter(Collider other)
     {
-        shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
-
-        foreach (GameObject shieldTarget in shieldTargets)
+        if (other.gameObject.CompareTag("Target"))
         {
-            if (shieldTarget.layer == targetMask)
+            targets.Add(other.gameObject);
+
+            closest = targets[0];
+            /*foreach (GameObject target in GameObject.FindGameObjectsWithTag("Target"))
             {
-                Debug.Log(shieldTarget.name);
+                targets.Add(target);
+            }*/
+        }
+    }
 
-                shield.target = shieldTarget.transform;
-
-                targetsLeft = shieldTargets.Length;
-            }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Target"))
+        {
+            targets.Remove(other.gameObject);
+            /*foreach (GameObject target in GameObject.FindGameObjectsWithTag("Target"))
+            {
+                targets.Remove(target);
+            }*/
         }
     }
 }
