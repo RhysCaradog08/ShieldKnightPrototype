@@ -4,36 +4,49 @@ using UnityEngine;
 
 public class TargetingSystem : MonoBehaviour
 {
-    public int targetsInRange;
-    public List<GameObject> targets = new List<GameObject>();
+    public ShieldController shield;
 
-    //public GameObject closestTarget;
-    //bool hasTarget;
+    public float throwRange;
+    float distance;
+    public GameObject[] shieldTargets;
+    List<GameObject> targets = new List<GameObject>();
+    GameObject closestTarget;
+    public LayerMask targetMask;
+    public int targetsLeft;
+
+    private void Start()
+    {
+        //shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
+    }
 
     void Update()
     {
-      
-    }
+        //FindTargets();
 
-    private void OnTriggerEnter(Collider other)
-    {
-        Debug.Log(other.name);
+        float distance = Vector3.Distance(transform.position, shield.target.position);
 
-        if(other.gameObject.layer == 8) //If ShieldTarget is within trigger, add to list & increment int.
+        if (distance < throwRange)
         {
-            targets.Add(other.gameObject);
-
-            ++targetsInRange;
+            FindTargets();
+            shield.hasTarget = true;
         }
+        else shield.hasTarget = false;
     }
 
-    private void OnTriggerExit(Collider other)
+    void FindTargets()
     {
-        if (other.gameObject.layer == 8) //If ShieldTarget is outside trigger, remove from list & decrement int.
-        {
-            targets.Remove(other.gameObject);
+        shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 
-            --targetsInRange;
+        foreach (GameObject shieldTarget in shieldTargets)
+        {
+            if (shieldTarget.layer == targetMask)
+            {
+                Debug.Log(shieldTarget.name);
+
+                shield.target = shieldTarget.transform;
+
+                targetsLeft = shieldTargets.Length;
+            }
         }
     }
 }

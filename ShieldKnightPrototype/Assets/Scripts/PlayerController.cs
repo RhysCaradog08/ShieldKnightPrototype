@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     ShieldController shield;
     public float throwRange;
     float distance;
-    public Transform[] shieldTargets;
+    public GameObject[] shieldTargets;
     List<GameObject> targets = new List<GameObject>();
     GameObject closestTarget;
     public LayerMask targetMask;
@@ -65,19 +65,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        //FindTargets();
+        FindTargets();
 
-        //float distance = Vector3.Distance(transform.position, shield.target.position);
+        float distance = Vector3.Distance(transform.position, shield.target.position);
 
         if (distance < throwRange)
         {
-            //FindTargets();
-            //shield.hasTarget = true;
+            FindTargets();
+            shield.hasTarget = true;
         }
         else shield.hasTarget = false;
     }
 
-    /*void FindTargets()
+    void FindTargets()
     {
         shieldTargets = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
 
@@ -93,7 +93,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.forward, throwRange, targetMask);
+        /*RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.forward, throwRange, targetMask);
         if(hits.Length > 0)
         {
             shield.hasTarget = true;
@@ -124,8 +124,8 @@ public class PlayerController : MonoBehaviour
                     shield.hasTarget =false;
                 }
             }
-        }
+        }*/
 
         
-    }*/
+    }
 }

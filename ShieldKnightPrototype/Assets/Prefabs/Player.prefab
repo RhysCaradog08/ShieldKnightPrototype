@@ -359,7 +359,7 @@ GameObject:
   - component: {fileID: 7497695169061485915}
   - component: {fileID: 7497695169061485913}
   - component: {fileID: 7497695169061485916}
-  - component: {fileID: 1557127326560527557}
+  - component: {fileID: 2533803295020318120}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -436,25 +436,24 @@ MonoBehaviour:
   pivot: {fileID: 954389280887709631}
   model: {fileID: 7353806600589281001}
   rotateSpeed: 10
-  throwRange: 20
-  shieldTargets: []
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  targetsLeft: 0
---- !u!135 &1557127326560527557
-SphereCollider:
+--- !u!114 &2533803295020318120
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7263254900563806405}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 20
-  m_Center: {x: 0, y: 0, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a6353d32fc7e94497aa5a010aa0df7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwRange: 0
+  shieldTargets: []
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 256
+  targetsLeft: 0
 --- !u!1 &7353806600589281001
 GameObject:
   m_ObjectHideFlags: 0
