@@ -1,12 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class TargetingSystem : MonoBehaviour
 {
     ShieldController shield;
 
     public List<GameObject> targets = new List<GameObject>();
+
+    int targetLimit = 3;
 
     [SerializeField]
     GameObject closest;
@@ -24,6 +27,8 @@ public class TargetingSystem : MonoBehaviour
         if (Input.GetButton("Fire1"))
         {
             triggerCapsule.enabled = true;
+
+            FindClosestTarget();
         }
         else triggerCapsule.enabled = false;
 
@@ -47,7 +52,7 @@ public class TargetingSystem : MonoBehaviour
         {
             targets.Add(other.gameObject);
 
-            closest = targets[0];
+            //closest = targets[0];
         }
     }
 
@@ -56,6 +61,24 @@ public class TargetingSystem : MonoBehaviour
         if (other.gameObject.CompareTag("Target"))
         {
             targets.Remove(other.gameObject);
+        }
+    }
+
+    void FindClosestTarget()
+    {
+        closest = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+
+        foreach (GameObject target in targets)
+        {
+            Vector3 directionToTarget = target.transform.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+            if (dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                closest = target;
+            }
         }
     }
 }
