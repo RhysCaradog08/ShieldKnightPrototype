@@ -11,16 +11,25 @@ public class TargetingSystem : MonoBehaviour
     [SerializeField]
     GameObject closest;
 
+    CapsuleCollider triggerCapsule;
+
     private void Start()
     {
         shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
+        triggerCapsule = GetComponent<CapsuleCollider>();
     }
 
     private void Update()
     {
+        if (Input.GetButton("Fire1"))
+        {
+            triggerCapsule.enabled = true;
+        }
+        else triggerCapsule.enabled = false;
+
         if (targets.Count > 0)
         {
-            shield.target = closest.transform;
+            shield.target = closest;
         }
         else closest = null;
 
@@ -39,10 +48,6 @@ public class TargetingSystem : MonoBehaviour
             targets.Add(other.gameObject);
 
             closest = targets[0];
-            /*foreach (GameObject target in GameObject.FindGameObjectsWithTag("Target"))
-            {
-                targets.Add(target);
-            }*/
         }
     }
 
@@ -51,10 +56,6 @@ public class TargetingSystem : MonoBehaviour
         if (other.gameObject.CompareTag("Target"))
         {
             targets.Remove(other.gameObject);
-            /*foreach (GameObject target in GameObject.FindGameObjectsWithTag("Target"))
-            {
-                targets.Remove(target);
-            }*/
         }
     }
 }

@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ShieldController : MonoBehaviour
-{ 
+{
+    TargetingSystem ts;
+
     Rigidbody shieldRB;
     Transform shieldHoldPos;
 
     [Header("Throw")]
     public float throwForce;
-    public Transform target;
+    public GameObject target;
 
 
     [Header("Recall")]
@@ -26,6 +28,8 @@ public class ShieldController : MonoBehaviour
         shieldRB = GetComponent<Rigidbody>();
 
         shieldHoldPos = transform.parent.transform;
+
+        ts = gameObject.transform.root.GetComponent<TargetingSystem>();
     }
 
     private void Update()
@@ -40,7 +44,7 @@ public class ShieldController : MonoBehaviour
             StartCoroutine(RecallShield());
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonUp("Fire1"))
         {
             if (thrown)
             {
@@ -56,7 +60,7 @@ public class ShieldController : MonoBehaviour
 
         if (hasTarget)
         {
-            Vector3 throwDirection = (target.position - transform.position).normalized;
+            Vector3 throwDirection = (target.transform.position - transform.position).normalized;
 
             shieldRB.AddForce(throwDirection * throwForce, ForceMode.Impulse);
         }
@@ -100,10 +104,11 @@ public class ShieldController : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         //Debug.Log("Shield Hit");
-        if(collision.gameObject.transform == target)
+        if(collision.gameObject == target)
         {
             Debug.Log("Hit Target");
             hitTarget = true;
+            ts.targets.Remove(target);           
         }
     }
 }
