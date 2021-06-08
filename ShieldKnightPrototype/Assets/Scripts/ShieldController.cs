@@ -12,7 +12,9 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
-
+    Coroutine shieldMove;
+    GameObject[] targetPos;
+    int targetInt;
 
     [Header("Recall")]
     float lerpTime = 1f;
@@ -34,7 +36,7 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-    
+
     }
 
     void FixedUpdate()
@@ -112,8 +114,28 @@ public class ShieldController : MonoBehaviour
         if(collision.gameObject == target)
         {
             Debug.Log("Hit Target");
-            hitTarget = true;
-            ts.targets.Remove(target);           
+            //hitTarget = true;
+            ts.targets.Remove(target);
+
+            if (ts.targets.Count > 0)
+            {
+                StartCoroutine(MoveToNextTarget());
+            }
+            else hitTarget = true;
+        }
+    }
+
+    IEnumerator MoveToNextTarget()
+    {
+        foreach(GameObject nextTarget in ts.targets)
+        {
+            Vector3 nextTargetPos = nextTarget.transform.position;
+            while(Vector3.Distance(transform.position, nextTargetPos) > 0.001f)
+            {
+                transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
+
+                yield return null;
+            }
         }
     }
 }

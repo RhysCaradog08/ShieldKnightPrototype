@@ -9,10 +9,7 @@ public class TargetingSystem : MonoBehaviour
 
     public List<GameObject> targets = new List<GameObject>();
 
-    int targetLimit = 3;
-
-    [SerializeField]
-    GameObject closest;
+    public GameObject closest;
 
     CapsuleCollider triggerCapsule;
 
@@ -32,7 +29,7 @@ public class TargetingSystem : MonoBehaviour
         }
         else triggerCapsule.enabled = false;
 
-        if (targets.Count > 0)
+        if (targets.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
             shield.target = closest;
         }
@@ -51,8 +48,6 @@ public class TargetingSystem : MonoBehaviour
         if (other.gameObject.CompareTag("Target"))
         {
             targets.Add(other.gameObject);
-
-            //closest = targets[0];
         }
     }
 
@@ -66,14 +61,22 @@ public class TargetingSystem : MonoBehaviour
 
     void FindClosestTarget()
     {
+        targets.Sort(delegate (GameObject a, GameObject b)
+        {
+            return Vector3.Distance(transform.position, a.transform.position)
+            .CompareTo(
+              Vector3.Distance(transform.position, b.transform.position));
+        });
+
         closest = null;
         float closestDistanceSqr = Mathf.Infinity;
         Vector3 currentPosition = transform.position;
 
-        foreach (GameObject target in targets)
+        foreach (GameObject target in targets) //Measures distance from player to targets and calculates which target is closest
         {
             Vector3 directionToTarget = target.transform.position - currentPosition;
             float dSqrToTarget = directionToTarget.sqrMagnitude;
+
             if (dSqrToTarget < closestDistanceSqr)
             {
                 closestDistanceSqr = dSqrToTarget;
