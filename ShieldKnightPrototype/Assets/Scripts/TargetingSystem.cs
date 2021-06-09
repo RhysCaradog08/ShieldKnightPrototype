@@ -21,7 +21,7 @@ public class TargetingSystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButton("Fire1"))
+        if (Input.GetButton("Fire1") && !shield.thrown)
         {
             triggerCapsule.enabled = true;
 

@@ -36,27 +36,30 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-
+        if (Input.GetButtonUp("Fire1"))
+        {
+            StartCoroutine(ThrowShield());
+        }
     }
 
     void FixedUpdate()
     {
-        if(hitTarget)
+        /*if(hitTarget)
         {
             StartCoroutine(RecallShield());
-        }
+        }*/
 
-        if (Input.GetButtonUp("Fire1"))
+        /*if (Input.GetButtonUp("Fire1"))
         {
             if (thrown)
             {
                 StartCoroutine(RecallShield());
             }
-            else ThrowShield();
-        }
+            else StartCoroutine(MoveToNextTarget());
+        }*/
     }
 
-    public void ThrowShield()
+    /*public void ThrowShield()
     {
         shieldRB.isKinematic = false;
 
@@ -74,7 +77,7 @@ public class ShieldController : MonoBehaviour
         transform.parent = null;
 
         thrown = true;
-    }
+    }*/
 
     IEnumerator RecallShield()
     {
@@ -101,42 +104,30 @@ public class ShieldController : MonoBehaviour
 
         thrown = false;
         hitTarget = false;
-
-        if(ts.targets.Count > 0)
-        {
-            ts.targets.Clear();
-        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Shield Hit");
-        if(collision.gameObject == target)
-        {
-            Debug.Log("Hit Target");
-            //hitTarget = true;
-            ts.targets.Remove(target);
-
-            if (ts.targets.Count > 0)
-            {
-                StartCoroutine(MoveToNextTarget());
-            }
-            else hitTarget = true;
-        }
+        
     }
 
-    IEnumerator MoveToNextTarget()
+    IEnumerator ThrowShield()
     {
         foreach(GameObject nextTarget in ts.targets)
         {
+            target = nextTarget;
             Vector3 nextTargetPos = nextTarget.transform.position;
-            while(Vector3.Distance(transform.position, nextTargetPos) > 0.001f)
+            while(Vector3.Distance(transform.position, nextTargetPos) > 0.1f)
             {
+                thrown = true;
+
                 transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
 
                 yield return null;
             }
         }
+        ts.targets.Clear();
+        StartCoroutine(RecallShield());
     }
 }
 
