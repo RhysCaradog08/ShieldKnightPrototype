@@ -13,9 +13,6 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
-    Coroutine shieldMove;
-    GameObject[] targetPos;
-    int targetInt;
 
     [Header("Recall")]
     float lerpTime = 1f;
@@ -23,7 +20,6 @@ public class ShieldController : MonoBehaviour
     [Header("Booleans")]
     public bool thrown;
     public bool hasTarget;
-    bool hitTarget;
 
     // Start is called before the first frame update
     void Start()
@@ -39,9 +35,21 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonUp("Fire1"))
+        if (Input.GetButtonUp("Fire1") && !thrown)
         {
-            StartCoroutine(ThrowShield());
+            if (hasTarget)
+            {
+                StartCoroutine(TargetedThrow());
+            }
+            else NonTargetThrow();
+        }
+
+        if(Input.GetButtonDown("Fire1") && thrown)
+        {
+            if(!hasTarget)
+            {
+                StartCoroutine(RecallShield());
+            }
         }
 
         if (thrown)
@@ -51,42 +59,36 @@ public class ShieldController : MonoBehaviour
         else anim.SetBool("IsThrown", false);
     }
 
-    void FixedUpdate()
+    void NonTargetThrow()
     {
-        /*if(hitTarget)
-        {
-            StartCoroutine(RecallShield());
-        }*/
+        thrown = true;
 
-        /*if (Input.GetButtonUp("Fire1"))
-        {
-            if (thrown)
-            {
-                StartCoroutine(RecallShield());
-            }
-            else StartCoroutine(MoveToNextTarget());
-        }*/
-    }
-
-    /*public void ThrowShield()
-    {
         shieldRB.isKinematic = false;
-
-        if (hasTarget) //Shield will be thrown towards target.
-        {
-            Vector3 throwDirection = (target.transform.position - transform.position).normalized;
-
-            shieldRB.AddForce(throwDirection * throwForce, ForceMode.Impulse);
-        }
-        else //Shield thrown in players forward direction.
-        {
-            shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
-        }
+        shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
 
         transform.parent = null;
+    }
 
-        thrown = true;
-    }*/
+    IEnumerator TargetedThrow()
+    {
+        foreach (GameObject nextTarget in ts.targets)
+        {
+            target = nextTarget;
+            Vector3 nextTargetPos = nextTarget.transform.position;
+            while (Vector3.Distance(transform.position, nextTargetPos) > 0.1f)
+            {
+                transform.parent = null;
+                thrown = true;
+
+                transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
+
+                yield return null;
+            }
+        }
+        target = null;
+        ts.targets.Clear();
+        StartCoroutine(RecallShield());
+    }
 
     IEnumerator RecallShield()
     {
@@ -104,40 +106,20 @@ public class ShieldController : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t / lerpTime);
             yield return null;
         }
+
         transform.position = shieldHoldPos.position;
         transform.rotation = shieldHoldPos.rotation;
 
         transform.parent = shieldHoldPos;
 
         shieldRB.isKinematic = true;
-
         thrown = false;
-        hitTarget = false;
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        
-    }
-
-    IEnumerator ThrowShield()
-    {
-        foreach(GameObject nextTarget in ts.targets)
-        {
-            target = nextTarget;
-            Vector3 nextTargetPos = nextTarget.transform.position;
-            while(Vector3.Distance(transform.position, nextTargetPos) > 0.1f)
-            {
-                thrown = true;
-
-                transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
-
-                yield return null;
-            }
-        }
-        target = null;
-        ts.targets.Clear();
-        StartCoroutine(RecallShield());
+        //For Shield interacting with the game world.
+        //Deal damage to enemies/Stick in surfaces/Activate switches.
     }
 }
 

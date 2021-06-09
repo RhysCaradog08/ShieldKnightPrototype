@@ -50,13 +50,12 @@ public class PlayerController : MonoBehaviour
             model.transform.rotation = Quaternion.Slerp(model.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
 
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButtonUp("Fire1"))
         {
             if(!shield.thrown)
             {
-                //anim.SetTrigger("Throw");
+                anim.SetTrigger("Throw");
             }
         }
     }
-
 }
