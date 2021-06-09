@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShieldController : MonoBehaviour
 {
     TargetingSystem ts;
+    Animator anim;
 
     Rigidbody shieldRB;
     Transform shieldHoldPos;
@@ -32,6 +33,8 @@ public class ShieldController : MonoBehaviour
         shieldHoldPos = transform.parent.transform;
 
         ts = gameObject.transform.root.GetComponent<TargetingSystem>();
+
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -40,6 +43,12 @@ public class ShieldController : MonoBehaviour
         {
             StartCoroutine(ThrowShield());
         }
+
+        if (thrown)
+        {
+            anim.SetBool("IsThrown", true);
+        }
+        else anim.SetBool("IsThrown", false);
     }
 
     void FixedUpdate()
@@ -126,6 +135,7 @@ public class ShieldController : MonoBehaviour
                 yield return null;
             }
         }
+        target = null;
         ts.targets.Clear();
         StartCoroutine(RecallShield());
     }
