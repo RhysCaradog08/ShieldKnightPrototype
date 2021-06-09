@@ -115,12 +115,6 @@ public class ShieldController : MonoBehaviour
         shieldRB.isKinematic = true;
         thrown = false;
     }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        //For Shield interacting with the game world.
-        //Deal damage to enemies/Stick in surfaces/Activate switches.
-    }
 }
 
 
