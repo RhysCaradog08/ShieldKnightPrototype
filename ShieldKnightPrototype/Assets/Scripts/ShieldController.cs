@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class ShieldController : MonoBehaviour
 {
@@ -114,6 +115,16 @@ public class ShieldController : MonoBehaviour
 
         shieldRB.isKinematic = true;
         thrown = false;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Target"))
+        {
+            Debug.Log(other.name);
+
+            ObjectPoolManager.instance.RecallObject(ts.pMarker);
+        }
     }
 }
 

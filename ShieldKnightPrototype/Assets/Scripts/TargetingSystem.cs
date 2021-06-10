@@ -1,11 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using Basics.ObjectPool;
 
 public class TargetingSystem : MonoBehaviour
 {
     ShieldController shield;
+    GameObject player;
 
     public List<GameObject> targets = new List<GameObject>();
 
@@ -13,9 +14,17 @@ public class TargetingSystem : MonoBehaviour
 
     CapsuleCollider triggerCapsule;
 
+    [Header("UI")]
+    public GameObject pMarker;
+    GameObject one;
+    GameObject two;
+    GameObject three;
+
     private void Start()
     {
-        shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
+        shield = GameObject.FindObjectOfType<ShieldController>();
+        player = GameObject.FindGameObjectWithTag("Player");
+
         triggerCapsule = GetComponent<CapsuleCollider>();
     }
 
@@ -32,6 +41,8 @@ public class TargetingSystem : MonoBehaviour
         if (targets.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
             shield.target = closest;
+
+            //AddTargetNumber();
         }
         else closest = null;
 
@@ -56,7 +67,7 @@ public class TargetingSystem : MonoBehaviour
         if (other.gameObject.CompareTag("Target"))
         {
             targets.Remove(other.gameObject);
-        }
+        }        
     }
 
     void FindClosestTarget()
@@ -82,6 +93,33 @@ public class TargetingSystem : MonoBehaviour
                 closestDistanceSqr = dSqrToTarget;
                 closest = target;
             }
+
+            if(pMarker == null)
+            {
+                AddTargetMarker();
+            }
+        }
+    }
+
+    void AddTargetMarker()
+    {
+        /*Vector3 firstPos = targets[0].transform.position;
+        Vector3 secondPos = targets[1].transform.position;
+        Vector3 thirdPos = targets[2].transform.position;
+
+        Vector3 firstRot = new Vector3(targets[0].transform.rotation.x, 180, targets[0].transform.rotation.z);
+        Vector3 secondRot = new Vector3(targets[1].transform.rotation.x, 180, targets[1].transform.rotation.z);
+        Vector3 thirdRot = new Vector3(targets[2].transform.rotation.x, 180, targets[2].transform.rotation.z);
+
+        one = ObjectPoolManager.instance.CallObject(("Number_1"), targets[0].transform, new Vector3(firstPos.x, firstPos.y + 3, firstPos.z - 0.65f), Quaternion.Euler(firstRot));
+        two = ObjectPoolManager.instance.CallObject(("Number_2"), targets[1].transform, new Vector3(secondPos.x, secondPos.y + 3, secondPos.z - 0.65f), Quaternion.Euler(secondRot));
+        three = ObjectPoolManager.instance.CallObject(("Number_3"), targets[2].transform, new Vector3(thirdPos.x, thirdPos.y + 3, thirdPos.z - 0.65f), Quaternion.Euler(thirdRot));*/
+
+        for (int i = 0; i < targets.Count; i++)
+        {
+            Vector3 targetPos = targets[i].transform.position;
+
+            pMarker = ObjectPoolManager.instance.CallObject("P_Marker", targets[i].transform, new Vector3(targetPos.x, targetPos.y + 3, targetPos.z - 0.75f), Quaternion.identity);
         }
     }
 }
