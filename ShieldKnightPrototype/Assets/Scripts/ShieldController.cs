@@ -17,6 +17,7 @@ public class ShieldController : MonoBehaviour
 
     [Header("Recall")]
     float lerpTime = 1f;
+    MeshCollider meshCol;
 
     [Header("Booleans")]
     public bool thrown;
@@ -32,6 +33,8 @@ public class ShieldController : MonoBehaviour
         ts = gameObject.transform.root.GetComponent<TargetingSystem>();
 
         anim = GetComponent<Animator>();
+
+        meshCol = GetComponent<MeshCollider>();
     }
 
     private void Update()
@@ -105,6 +108,7 @@ public class ShieldController : MonoBehaviour
             t += Time.deltaTime;
             transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, t / lerpTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t / lerpTime);
+            meshCol.enabled = false;
             yield return null;
         }
 
@@ -112,6 +116,8 @@ public class ShieldController : MonoBehaviour
         transform.rotation = shieldHoldPos.rotation;
 
         transform.parent = shieldHoldPos;
+
+        meshCol.enabled = true;
 
         shieldRB.isKinematic = true;
         thrown = false;

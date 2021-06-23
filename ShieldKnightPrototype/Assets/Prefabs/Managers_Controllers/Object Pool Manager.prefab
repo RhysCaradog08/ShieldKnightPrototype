@@ -47,28 +47,7 @@ MonoBehaviour:
   - objectToPool: {fileID: 6425561609425224638, guid: c07c93d676a2f06488cc83d56b467c26,
       type: 3}
     stringID: P_Marker
-    startCount: 1
-    activePool: []
-    inactivePool: []
-    parentTransform: {fileID: 0}
-  - objectToPool: {fileID: 589970783611804662, guid: 95d6fa7564e479b449df55dcb3421b0e,
-      type: 3}
-    stringID: Number_1
-    startCount: 1
-    activePool: []
-    inactivePool: []
-    parentTransform: {fileID: 0}
-  - objectToPool: {fileID: 8018359977052168472, guid: 7db0a27ed1e898b4094be4938a876fe3,
-      type: 3}
-    stringID: Number_2
-    startCount: 1
-    activePool: []
-    inactivePool: []
-    parentTransform: {fileID: 0}
-  - objectToPool: {fileID: 6536188409740177332, guid: 7e27781fba8b2474cb54ea420cf464bb,
-      type: 3}
-    stringID: Number_3
-    startCount: 1
+    startCount: 3
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}

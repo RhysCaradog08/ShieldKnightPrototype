@@ -12,9 +12,10 @@ GameObject:
   - component: {fileID: 6238921173418405692}
   - component: {fileID: 3677633218385468661}
   - component: {fileID: 2463352093649544027}
+  - component: {fileID: 7042049682651119161}
   - component: {fileID: 9068945746698225697}
-  - component: {fileID: 3017615805213568778}
   - component: {fileID: 4539407766949962356}
+  - component: {fileID: 3017615805213568778}
   m_Layer: 0
   m_Name: Shield_Standard
   m_TagString: Shield
@@ -91,12 +92,25 @@ MeshCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3269704654489049286}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!65 &7042049682651119161
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3269704654489049286}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.1, y: 2, z: 1.1}
+  m_Center: {x: 0, y: 0, z: -0.00000008940697}
 --- !u!54 &9068945746698225697
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -113,22 +127,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &3017615805213568778
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3269704654489049286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb69238dbd9753e4da2fa87ec31d0079, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  throwForce: 50
-  target: {fileID: 0}
-  thrown: 0
-  hasTarget: 1
 --- !u!95 &4539407766949962356
 Animator:
   serializedVersion: 3
@@ -148,3 +146,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &3017615805213568778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3269704654489049286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb69238dbd9753e4da2fa87ec31d0079, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  throwForce: 100
+  target: {fileID: 0}
+  thrown: 0
+  hasTarget: 1

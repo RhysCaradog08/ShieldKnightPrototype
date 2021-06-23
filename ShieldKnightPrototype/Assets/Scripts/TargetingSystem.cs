@@ -12,7 +12,7 @@ public class TargetingSystem : MonoBehaviour
 
     public GameObject closest;
 
-    CapsuleCollider triggerCapsule;
+    public CapsuleCollider triggerCapsule;
 
     [Header("UI")]
     public GameObject pMarker;
@@ -101,18 +101,6 @@ public class TargetingSystem : MonoBehaviour
 
     void AddTargetMarker()
     {
-        /*Vector3 firstPos = targets[0].transform.position;
-        Vector3 secondPos = targets[1].transform.position;
-        Vector3 thirdPos = targets[2].transform.position;
-
-        Vector3 firstRot = new Vector3(targets[0].transform.rotation.x, 180, targets[0].transform.rotation.z);
-        Vector3 secondRot = new Vector3(targets[1].transform.rotation.x, 180, targets[1].transform.rotation.z);
-        Vector3 thirdRot = new Vector3(targets[2].transform.rotation.x, 180, targets[2].transform.rotation.z);
-
-        one = ObjectPoolManager.instance.CallObject(("Number_1"), targets[0].transform, new Vector3(firstPos.x, firstPos.y + 3, firstPos.z - 0.65f), Quaternion.Euler(firstRot));
-        two = ObjectPoolManager.instance.CallObject(("Number_2"), targets[1].transform, new Vector3(secondPos.x, secondPos.y + 3, secondPos.z - 0.65f), Quaternion.Euler(secondRot));
-        three = ObjectPoolManager.instance.CallObject(("Number_3"), targets[2].transform, new Vector3(thirdPos.x, thirdPos.y + 3, thirdPos.z - 0.65f), Quaternion.Euler(thirdRot));*/
-
         for (int i = 0; i < targets.Count; i++)
         {
             Vector3 targetPos = targets[i].transform.position;

@@ -364,6 +364,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3017615805213568778, guid: db32a6863fe08c343a402319e49caa73,
+        type: 3}
+      propertyPath: throwForce
+      value: 50
+      objectReference: {fileID: 0}
     - target: {fileID: 3269704654489049286, guid: db32a6863fe08c343a402319e49caa73,
         type: 3}
       propertyPath: m_Name
@@ -386,6 +391,11 @@ PrefabInstance:
     - target: {fileID: 2533803295020318120, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: shield
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2533803295020318120, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: pMarker
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2533803295020318120, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
@@ -1587,6 +1597,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Object Pool Manager
+      objectReference: {fileID: 0}
+    - target: {fileID: 5915781003326793600, guid: 72b923e448b5f2c4f93895140989ab55,
+        type: 3}
+      propertyPath: objectPools.Array.data[0].startCount
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72b923e448b5f2c4f93895140989ab55, type: 3}
