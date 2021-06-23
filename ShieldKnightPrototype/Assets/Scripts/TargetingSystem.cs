@@ -46,8 +46,6 @@ public class TargetingSystem : MonoBehaviour
         if (targets.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
             shield.target = closest;
-
-            //AddTargetNumber();
         }
         else closest = null;
 

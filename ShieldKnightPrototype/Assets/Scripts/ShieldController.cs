@@ -121,14 +121,9 @@ public class ShieldController : MonoBehaviour
     {
         if(other.CompareTag("Target"))
         {
-            Debug.Log(other.name);
+            GameObject pMarker = other.gameObject.transform.GetChild(0).gameObject;
 
-            if (ts.pMarker != null)
-            {
-                //Debug.Log(other.name);
-
-                ObjectPoolManager.instance.RecallObject(ts.pMarker);
-            }
+            ObjectPoolManager.instance.RecallObject(pMarker);         
         }
     }
 }
