@@ -72,7 +72,7 @@ public class ShieldController : MonoBehaviour
 
     IEnumerator TargetedThrow()
     {
-        foreach (GameObject nextTarget in ts.targets)
+        foreach (GameObject nextTarget in ts.targets) //Sets nextTarget in list to be target and move shield towards target.
         {
             target = nextTarget;
             Vector3 nextTargetPos = nextTarget.transform.position;
@@ -100,7 +100,7 @@ public class ShieldController : MonoBehaviour
         Vector3 endRot = shieldHoldPos.eulerAngles;
 
         float t = 0f;
-        while (t < lerpTime) //Returns Shield to Shield Holder in one second.
+        while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
         {
             t += Time.deltaTime;
             transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, t / lerpTime);
@@ -123,7 +123,12 @@ public class ShieldController : MonoBehaviour
         {
             Debug.Log(other.name);
 
-            ObjectPoolManager.instance.RecallObject(ts.pMarker);
+            if (ts.pMarker != null)
+            {
+                //Debug.Log(other.name);
+
+                ObjectPoolManager.instance.RecallObject(ts.pMarker);
+            }
         }
     }
 }

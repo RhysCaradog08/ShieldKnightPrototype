@@ -30,11 +30,16 @@ public class TargetingSystem : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButton("Fire1") && !shield.thrown)
+        if (Input.GetButton("Fire1") && !shield.thrown) //Enables trigger to determine which targets fall within it's area.
         {
             triggerCapsule.enabled = true;
 
             FindClosestTarget();
+
+            if (pMarker == null || pMarker.transform.position == Vector3.zero)
+            {
+                AddTargetMarker();
+            }
         }
         else triggerCapsule.enabled = false;
 
@@ -72,7 +77,7 @@ public class TargetingSystem : MonoBehaviour
 
     void FindClosestTarget()
     {
-        targets.Sort(delegate (GameObject a, GameObject b)
+        targets.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
         {
             return Vector3.Distance(transform.position, a.transform.position)
             .CompareTo(
@@ -83,7 +88,7 @@ public class TargetingSystem : MonoBehaviour
         float closestDistanceSqr = Mathf.Infinity;
         Vector3 currentPosition = transform.position;
 
-        foreach (GameObject target in targets) //Measures distance from player to targets and calculates which target is closest
+        foreach (GameObject target in targets) //Measures distance from player to targets and calculates which target is closest.
         {
             Vector3 directionToTarget = target.transform.position - currentPosition;
             float dSqrToTarget = directionToTarget.sqrMagnitude;
@@ -92,11 +97,6 @@ public class TargetingSystem : MonoBehaviour
             {
                 closestDistanceSqr = dSqrToTarget;
                 closest = target;
-            }
-
-            if(pMarker == null)
-            {
-                AddTargetMarker();
             }
         }
     }
@@ -119,7 +119,7 @@ public class TargetingSystem : MonoBehaviour
         {
             Vector3 targetPos = targets[i].transform.position;
 
-            pMarker = ObjectPoolManager.instance.CallObject("P_Marker", targets[i].transform, new Vector3(targetPos.x, targetPos.y + 3, targetPos.z - 0.75f), Quaternion.identity);
+            pMarker = ObjectPoolManager.instance.CallObject("P_Marker", targets[i].transform, new Vector3(targetPos.x, targetPos.y + 2, targetPos.z - 0.65f), Quaternion.identity);
         }
     }
 }
