@@ -52,6 +52,8 @@ public class ShieldController : MonoBehaviour
         {
             if(!hasTarget)
             {
+                Debug.Log("Recalling Shield");
+
                 StartCoroutine(RecallShield());
             }
         }
@@ -96,6 +98,9 @@ public class ShieldController : MonoBehaviour
 
     IEnumerator RecallShield()
     {
+        shieldRB.isKinematic = false;
+        transform.parent = null;
+
         Vector3 startPos = transform.position; //Get position of both Shield's current location the Shield Holder.
         Vector3 endPos = shieldHoldPos.position;
 
@@ -108,7 +113,9 @@ public class ShieldController : MonoBehaviour
             t += Time.deltaTime;
             transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, t / lerpTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t / lerpTime);
+
             meshCol.enabled = false;
+
             yield return null;
         }
 
@@ -130,6 +137,12 @@ public class ShieldController : MonoBehaviour
             GameObject pMarker = other.gameObject.transform.GetChild(0).gameObject;
 
             ObjectPoolManager.instance.RecallObject(pMarker);         
+        }
+
+        if(other.CompareTag("Sticky"))
+        {
+            transform.SetParent(other.transform);
+            shieldRB.isKinematic = true;
         }
     }
 }
