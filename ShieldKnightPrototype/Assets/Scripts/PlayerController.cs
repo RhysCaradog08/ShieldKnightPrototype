@@ -27,6 +27,12 @@ public class PlayerController : MonoBehaviour
     [Header("Shield")]
     [SerializeField] ShieldController shield;
 
+    [Header("Guard/Parry")]
+    const float minButtonHold = 0.25f;
+    float buttonHeldTime = 0f;
+
+    bool buttonHeld = false;
+
     private void Start()
     {
         cc = GetComponent<CharacterController>();
@@ -118,12 +124,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (Input.GetButton("Fire2"))
+        if (buttonHeld)
         {
             stopped = true;
             anim.SetBool("Guarding", true);
         }
-        else
+        else if(!buttonHeld)
         {
             stopped = false;
             anim.SetBool("Guarding", false);
@@ -134,5 +140,31 @@ public class PlayerController : MonoBehaviour
             cc.enabled = false;
         }
         else cc.enabled = true;
+
+
+        if(!shield.thrown)
+        {
+            if (Input.GetButtonDown("Fire2"))//Button is pressed down. Need to check o see if it is "held".
+            {
+                buttonHeldTime = Time.timeSinceLevelLoad;
+                buttonHeld = false;
+            }
+            else if (Input.GetButtonUp("Fire2"))
+            {
+                if (!buttonHeld)//If button is released without being held.
+                {
+                    anim.SetTrigger("Parry");
+                }
+                buttonHeld = false;
+            }
+
+            if (Input.GetButton("Fire2"))
+            {
+                if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
+                {
+                    buttonHeld = true;
+                }
+            }
+        }
     }
 }
