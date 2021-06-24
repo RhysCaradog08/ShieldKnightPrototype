@@ -51,4 +51,11 @@ MonoBehaviour:
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}
+  - objectToPool: {fileID: 1075659236561241502, guid: 6dd88f23e6ea12549be4a8c399ecfbb6,
+      type: 3}
+    stringID: Projectile
+    startCount: 3
+    activePool: []
+    inactivePool: []
+    parentTransform: {fileID: 0}
   setUpPoolsOnAwake: 1
