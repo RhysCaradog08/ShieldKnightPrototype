@@ -398,7 +398,7 @@ CharacterController:
   m_Radius: 0.75
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.0001
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.25, z: 0}
 --- !u!95 &7497695169061485913
@@ -436,6 +436,12 @@ MonoBehaviour:
   pivot: {fileID: 954389280887709631}
   model: {fileID: 7353806600589281001}
   rotateSpeed: 10
+  jumpSpeed: 5
+  gravity: 9.81
+  velocity: {x: 0, y: 0, z: 0}
+  fallMultiplier: 2
+  lowJumpMultiplier: 2.5
+  shield: {fileID: 0}
 --- !u!114 &2533803295020318120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -448,12 +454,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8a6353d32fc7e94497aa5a010aa0df7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  throwRange: 0
-  shieldTargets: []
-  targetMask:
-    serializedVersion: 2
-    m_Bits: 256
-  targetsLeft: 0
+  targets: []
+  closest: {fileID: 0}
+  triggerCapsule: {fileID: 0}
+  pMarker: {fileID: 0}
 --- !u!1 &7353806600589281001
 GameObject:
   m_ObjectHideFlags: 0

@@ -565,10 +565,25 @@ PrefabInstance:
       propertyPath: m_TagString
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485915, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: m_SkinWidth
+      value: 0.0001
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: gravity
+      value: -9.81
+      objectReference: {fileID: 0}
     - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: bargeTime
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: jumpSpeed
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
@@ -579,6 +594,16 @@ PrefabInstance:
         type: 3}
       propertyPath: throwRange
       value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: fallMultiplier
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: lowJumpMultiplier
+      value: 5.5
       objectReference: {fileID: 0}
     - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}

@@ -58,6 +58,11 @@ public class ShieldController : MonoBehaviour
             }
         }
 
+        if(Input.GetButtonDown("Fire2"))
+        {
+            Debug.Log("RMB");
+        }
+
         if (thrown)
         {
             anim.SetBool("IsThrown", true);
