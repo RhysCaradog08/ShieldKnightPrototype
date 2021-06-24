@@ -129,7 +129,7 @@ public class PlayerController : MonoBehaviour
             stopped = true;
             anim.SetBool("Guarding", true);
         }
-        else if(!buttonHeld)
+        else
         {
             stopped = false;
             anim.SetBool("Guarding", false);
