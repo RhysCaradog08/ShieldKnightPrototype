@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     public GameObject model;
     public float rotateSpeed;
     Vector3 move;
+    bool stopped;
 
     [Header("Jumping")]
     public float jumpSpeed = 5;
@@ -116,5 +117,22 @@ public class PlayerController : MonoBehaviour
                 anim.SetTrigger("Throw");
             }
         }
+
+        if (Input.GetButton("Fire2"))
+        {
+            stopped = true;
+            anim.SetBool("Guarding", true);
+        }
+        else
+        {
+            stopped = false;
+            anim.SetBool("Guarding", false);
+        }
+
+        if (stopped)
+        {
+            cc.enabled = false;
+        }
+        else cc.enabled = true;
     }
 }
