@@ -30,8 +30,8 @@ public class PlayerController : MonoBehaviour
     [Header("Guard/Parry")]
     const float minButtonHold = 0.25f;
     float buttonHeldTime = 0f;
-
     bool buttonHeld = false;
+    public GameObject parryBox;
 
     private void Start()
     {
@@ -153,6 +153,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (!buttonHeld)//If button is released without being held.
                 {
+                    
                     anim.SetTrigger("Parry");
                 }
                 buttonHeld = false;
@@ -166,5 +167,15 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
+    }
+
+    public void EnableParry()
+    {
+        parryBox.SetActive(true);
+    }
+
+    public void DisableParry()
+    {
+        parryBox.SetActive(false);
     }
 }

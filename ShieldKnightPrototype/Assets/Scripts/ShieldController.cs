@@ -14,14 +14,17 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
+    public bool thrown;
+    public bool hasTarget;
 
     [Header("Recall")]
     float lerpTime = 1f;
     MeshCollider meshCol;
 
-    [Header("Booleans")]
-    public bool thrown;
-    public bool hasTarget;
+    [Header("Guard/Parry")]
+    const float minButtonHold = 0.25f;
+    float buttonHeldTime = 0f;
+    bool buttonHeld = false;
 
     // Start is called before the first frame update
     void Start()
@@ -137,17 +140,20 @@ public class ShieldController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Target"))
+        if (thrown)
         {
-            GameObject pMarker = other.gameObject.transform.GetChild(0).gameObject;
+            if (other.CompareTag("Target"))
+            {
+                GameObject pMarker = other.gameObject.transform.GetChild(0).gameObject;
 
-            ObjectPoolManager.instance.RecallObject(pMarker);         
-        }
+                ObjectPoolManager.instance.RecallObject(pMarker);
+            }
 
-        if(other.CompareTag("Sticky"))
-        {
-            transform.SetParent(other.transform);
-            shieldRB.isKinematic = true;
+            if (other.CompareTag("Sticky"))
+            {
+                transform.SetParent(other.transform);
+                shieldRB.isKinematic = true;
+            }
         }
     }
 }

@@ -7,6 +7,7 @@ TagManager:
   - Shield
   - Target
   - Sticky
+  - Projectile
   layers:
   - Default
   - TransparentFX

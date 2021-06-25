@@ -8,6 +8,8 @@ public class Turret : MonoBehaviour
     GameObject player;
     Vector3 lookPos;
 
+    Animator anim;
+
     public Transform shootpoint;
     public float shotForce;
     float shotDelay;
@@ -20,6 +22,8 @@ public class Turret : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
+
+        anim = GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -34,7 +38,8 @@ public class Turret : MonoBehaviour
 
         if (distToPlayer <= range && shotDelay <= 0)
         {
-            Shoot();
+            anim.SetTrigger("Fire");
+            shotDelay = 3.5f;
         }
 
         if (distToPlayer <= range)
@@ -49,8 +54,9 @@ public class Turret : MonoBehaviour
 
         Rigidbody projRb = cannonBall.GetComponent<Rigidbody>();
 
-        projRb.AddForce(transform.forward * shotForce, ForceMode.Impulse);
+        projRb.velocity = Vector3.zero;
+        projRb.angularVelocity = Vector3.zero;
 
-        shotDelay = 3.5f;
+        projRb.AddForce(transform.forward * shotForce, ForceMode.Impulse);
     }
 }
