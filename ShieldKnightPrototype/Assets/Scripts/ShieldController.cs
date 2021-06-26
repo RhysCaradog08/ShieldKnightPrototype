@@ -6,7 +6,6 @@ using Basics.ObjectPool;
 public class ShieldController : MonoBehaviour
 {
     TargetingSystem ts;
-    Animator anim;
 
     Rigidbody shieldRB;
     Transform shieldHoldPos;
@@ -14,12 +13,14 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
+    public float rotateSpeed;
     public bool thrown;
     public bool hasTarget;
+    bool spinning;
 
     [Header("Recall")]
     float lerpTime = 1f;
-    MeshCollider meshCol;
+    [SerializeField] MeshCollider meshCol;
 
     [Header("Guard/Parry")]
     const float minButtonHold = 0.25f;
@@ -33,11 +34,9 @@ public class ShieldController : MonoBehaviour
 
         shieldHoldPos = transform.parent.transform;
 
-        ts = gameObject.transform.root.GetComponent<TargetingSystem>();
+        ts = transform.root.GetComponent<TargetingSystem>();
 
-        anim = GetComponent<Animator>();
-
-        meshCol = GetComponent<MeshCollider>();
+        meshCol = GetComponentInChildren<MeshCollider>();
     }
 
     private void Update()
@@ -55,27 +54,26 @@ public class ShieldController : MonoBehaviour
         {
             if(!hasTarget)
             {
-                Debug.Log("Recalling Shield");
+                //Debug.Log("Recalling Shield");
 
                 StartCoroutine(RecallShield());
             }
         }
 
-        if(Input.GetButtonDown("Fire2"))
+        if(spinning)
         {
-            Debug.Log("RMB");
+            RotateShield();
         }
-
-        if (thrown)
+        else
         {
-            anim.SetBool("IsThrown", true);
+            StopRotation();
         }
-        else anim.SetBool("IsThrown", false);
     }
 
-    void NonTargetThrow()
+    void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
     {
         thrown = true;
+        spinning = true;
 
         shieldRB.isKinematic = false;
         shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
@@ -83,8 +81,10 @@ public class ShieldController : MonoBehaviour
         transform.parent = null;
     }
 
-    IEnumerator TargetedThrow()
+    IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
     {
+        spinning = true;
+
         foreach (GameObject nextTarget in ts.targets) //Sets nextTarget in list to be target and move shield towards target.
         {
             target = nextTarget;
@@ -104,10 +104,9 @@ public class ShieldController : MonoBehaviour
         StartCoroutine(RecallShield());
     }
 
-    IEnumerator RecallShield()
+    IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
     {
         shieldRB.isKinematic = false;
-        transform.parent = null;
 
         Vector3 startPos = transform.position; //Get position of both Shield's current location the Shield Holder.
         Vector3 endPos = shieldHoldPos.position;
@@ -127,10 +126,10 @@ public class ShieldController : MonoBehaviour
             yield return null;
         }
 
-        transform.position = shieldHoldPos.position;
-        transform.rotation = shieldHoldPos.rotation;
-
         transform.parent = shieldHoldPos;
+        transform.localPosition = Vector3.zero;
+
+        spinning = false;
 
         meshCol.enabled = true;
 
@@ -151,10 +150,31 @@ public class ShieldController : MonoBehaviour
 
             if (other.CompareTag("Sticky"))
             {
-                transform.SetParent(other.transform);
                 shieldRB.isKinematic = true;
+                spinning = false;
             }
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.collider)
+        {
+            if (!hasTarget)
+            {
+                spinning = false;
+            }
+        }
+    }
+
+    void RotateShield()
+    {
+        transform.RotateAround(transform.position, transform.up, Time.deltaTime * rotateSpeed);
+    }
+
+    void StopRotation()
+    {
+        transform.eulerAngles = transform.eulerAngles;
     }
 }
 

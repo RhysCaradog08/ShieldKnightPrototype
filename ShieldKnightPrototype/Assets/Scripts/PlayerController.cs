@@ -46,8 +46,6 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetButtonUp("Jump") && !hasJumped)
         {
-            //Debug.Log("Jump");
-
             canPressSpace = true;
         }
 
@@ -118,10 +116,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonUp("Fire1"))
         {
-            if(!shield.thrown)
-            {
-                anim.SetTrigger("Throw");
-            }
+            anim.SetTrigger("Throw");
         }
 
         if (buttonHeld)
@@ -144,7 +139,7 @@ public class PlayerController : MonoBehaviour
 
         if(!shield.thrown)
         {
-            if (Input.GetButtonDown("Fire2"))//Button is pressed down. Need to check o see if it is "held".
+            if (Input.GetButtonDown("Fire2"))//Button is pressed down. Need to check to see if it is "held".
             {
                 buttonHeldTime = Time.timeSinceLevelLoad;
                 buttonHeld = false;
@@ -152,8 +147,7 @@ public class PlayerController : MonoBehaviour
             else if (Input.GetButtonUp("Fire2"))
             {
                 if (!buttonHeld)//If button is released without being held.
-                {
-                    
+                {                  
                     anim.SetTrigger("Parry");
                 }
                 buttonHeld = false;
