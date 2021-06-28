@@ -17,6 +17,7 @@ public class ShieldController : MonoBehaviour
     public bool thrown;
     public bool hasTarget;
     bool spinning;
+    public bool canThrow;
 
     [Header("Recall")]
     float lerpTime = 1f;
@@ -41,7 +42,7 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetButtonUp("Fire1") && !thrown)
+        if (canThrow && !thrown)
         {
             if (hasTarget)
             {
@@ -60,13 +61,18 @@ public class ShieldController : MonoBehaviour
             }
         }
 
+        if(thrown)
+        {
+            canThrow = false;
+        }
+
         if(spinning)
         {
             RotateShield();
         }
         else
         {
-            StopRotation();
+            StopShieldRotation();
         }
     }
 
@@ -172,7 +178,7 @@ public class ShieldController : MonoBehaviour
         transform.RotateAround(transform.position, transform.up, Time.deltaTime * rotateSpeed);
     }
 
-    void StopRotation()
+    void StopShieldRotation()
     {
         transform.eulerAngles = transform.eulerAngles;
     }

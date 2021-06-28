@@ -114,9 +114,13 @@ public class PlayerController : MonoBehaviour
             model.transform.rotation = Quaternion.Slerp(model.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
         }
 
-        if (Input.GetButtonUp("Fire1"))
+        if (Input.GetButtonUp("Fire1") && !shield.thrown)
         {
             anim.SetTrigger("Throw");
+        }
+        else if (Input.GetButtonDown("Fire1") && shield.thrown)
+        {
+            anim.SetTrigger("Catch");
         }
 
         if (buttonHeld)
@@ -171,5 +175,10 @@ public class PlayerController : MonoBehaviour
     public void DisableParry()
     {
         parryBox.SetActive(false);
+    }
+
+    public void EnableThrow()
+    {
+        shield.canThrow = true;
     }
 }
