@@ -6,13 +6,18 @@ public class PlayerController : MonoBehaviour
 {
     CharacterController cc;
     Animator anim;
+    Transform cam;
 
     [Header("Movement")]
-    public float speed;
+    float speed;
+    public float moveSpeed;
     public Transform pivot;
     public GameObject model;
     public float rotateSpeed;
     Vector3 move;
+    Vector3 moveDir;
+    public float turnSmoothTime = 0.1f;
+    float turnSmoothVelocity;
     bool stopped;
 
     [Header("Jumping")]
@@ -33,13 +38,24 @@ public class PlayerController : MonoBehaviour
     bool buttonHeld = false;
     public GameObject parryBox;
 
+    [Header("Barging")]
+    public bool canBarge;
+    [SerializeField] bool isBarging;
+    public float bargeTime;
+    public float bargeSpeed;
+    float bargeDelay;
+
     private void Start()
     {
         cc = GetComponent<CharacterController>();
 
         anim = GetComponent<Animator>();
 
+        cam = Camera.main.transform;
+
         shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
+
+        speed = moveSpeed;
     }
 
     private void Update()
@@ -87,16 +103,20 @@ public class PlayerController : MonoBehaviour
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
         }
 
-        move = (transform.right * Input.GetAxis("Horizontal")) + (transform.forward * Input.GetAxis("Vertical"));
-        move = move.normalized * speed;
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
 
-        /*cc.Move(move * Time.deltaTime);
-        transform.LookAt(move + transform.position);*/
+        move = new Vector3(horizontal, 0, vertical).normalized;
 
-        if(move.magnitude >= 0.05f)
+        if (move.magnitude >= Mathf.Epsilon)
         {
-            cc.Move(move * Time.deltaTime);
-            transform.LookAt(move + transform.position);
+            float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+
+            moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            cc.Move(moveDir.normalized * speed * Time.deltaTime);
+
             anim.SetBool("Moving", true);
         }
         else
@@ -107,12 +127,14 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         cc.Move(velocity * Time.deltaTime);
 
-        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+        bargeDelay -= Time.deltaTime;
+
+        /*if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
         {
             transform.rotation = Quaternion.Euler(0f, pivot.rotation.eulerAngles.y, 0f);
             Quaternion newRotation = Quaternion.LookRotation(new Vector3(move.x, 0f, move.z));
             model.transform.rotation = Quaternion.Slerp(model.transform.rotation, newRotation, rotateSpeed * Time.deltaTime);
-        }
+        }*/
 
         if (Input.GetButtonUp("Fire1") && !shield.thrown)
         {
@@ -140,8 +162,21 @@ public class PlayerController : MonoBehaviour
         }
         else cc.enabled = true;
 
+        if(Input.GetButtonDown("Fire3"))
+        {
+            Debug.Log("Pressed Middle Mouse Button");
 
-        if(!shield.thrown)
+            if (canBarge && bargeDelay <= 0)
+            {
+                StartCoroutine(Barge());
+            }
+        }
+
+        speed = moveSpeed;
+        canBarge = true;
+        isBarging = false;
+
+        if (!shield.thrown)
         {
             if (Input.GetButtonDown("Fire2"))//Button is pressed down. Need to check to see if it is "held".
             {
@@ -180,5 +215,25 @@ public class PlayerController : MonoBehaviour
     public void EnableThrow()
     {
         shield.canThrow = true;
+    }
+
+    IEnumerator Barge()
+    {
+        float startTime = Time.time;
+
+        new WaitForSeconds(1);
+
+        while (Time.time < startTime + bargeTime)
+        {
+            isBarging = true;
+            //trailEffect.SetActive(true);
+            speed = 0;
+
+            canBarge = false;
+            cc.Move(moveDir * bargeSpeed * Time.deltaTime);
+            bargeDelay = 0.5f;
+
+            yield return null;
+        }
     }
 }
