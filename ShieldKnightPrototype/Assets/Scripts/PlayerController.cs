@@ -45,10 +45,10 @@ public class PlayerController : MonoBehaviour
     public float bargeSpeed;
     float bargeDelay;
 
-    [Header("GroundPound")]
-    public bool groundPounding;
-    public float gpDelay;
-    public float gpForce;
+    [Header("Slam")]
+    public bool slamming;
+    public float slamDelay;
+    public float slanForce;
     [SerializeField] float waitTime;
     //public GameObject gpSphere;
 
@@ -84,20 +84,22 @@ public class PlayerController : MonoBehaviour
 
             if (hasJumped)
             {
+                anim.SetBool("Jumping", true);
                 canPressSpace = false;
                 hasJumped = false;
             }
+            else anim.SetBool("Jumping", false);
 
             if (waitTime <= 0)
             {
                 waitTime = 0;
                 stopped = false;
-                groundPounding = false;
+                slamming = false;
             }
             else
             {
                 stopped = true;
-                groundPounding = true;
+                slamming = true;
             }
         }
 
@@ -113,7 +115,7 @@ public class PlayerController : MonoBehaviour
         if (!cc.isGrounded && Input.GetButtonDown("Jump"))
         {
             waitTime = 0.5f;
-            groundPounding = true;
+            slamming = true;
         }
 
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -193,7 +195,7 @@ public class PlayerController : MonoBehaviour
         canBarge = true;
         isBarging = false;
 
-        if (groundPounding)
+        if (slamming)
         {
             StartCoroutine(GroundPound());
 
@@ -201,7 +203,7 @@ public class PlayerController : MonoBehaviour
         }
         //else gpSphere.SetActive(false);
 
-        if (cc.isGrounded && groundPounding)
+        if (cc.isGrounded && slamming)
         {
             waitTime -= Time.deltaTime;
         }
@@ -271,8 +273,8 @@ public class PlayerController : MonoBehaviour
     {
         stopped = true;
 
-        yield return new WaitForSeconds(gpDelay);
-        velocity.y = gpForce;
+        yield return new WaitForSeconds(slamDelay);
+        velocity.y = slanForce;
 
         stopped = false;
     }
