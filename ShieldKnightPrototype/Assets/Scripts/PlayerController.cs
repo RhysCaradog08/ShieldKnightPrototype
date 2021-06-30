@@ -172,6 +172,12 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (isBarging)
+        {
+            anim.SetBool("Barging", true);
+        }
+        else anim.SetBool("Barging", false);
+
         speed = moveSpeed;
         canBarge = true;
         isBarging = false;

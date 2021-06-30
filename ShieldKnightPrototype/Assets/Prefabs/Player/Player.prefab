@@ -477,10 +477,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ec122f97022c8f44ab32852b6f21110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 15
+  moveSpeed: 0
   pivot: {fileID: 954389280887709631}
   model: {fileID: 7353806600589281001}
   rotateSpeed: 10
+  turnSmoothTime: 0.1
   jumpSpeed: 5
   gravity: 9.81
   velocity: {x: 0, y: 0, z: 0}
@@ -488,6 +489,10 @@ MonoBehaviour:
   lowJumpMultiplier: 2.5
   shield: {fileID: 0}
   parryBox: {fileID: 7185753917962501697}
+  canBarge: 0
+  isBarging: 0
+  bargeTime: 0
+  bargeSpeed: 0
 --- !u!114 &2533803295020318120
 MonoBehaviour:
   m_ObjectHideFlags: 0
