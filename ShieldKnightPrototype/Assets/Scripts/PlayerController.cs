@@ -8,6 +8,9 @@ public class PlayerController : MonoBehaviour
     Animator anim;
     Transform cam;
 
+    [Header("Shield")]
+    [SerializeField] ShieldController shield;
+
     [Header("Movement")]
     float speed;
     public float moveSpeed;
@@ -27,10 +30,7 @@ public class PlayerController : MonoBehaviour
     public float fallMultiplier = 2;
     public float lowJumpMultiplier = 2.5f;
     bool hasJumped;
-    bool canPressSpace = true;
-
-    [Header("Shield")]
-    [SerializeField] ShieldController shield;
+    [SerializeField] bool canPressSpace = true;
 
     [Header("Guard/Parry")]
     const float minButtonHold = 0.25f;
@@ -44,6 +44,13 @@ public class PlayerController : MonoBehaviour
     public float bargeTime;
     public float bargeSpeed;
     float bargeDelay;
+
+    [Header("GroundPound")]
+    public bool groundPounding;
+    public float gpDelay;
+    public float gpForce;
+    [SerializeField] float waitTime;
+    //public GameObject gpSphere;
 
     private void Start()
     {
@@ -81,7 +88,7 @@ public class PlayerController : MonoBehaviour
                 hasJumped = false;
             }
 
-            /*if (waitTime <= 0)
+            if (waitTime <= 0)
             {
                 waitTime = 0;
                 stopped = false;
@@ -91,7 +98,7 @@ public class PlayerController : MonoBehaviour
             {
                 stopped = true;
                 groundPounding = true;
-            }*/
+            }
         }
 
         if (velocity.y < 0)
@@ -101,6 +108,12 @@ public class PlayerController : MonoBehaviour
         else if (velocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
+        }
+
+        if (!cc.isGrounded && Input.GetButtonDown("Jump"))
+        {
+            waitTime = 0.5f;
+            groundPounding = true;
         }
 
         float horizontal = Input.GetAxisRaw("Horizontal");
@@ -164,8 +177,6 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetButtonDown("Fire3"))
         {
-            Debug.Log("Pressed Middle Mouse Button");
-
             if (canBarge && bargeDelay <= 0)
             {
                 StartCoroutine(Barge());
@@ -181,6 +192,19 @@ public class PlayerController : MonoBehaviour
         speed = moveSpeed;
         canBarge = true;
         isBarging = false;
+
+        if (groundPounding)
+        {
+            StartCoroutine(GroundPound());
+
+            //gpSphere.SetActive(true);
+        }
+        //else gpSphere.SetActive(false);
+
+        if (cc.isGrounded && groundPounding)
+        {
+            waitTime -= Time.deltaTime;
+        }
 
         if (!shield.thrown)
         {
@@ -241,5 +265,15 @@ public class PlayerController : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    IEnumerator GroundPound()
+    {
+        stopped = true;
+
+        yield return new WaitForSeconds(gpDelay);
+        velocity.y = gpForce;
+
+        stopped = false;
     }
 }

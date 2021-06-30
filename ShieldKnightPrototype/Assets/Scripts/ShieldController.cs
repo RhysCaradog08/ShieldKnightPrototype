@@ -13,10 +13,10 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
+    public GameObject model;
     public float rotateSpeed;
     public bool thrown;
     public bool hasTarget;
-    bool spinning;
     public bool canThrow;
 
     [Header("Recall")]
@@ -55,31 +55,19 @@ public class ShieldController : MonoBehaviour
         {
             if(!hasTarget)
             {
-                //Debug.Log("Recalling Shield");
-
                 StartCoroutine(RecallShield());
             }
         }
 
-        if(thrown)
+        if (thrown)
         {
             canThrow = false;
-        }
-
-        if(spinning)
-        {
-            RotateShield();
-        }
-        else
-        {
-            StopShieldRotation();
         }
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
     {
         thrown = true;
-        spinning = true;
 
         shieldRB.isKinematic = false;
         shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
@@ -89,7 +77,7 @@ public class ShieldController : MonoBehaviour
 
     IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
     {
-        spinning = true;
+        thrown = true;
 
         foreach (GameObject nextTarget in ts.targets) //Sets nextTarget in list to be target and move shield towards target.
         {
@@ -98,7 +86,7 @@ public class ShieldController : MonoBehaviour
             while (Vector3.Distance(transform.position, nextTargetPos) > 0.1f)
             {
                 transform.parent = null;
-                thrown = true;
+                //thrown = true;
 
                 transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
 
@@ -135,8 +123,6 @@ public class ShieldController : MonoBehaviour
         transform.parent = shieldHoldPos;
         transform.localPosition = Vector3.zero;
 
-        spinning = false;
-
         meshCol.enabled = true;
 
         shieldRB.isKinematic = true;
@@ -157,30 +143,8 @@ public class ShieldController : MonoBehaviour
             if (other.CompareTag("Sticky"))
             {
                 shieldRB.isKinematic = true;
-                spinning = false;
             }
         }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        if (collision.collider)
-        {
-            if (!hasTarget)
-            {
-                spinning = false;
-            }
-        }
-    }
-
-    void RotateShield()
-    {
-        transform.RotateAround(transform.position, transform.up, Time.deltaTime * rotateSpeed);
-    }
-
-    void StopShieldRotation()
-    {
-        transform.eulerAngles = transform.eulerAngles;
     }
 }
 

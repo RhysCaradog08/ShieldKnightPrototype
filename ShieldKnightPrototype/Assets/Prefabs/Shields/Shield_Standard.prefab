@@ -78,6 +78,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   throwForce: 100
   target: {fileID: 0}
+  model: {fileID: 7417198392330692396}
   rotateSpeed: 50
   thrown: 0
   hasTarget: 0
