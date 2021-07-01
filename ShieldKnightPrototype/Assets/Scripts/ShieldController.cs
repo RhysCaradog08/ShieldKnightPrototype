@@ -42,7 +42,7 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        if (canThrow && !thrown)
+        if (canThrow && !thrown)  //Perform Throw action if Player has possession of Shield. 
         {
             if (hasTarget)
             {
@@ -51,7 +51,7 @@ public class ShieldController : MonoBehaviour
             else NonTargetThrow();
         }
 
-        if(Input.GetButtonDown("Fire1") && thrown)
+        if(Input.GetButtonDown("Fire1") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
         {
             if(!hasTarget)
             {
@@ -59,7 +59,7 @@ public class ShieldController : MonoBehaviour
             }
         }
 
-        if (thrown)
+        if (thrown)  //Stops Player stacking Throws.
         {
             canThrow = false;
         }
@@ -93,7 +93,7 @@ public class ShieldController : MonoBehaviour
                 yield return null;
             }
         }
-        target = null;
+        target = null;  //Once all targets are reached return Shield to Player.
         ts.targets.Clear();
         StartCoroutine(RecallShield());
     }
@@ -120,7 +120,7 @@ public class ShieldController : MonoBehaviour
             yield return null;
         }
 
-        transform.parent = shieldHoldPos;
+        transform.parent = shieldHoldPos;  //Sets Shields position and parent to stay attached to Player.
         transform.localPosition = Vector3.zero;
 
         meshCol.enabled = true;
@@ -133,14 +133,14 @@ public class ShieldController : MonoBehaviour
     {
         if (thrown)
         {
-            if (other.CompareTag("Target"))
+            if (other.CompareTag("Target"))  //Removes the Target marker from object.
             {
                 GameObject pMarker = other.gameObject.transform.GetChild(0).gameObject;
 
                 ObjectPoolManager.instance.RecallObject(pMarker);
             }
 
-            if (other.CompareTag("Sticky"))
+            if (other.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
             {
                 shieldRB.isKinematic = true;
             }
