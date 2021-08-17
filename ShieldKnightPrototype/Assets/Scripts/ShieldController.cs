@@ -23,11 +23,6 @@ public class ShieldController : MonoBehaviour
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
-    [Header("Guard/Parry")]
-    const float minButtonHold = 0.25f;
-    float buttonHeldTime = 0f;
-    bool buttonHeld = false;
-
     // Start is called before the first frame update
     void Start()
     {

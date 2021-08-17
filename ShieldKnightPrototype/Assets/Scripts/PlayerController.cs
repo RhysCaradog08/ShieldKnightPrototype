@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
-        cc.Move(velocity * Time.deltaTime);
+        //cc.Move(velocity * Time.deltaTime);
 
         bargeDelay -= Time.deltaTime;
 
@@ -169,6 +169,8 @@ public class PlayerController : MonoBehaviour
             cc.enabled = false;
         }
         else cc.enabled = true;
+
+        cc.Move(velocity * Time.deltaTime);
 
         if (Input.GetButtonDown("Fire3")) //Input to perform Barge action.
         {
