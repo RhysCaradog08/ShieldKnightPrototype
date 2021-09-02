@@ -4,60 +4,70 @@ using UnityEngine;
 
 public class LockOnTarget : MonoBehaviour
 {
-    private int current = 0;
-    private bool lockedOn = false;
-    PlayerController playerControl;
-    public GameObject[] targetLocations;
-    public GameObject closest;
+    [SerializeField] List<GameObject> targetLocations = new List<GameObject>();
+    [SerializeField] GameObject closest = null;
 
-    private void Start()
-    {
-        playerControl = GameObject.FindGameObjectWithTag("Player").gameObject.GetComponent<PlayerController>();
-    }
-
+    [SerializeField] private bool lockedOn = false;
 
     // Update is called once per frame
     void Update()
     {
         if(closest != null && lockedOn)
         {
-
+            transform.LookAt(new Vector3(closest.transform.position.x, transform.position.y, closest.transform.position.z));
         }
 
 
         if(Input.GetKeyDown(KeyCode.Z))
         {
-            FindClosestEnemy();
-            lockedOn = !lockedOn;
+            if (!lockedOn)
+            {
+                foreach (GameObject go in GameObject.FindGameObjectsWithTag("Target"))
+                {
+                    targetLocations.Add(go);
+                }
+
+                FindClosestTarget();
+                lockedOn = !lockedOn;
+            }
+            else if(lockedOn)
+            {
+                lockedOn = false;
+            }
+        }
+        if(Input.GetKeyUp(KeyCode.Z))
+        {
+            targetLocations.Clear();
         }
 
-        if(lockedOn)
+        if (lockedOn)
         {
-            if(!closest)
+            if (!closest)
             {
                 lockedOn = false;
                 closest = null;
             }
         }
-
-        transform.LookAt(new Vector3(closest.transform.position.x, transform.position.y, closest.transform.position.z));
     }
 
-    GameObject FindClosestEnemy()
+    GameObject FindClosestTarget()
     {
-        targetLocations = GameObject.FindGameObjectsWithTag("Target");
+        targetLocations.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
+        {
+            return Vector3.Distance(transform.position, a.transform.position).CompareTo(Vector3.Distance(transform.position, b.transform.position));
+        });
 
         float distance = Mathf.Infinity;
         Vector3 position = transform.position;
 
-        foreach(GameObject go in targetLocations)
+        foreach(GameObject target in targetLocations)
         {
-            Vector3 diff = (go.transform.position - position);
+            Vector3 diff = (target.transform.position - position);
             float currentDist = diff.sqrMagnitude;
 
             if(currentDist < distance)
             {
-                closest = go;
+                closest = target;
                 distance = currentDist;
             }
         }
