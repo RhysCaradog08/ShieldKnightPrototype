@@ -39,6 +39,7 @@ public class LockOnTarget : MonoBehaviour
             else if(lockedOn)
             {
                 lockedOn = false;
+                RemoveTargetMarker();
             }
         }
         if(Input.GetKeyUp(KeyCode.Z))
@@ -54,7 +55,6 @@ public class LockOnTarget : MonoBehaviour
                 closest = null;
             }
         }
-        else RemoveTargetMarker();
     }
 
     GameObject FindClosestTarget()
@@ -90,8 +90,6 @@ public class LockOnTarget : MonoBehaviour
 
     void RemoveTargetMarker()
     {
-        Debug.Log("Remove Marker");
-
         ObjectPoolManager.instance.RecallObject(marker);
     }
 }
