@@ -46,7 +46,7 @@ public class CameraController : MonoBehaviour {
 
         //Get the Y position of the mouse & rotate the pivot.
         float vertical = Input.GetAxis("Mouse Y") * rotateSpeed;
-        //pivot.Rotate(-vertical, 0, 0);
+
         if(invertY)
         {
             pivot.Rotate(vertical, 0, 0);
@@ -74,7 +74,6 @@ public class CameraController : MonoBehaviour {
         Quaternion rotation = Quaternion.Euler(desiredXAngle, desiredYAngle, 0);
         transform.position = target.position - (rotation * offset);
 
-        //transform.position = target.position - offset;
         
         if(transform.position.y < target.position.y)
         {
