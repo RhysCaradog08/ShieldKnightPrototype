@@ -12,7 +12,7 @@ public class TargetingSystem : MonoBehaviour
 
     public GameObject closest;
 
-    public CapsuleCollider triggerCapsule;
+    CapsuleCollider triggerCollider;
 
     [Header("UI")]
     public GameObject pMarker;
@@ -25,14 +25,14 @@ public class TargetingSystem : MonoBehaviour
         shield = GameObject.FindObjectOfType<ShieldController>();
         player = GameObject.FindGameObjectWithTag("Player");
 
-        triggerCapsule = GetComponent<CapsuleCollider>();
+        triggerCollider = GetComponent<CapsuleCollider>();
     }
 
     private void Update()
     {
         if (Input.GetButton("Fire1") && !shield.thrown) //Enables trigger to determine which targets fall within it's area.
         {
-            triggerCapsule.enabled = true;
+            triggerCollider.enabled = true;
 
             FindClosestTarget();
 
@@ -41,7 +41,7 @@ public class TargetingSystem : MonoBehaviour
                 AddTargetMarker();
             }
         }
-        else triggerCapsule.enabled = false;
+        else triggerCollider.enabled = false;
 
         if (targets.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
@@ -59,6 +59,8 @@ public class TargetingSystem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log("In Trigger");
+
         if (other.gameObject.CompareTag("Target"))
         {
             targets.Add(other.gameObject);
