@@ -59,8 +59,6 @@ public class TargetingSystem : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("In Trigger");
-
         if (other.gameObject.CompareTag("Target"))
         {
             targets.Add(other.gameObject);

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class LockOnTarget : MonoBehaviour
 {
@@ -9,14 +10,17 @@ public class LockOnTarget : MonoBehaviour
 
     [SerializeField] private bool lockedOn = false;
 
+    [Header("UI")]
+    GameObject marker;
+
     // Update is called once per frame
     void Update()
     {
-        if(closest != null && lockedOn)
+        if (closest != null && lockedOn)
         {
             transform.LookAt(new Vector3(closest.transform.position.x, transform.position.y, closest.transform.position.z));
         }
-
+        
 
         if(Input.GetKeyDown(KeyCode.Z))
         {
@@ -28,6 +32,8 @@ public class LockOnTarget : MonoBehaviour
                 }
 
                 FindClosestTarget();
+                AddTargetMarker();
+
                 lockedOn = !lockedOn;
             }
             else if(lockedOn)
@@ -48,6 +54,7 @@ public class LockOnTarget : MonoBehaviour
                 closest = null;
             }
         }
+        else RemoveTargetMarker();
     }
 
     GameObject FindClosestTarget()
@@ -74,4 +81,17 @@ public class LockOnTarget : MonoBehaviour
         return closest;
     }
 
+    void AddTargetMarker()
+    {
+        Vector3 markerPos = closest.transform.position;
+
+        marker = ObjectPoolManager.instance.CallObject("P_Marker", closest.transform, new Vector3(markerPos.x, markerPos.y +2, markerPos.z - 0.65f), Quaternion.identity);
+    }
+
+    void RemoveTargetMarker()
+    {
+        Debug.Log("Remove Marker");
+
+        ObjectPoolManager.instance.RecallObject(marker);
+    }
 }
