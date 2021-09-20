@@ -8,7 +8,9 @@ public class LockOnTarget : MonoBehaviour
     [SerializeField] List<GameObject> targetLocations = new List<GameObject>();
     [SerializeField] GameObject closest = null;
 
+    [SerializeField] float range;
     [SerializeField] private bool lockedOn = false;
+    bool canLockOn;
 
     [Header("UI")]
     GameObject lockOnMarker;
@@ -21,7 +23,6 @@ public class LockOnTarget : MonoBehaviour
             transform.LookAt(new Vector3(closest.transform.position.x, transform.position.y, closest.transform.position.z));
         }
         
-
         if(Input.GetKeyDown(KeyCode.Z))
         {
             if (!lockedOn)
@@ -32,9 +33,14 @@ public class LockOnTarget : MonoBehaviour
                 }
 
                 FindClosestTarget();
-                AddTargetMarker();
+                CheckTargetDistance();
 
-                lockedOn = !lockedOn;
+                if (canLockOn)
+                {
+                    AddTargetMarker();
+                    lockedOn = !lockedOn;
+                }
+
             }
             else if(lockedOn)
             {
@@ -45,6 +51,25 @@ public class LockOnTarget : MonoBehaviour
         if(Input.GetKeyUp(KeyCode.Z))
         {
             targetLocations.Clear();
+        }
+
+        if(lockedOn && Vector3.Distance(transform.position, closest.transform.position) > range)
+        {
+            canLockOn = false;
+            lockedOn = false;
+            RemoveTargetMarker();
+            closest = null;
+        }
+
+        if(Input.GetKeyDown(KeyCode.X))
+        {
+            CheckTargetDistance();
+
+            if(canLockOn)
+            {
+                Debug.Log("Can Lock On");
+            }
+            else Debug.Log("Cannot Lock On");
         }
 
         if (lockedOn)
@@ -84,6 +109,17 @@ public class LockOnTarget : MonoBehaviour
     void CheckTargetDistance()
     {
         //Check if in range to lock on to target.
+        if(closest != null)
+        {
+            if (Vector3.Distance(transform.position, closest.transform.position) < range)
+            {
+                canLockOn =true;
+            }
+            else
+            {
+                canLockOn = false;
+            }
+        }
     }
 
     void AddTargetMarker()

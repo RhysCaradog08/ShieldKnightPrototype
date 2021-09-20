@@ -2052,6 +2052,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetLocations: []
   closest: {fileID: 0}
+  range: 20
   lockedOn: 0
 --- !u!1 &1679920503
 GameObject:
