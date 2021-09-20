@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 1376417797107242271}
   - component: {fileID: 1451235634031807901}
   m_Layer: 0
-  m_Name: Marker_Pyramid
+  m_Name: TargetMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

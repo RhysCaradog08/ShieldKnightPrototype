@@ -11,7 +11,7 @@ public class LockOnTarget : MonoBehaviour
     [SerializeField] private bool lockedOn = false;
 
     [Header("UI")]
-    GameObject marker;
+    GameObject lockOnMarker;
 
     // Update is called once per frame
     void Update()
@@ -81,15 +81,20 @@ public class LockOnTarget : MonoBehaviour
         return closest;
     }
 
+    void CheckTargetDistance()
+    {
+        //Check if in range to lock on to target.
+    }
+
     void AddTargetMarker()
     {
         Vector3 markerPos = closest.transform.position;
 
-        marker = ObjectPoolManager.instance.CallObject("P_Marker", closest.transform, new Vector3(markerPos.x, markerPos.y +2, markerPos.z - 0.65f), Quaternion.identity);
+        lockOnMarker = ObjectPoolManager.instance.CallObject("LockOnMarker", closest.transform, new Vector3(markerPos.x, markerPos.y +2, markerPos.z), Quaternion.Euler(180, 0, 0));
     }
 
     void RemoveTargetMarker()
     {
-        ObjectPoolManager.instance.RecallObject(marker);
+        ObjectPoolManager.instance.RecallObject(lockOnMarker);
     }
 }

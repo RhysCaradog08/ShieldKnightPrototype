@@ -130,9 +130,12 @@ public class ShieldController : MonoBehaviour
         {
             if (other.CompareTag("Target"))  //Removes the Target marker from object.
             {
-                GameObject pMarker = other.gameObject.transform.GetChild(0).gameObject;
+                GameObject targetMarker = other.gameObject.transform.GetChild(0).gameObject;
 
-                ObjectPoolManager.instance.RecallObject(pMarker);
+                if (targetMarker != null)
+                {
+                    ObjectPoolManager.instance.RecallObject(targetMarker);
+                }
             }
 
             if (other.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.

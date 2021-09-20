@@ -46,7 +46,7 @@ MonoBehaviour:
   objectPools:
   - objectToPool: {fileID: 6425561609425224638, guid: c07c93d676a2f06488cc83d56b467c26,
       type: 3}
-    stringID: P_Marker
+    stringID: TargetMarker
     startCount: 3
     activePool: []
     inactivePool: []
@@ -54,6 +54,13 @@ MonoBehaviour:
   - objectToPool: {fileID: 1075659236561241502, guid: 6dd88f23e6ea12549be4a8c399ecfbb6,
       type: 3}
     stringID: Projectile
+    startCount: 1
+    activePool: []
+    inactivePool: []
+    parentTransform: {fileID: 0}
+  - objectToPool: {fileID: 1795162675174557465, guid: 846e70544a80dce43bb5a56a7647ef61,
+      type: 3}
+    stringID: LockOnMarker
     startCount: 1
     activePool: []
     inactivePool: []

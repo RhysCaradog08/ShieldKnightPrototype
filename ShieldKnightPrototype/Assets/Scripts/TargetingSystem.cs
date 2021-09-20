@@ -15,7 +15,7 @@ public class TargetingSystem : MonoBehaviour
     CapsuleCollider triggerCollider;
 
     [Header("UI")]
-    public GameObject pMarker;
+    public GameObject targetMarker;
     GameObject one;
     GameObject two;
     GameObject three;
@@ -36,7 +36,7 @@ public class TargetingSystem : MonoBehaviour
 
             FindClosestTarget();
 
-            if (pMarker == null || pMarker.transform.position == Vector3.zero)
+            if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
             {
                 AddTargetMarker();
             }
@@ -105,7 +105,7 @@ public class TargetingSystem : MonoBehaviour
         {
             Vector3 targetPos = targets[i].transform.position;
 
-            pMarker = ObjectPoolManager.instance.CallObject("P_Marker", targets[i].transform, new Vector3(targetPos.x, targetPos.y + 2, targetPos.z - 0.65f), Quaternion.identity);
+            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targets[i].transform, new Vector3(targetPos.x, targetPos.y + 2, targetPos.z - 0.65f), Quaternion.identity);
         }
     }
 }
