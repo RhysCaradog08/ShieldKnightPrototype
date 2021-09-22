@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Basics.ObjectPool;
+using System;
 
 public class TargetingSystem : MonoBehaviour
 {
     ShieldController shield;
     GameObject player;
 
-    public List<GameObject> targets = new List<GameObject>();
+    public List<GameObject> targetsInRange = new List<GameObject>();
+
+    [SerializeField] GameObject [] taggedTargets;
 
     public GameObject closest;
 
-    CapsuleCollider triggerCollider;
+    [SerializeField] private float range;
 
     [Header("UI")]
     public GameObject targetMarker;
@@ -24,26 +27,24 @@ public class TargetingSystem : MonoBehaviour
     {
         shield = GameObject.FindObjectOfType<ShieldController>();
         player = GameObject.FindGameObjectWithTag("Player");
-
-        triggerCollider = GetComponent<CapsuleCollider>();
     }
 
     private void Update()
     {
-        if (Input.GetButton("Fire1") && !shield.thrown) //Enables trigger to determine which targets fall within it's area.
+        if (Input.GetButton("Fire1") && !shield.thrown) //Determine which targets fall within range and which is closest.
         {
-            triggerCollider.enabled = true;
+            GetTargets();
 
             FindClosestTarget();
-
-            if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
-            {
-                AddTargetMarker();
-            }
         }
-        else triggerCollider.enabled = false;
 
-        if (targets.Count > 0) //If there are targets in list, shield.target will be the closest.
+        if(Input.GetButtonUp("Fire1"))
+        {
+            Array.Clear(taggedTargets, 0, taggedTargets.Length);
+        }
+
+
+        if (targetsInRange.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
             shield.target = closest;
         }
@@ -57,25 +58,9 @@ public class TargetingSystem : MonoBehaviour
         else shield.hasTarget = false;
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.CompareTag("Target"))
-        {
-            targets.Add(other.gameObject);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.CompareTag("Target"))
-        {
-            targets.Remove(other.gameObject);
-        }        
-    }
-
     void FindClosestTarget()
     {
-        targets.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
+        targetsInRange.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
         {
             return Vector3.Distance(transform.position, a.transform.position)
             .CompareTo(
@@ -86,7 +71,7 @@ public class TargetingSystem : MonoBehaviour
         float closestDistanceSqr = Mathf.Infinity;
         Vector3 currentPosition = transform.position;
 
-        foreach (GameObject target in targets) //Measures distance from player to targets and calculates which target is closest.
+        foreach (GameObject target in targetsInRange) //Measures distance from player to targets and calculates which target is closest.
         {
             Vector3 directionToTarget = target.transform.position - currentPosition;
             float dSqrToTarget = directionToTarget.sqrMagnitude;
@@ -101,11 +86,46 @@ public class TargetingSystem : MonoBehaviour
 
     void AddTargetMarker()
     {
-        for (int i = 0; i < targets.Count; i++)
+        for (int i = 0; i < targetsInRange.Count; i++)
         {
-            Vector3 targetPos = targets[i].transform.position;
+            Vector3 targetPos = targetsInRange[i].transform.position;
 
-            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targets[i].transform, new Vector3(targetPos.x, targetPos.y + 2, targetPos.z - 0.65f), Quaternion.identity);
+            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targetsInRange[i].transform, new Vector3(targetPos.x, targetPos.y + 2, targetPos.z - 0.65f), Quaternion.identity);
+        }
+    }
+
+    void GetTargets()
+    {
+        taggedTargets = GameObject.FindGameObjectsWithTag("Target");
+
+        foreach (GameObject go in taggedTargets)
+        {
+            Debug.DrawLine(transform.position, go.transform.position, Color.red);
+
+            if (Vector3.Distance(transform.position, go.transform.position) < range)
+            {
+                Debug.DrawLine(transform.position, go.transform.position, Color.green);
+
+                if (!targetsInRange.Contains(go))
+                {
+                    targetsInRange.Add(go);
+                }
+
+                if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
+                {
+                    AddTargetMarker();
+                }
+            }
+
+            else if (Vector3.Distance(transform.position, go.transform.position) > range)
+            {
+                targetsInRange.Remove(go);
+
+                if (targetMarker != null)
+                {
+                    ObjectPoolManager.instance.RecallObject(targetMarker);
+                }
+            }
         }
     }
 }

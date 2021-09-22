@@ -8,6 +8,7 @@ TagManager:
   - Target
   - Sticky
   - Projectile
+  - Marker
   layers:
   - Default
   - TransparentFX

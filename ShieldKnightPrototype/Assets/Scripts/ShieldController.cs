@@ -23,6 +23,8 @@ public class ShieldController : MonoBehaviour
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
+    private GameObject targetMarker;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -74,7 +76,7 @@ public class ShieldController : MonoBehaviour
     {
         thrown = true;
 
-        foreach (GameObject nextTarget in ts.targets) //Sets nextTarget in list to be target and move shield towards target.
+        foreach (GameObject nextTarget in ts.targetsInRange) //Sets nextTarget in list to be target and move shield towards target.
         {
             target = nextTarget;
             Vector3 nextTargetPos = nextTarget.transform.position;
@@ -89,7 +91,7 @@ public class ShieldController : MonoBehaviour
             }
         }
         target = null;  //Once all targets are reached return Shield to Player.
-        ts.targets.Clear();
+        ts.targetsInRange.Clear();
         StartCoroutine(RecallShield());
     }
 
@@ -130,10 +132,22 @@ public class ShieldController : MonoBehaviour
         {
             if (other.CompareTag("Target"))  //Removes the Target marker from object.
             {
-                GameObject targetMarker = other.gameObject.transform.GetChild(0).gameObject;
+                foreach(Transform child in other.transform)
+                {
+                    if(child.tag == "Marker")
+                    {
+                        GameObject targetMarker = child.transform.gameObject;
+
+                        Debug.Log(targetMarker.name);
+
+                        ObjectPoolManager.instance.RecallObject(targetMarker);
+                    }
+                }
+                //GameObject targetMarker = other.gameObject.transform.GetChild(0).gameObject;
 
                 if (targetMarker != null)
                 {
+                    Debug.Log("Has Marker!");
                     ObjectPoolManager.instance.RecallObject(targetMarker);
                 }
             }
