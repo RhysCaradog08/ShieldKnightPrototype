@@ -42,10 +42,10 @@ public class Turret : MonoBehaviour
             shotDelay = 3.5f;
         }
 
-        if (distToPlayer <= range)
+        /*if (distToPlayer <= range)
         {
             Debug.Log("In Range");
-        }
+        }*/
     }
 
     void Shoot()

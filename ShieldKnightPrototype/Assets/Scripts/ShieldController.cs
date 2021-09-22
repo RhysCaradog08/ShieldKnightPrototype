@@ -138,18 +138,18 @@ public class ShieldController : MonoBehaviour
                     {
                         GameObject targetMarker = child.transform.gameObject;
 
-                        Debug.Log(targetMarker.name);
+                        Debug.Log(targetMarker.transform.parent.name + " Remove Marker!");
 
                         ObjectPoolManager.instance.RecallObject(targetMarker);
                     }
                 }
                 //GameObject targetMarker = other.gameObject.transform.GetChild(0).gameObject;
 
-                if (targetMarker != null)
+                /*if (targetMarker != null)
                 {
-                    Debug.Log("Has Marker!");
+                    //Debug.Log("Has Marker!");
                     ObjectPoolManager.instance.RecallObject(targetMarker);
-                }
+                }*/
             }
 
             if (other.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.

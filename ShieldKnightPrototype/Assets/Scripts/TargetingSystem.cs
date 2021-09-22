@@ -7,7 +7,7 @@ using System;
 public class TargetingSystem : MonoBehaviour
 {
     ShieldController shield;
-    GameObject player;
+    Camera cam;
 
     public List<GameObject> targetsInRange = new List<GameObject>();
 
@@ -19,14 +19,10 @@ public class TargetingSystem : MonoBehaviour
 
     [Header("UI")]
     public GameObject targetMarker;
-    GameObject one;
-    GameObject two;
-    GameObject three;
 
     private void Start()
     {
         shield = GameObject.FindObjectOfType<ShieldController>();
-        player = GameObject.FindGameObjectWithTag("Player");
     }
 
     private void Update()
@@ -41,6 +37,7 @@ public class TargetingSystem : MonoBehaviour
         if(Input.GetButtonUp("Fire1"))
         {
             Array.Clear(taggedTargets, 0, taggedTargets.Length);
+
         }
 
 
@@ -101,7 +98,8 @@ public class TargetingSystem : MonoBehaviour
         foreach (GameObject go in taggedTargets)
         {
             Debug.DrawLine(transform.position, go.transform.position, Color.red);
-
+            Renderer renderer = go.GetComponent<Renderer>();
+            
             if (Vector3.Distance(transform.position, go.transform.position) < range)
             {
                 Debug.DrawLine(transform.position, go.transform.position, Color.green);
@@ -111,9 +109,24 @@ public class TargetingSystem : MonoBehaviour
                     targetsInRange.Add(go);
                 }
 
-                if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
+                /*if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
                 {
                     AddTargetMarker();
+                }*/
+
+                foreach (Transform child in go.transform)
+                {
+                    //Debug.Log(go.name);
+                    if (child.gameObject != targetMarker)
+                    {
+                        Debug.Log(go.name + " Add Marker");
+                        AddTargetMarker();
+                    }
+
+                    /*if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
+                    {
+                        AddTargetMarker();
+                    }*/
                 }
             }
 
