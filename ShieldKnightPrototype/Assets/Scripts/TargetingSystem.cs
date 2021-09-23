@@ -16,6 +16,7 @@ public class TargetingSystem : MonoBehaviour
     public GameObject closest;
 
     [SerializeField] private float range;
+    [SerializeField] private float targetFOV;
 
     [Header("UI")]
     public GameObject targetMarker;
@@ -23,6 +24,7 @@ public class TargetingSystem : MonoBehaviour
     private void Start()
     {
         shield = GameObject.FindObjectOfType<ShieldController>();
+        cam = Camera.main;
     }
 
     private void Update()
@@ -98,11 +100,18 @@ public class TargetingSystem : MonoBehaviour
         foreach (GameObject go in taggedTargets)
         {
             Debug.DrawLine(transform.position, go.transform.position, Color.red);
-            Renderer renderer = go.GetComponent<Renderer>();
+
+            float cosAngle = Vector3.Dot((go.transform.position - transform.position).normalized, cam.transform.forward);
+            float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
+
+            if((angle < targetFOV) && (Vector3.Distance(transform.position, go.transform.position) < range))
+            {
+                Debug.DrawLine(transform.position, go.transform.position, Color.green);
+            }
             
             if (Vector3.Distance(transform.position, go.transform.position) < range)
             {
-                Debug.DrawLine(transform.position, go.transform.position, Color.green);
+                //Debug.DrawLine(transform.position, go.transform.position, Color.green);
 
                 if (!targetsInRange.Contains(go))
                 {
@@ -114,20 +123,20 @@ public class TargetingSystem : MonoBehaviour
                     AddTargetMarker();
                 }*/
 
-                foreach (Transform child in go.transform)
+                /*foreach (Transform child in go.transform)
                 {
                     //Debug.Log(go.name);
                     if (child.gameObject != targetMarker)
                     {
                         Debug.Log(go.name + " Add Marker");
-                        AddTargetMarker();
+                        //AddTargetMarker();
                     }
 
-                    /*if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
+                    if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
                     {
                         AddTargetMarker();
-                    }*/
-                }
+                    }
+                }*/
             }
 
             else if (Vector3.Distance(transform.position, go.transform.position) > range)
