@@ -107,23 +107,27 @@ public class TargetingSystem : MonoBehaviour
             if((angle < targetFOV) && (Vector3.Distance(transform.position, go.transform.position) < range))
             {
                 Debug.DrawLine(transform.position, go.transform.position, Color.green);
+                if (!targetsInRange.Contains(go))
+                {
+                    targetsInRange.Add(go);
+                }
             }
             
-            if (Vector3.Distance(transform.position, go.transform.position) < range)
+            /*if (Vector3.Distance(transform.position, go.transform.position) < range)
             {
-                //Debug.DrawLine(transform.position, go.transform.position, Color.green);
+                Debug.DrawLine(transform.position, go.transform.position, Color.green);
 
                 if (!targetsInRange.Contains(go))
                 {
                     targetsInRange.Add(go);
                 }
 
-                /*if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
+                if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
                 {
                     AddTargetMarker();
-                }*/
+                }
 
-                /*foreach (Transform child in go.transform)
+                foreach (Transform child in go.transform)
                 {
                     //Debug.Log(go.name);
                     if (child.gameObject != targetMarker)
@@ -136,10 +140,10 @@ public class TargetingSystem : MonoBehaviour
                     {
                         AddTargetMarker();
                     }
-                }*/
-            }
+                }
+            }*/
 
-            else if (Vector3.Distance(transform.position, go.transform.position) > range)
+            else if ((angle > targetFOV) || Vector3.Distance(transform.position, go.transform.position) > range)
             {
                 targetsInRange.Remove(go);
 
