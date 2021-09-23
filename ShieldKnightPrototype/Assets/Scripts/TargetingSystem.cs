@@ -39,13 +39,12 @@ public class TargetingSystem : MonoBehaviour
         if(Input.GetButtonUp("Fire1"))
         {
             Array.Clear(taggedTargets, 0, taggedTargets.Length);
-
         }
 
 
         if (targetsInRange.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
-            shield.target = closest;
+            shield.target = closest;            
         }
         else closest = null;
 
@@ -87,9 +86,9 @@ public class TargetingSystem : MonoBehaviour
     {
         for (int i = 0; i < targetsInRange.Count; i++)
         {
-            Vector3 targetPos = targetsInRange[i].transform.position;
+            Vector3 markerPos = targetsInRange[i].transform.position;
 
-            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targetsInRange[i].transform, new Vector3(targetPos.x, targetPos.y + 2, targetPos.z - 0.65f), Quaternion.identity);
+            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targetsInRange[i].transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);  
         }
     }
 
@@ -110,39 +109,13 @@ public class TargetingSystem : MonoBehaviour
                 if (!targetsInRange.Contains(go))
                 {
                     targetsInRange.Add(go);
-                }
-            }
-            
-            /*if (Vector3.Distance(transform.position, go.transform.position) < range)
-            {
-                Debug.DrawLine(transform.position, go.transform.position, Color.green);
 
-                if (!targetsInRange.Contains(go))
-                {
-                    targetsInRange.Add(go);
-                }
-
-                if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
-                {
-                    AddTargetMarker();
-                }
-
-                foreach (Transform child in go.transform)
-                {
-                    //Debug.Log(go.name);
-                    if (child.gameObject != targetMarker)
-                    {
-                        Debug.Log(go.name + " Add Marker");
-                        //AddTargetMarker();
-                    }
-
-                    if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
+                    /*if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
                     {
                         AddTargetMarker();
-                    }
-                }
-            }*/
-
+                    }*/
+                }            
+            }
             else if ((angle > targetFOV) || Vector3.Distance(transform.position, go.transform.position) > range)
             {
                 targetsInRange.Remove(go);

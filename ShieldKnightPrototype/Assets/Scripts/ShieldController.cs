@@ -138,7 +138,7 @@ public class ShieldController : MonoBehaviour
                     {
                         GameObject targetMarker = child.transform.gameObject;
 
-                        Debug.Log(targetMarker.transform.parent.name + " Remove Marker!");
+                        //Debug.Log(targetMarker.transform.parent.name + " Remove Marker!");
 
                         ObjectPoolManager.instance.RecallObject(targetMarker);
                     }

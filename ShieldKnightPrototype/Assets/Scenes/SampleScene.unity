@@ -2478,7 +2478,7 @@ PrefabInstance:
     - target: {fileID: 5915781003326793600, guid: 72b923e448b5f2c4f93895140989ab55,
         type: 3}
       propertyPath: objectPools.Array.data[0].startCount
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 72b923e448b5f2c4f93895140989ab55, type: 3}
