@@ -6,6 +6,8 @@ using System;
 
 public class TargetingSystem : MonoBehaviour
 {
+    MarkerCheck markerCheck;
+
     ShieldController shield;
     Camera cam;
 
@@ -84,12 +86,27 @@ public class TargetingSystem : MonoBehaviour
 
     void AddTargetMarker()
     {
-        for (int i = 0; i < targetsInRange.Count; i++)
+        foreach(GameObject target in targetsInRange)
+        {
+            if(markerCheck == null)
+            {
+                markerCheck = target.AddComponent<MarkerCheck>();
+            }
+
+            if(markerCheck.canAddMarker == true)
+            {
+                Vector3 markerPos = target.transform.position;
+
+                targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", target.transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);
+            }
+        }
+
+        /*for (int i = 0; i < targetsInRange.Count; i++)
         {
             Vector3 markerPos = targetsInRange[i].transform.position;
 
             targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targetsInRange[i].transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);  
-        }
+        }*/
     }
 
     void GetTargets()
@@ -109,12 +126,9 @@ public class TargetingSystem : MonoBehaviour
                 if (!targetsInRange.Contains(go))
                 {
                     targetsInRange.Add(go);
+                }
 
-                    /*if (targetMarker == null || targetMarker.transform.position == Vector3.zero)
-                    {
-                        AddTargetMarker();
-                    }*/
-                }            
+                AddTargetMarker();
             }
             else if ((angle > targetFOV) || Vector3.Distance(transform.position, go.transform.position) > range)
             {
@@ -123,6 +137,11 @@ public class TargetingSystem : MonoBehaviour
                 if (targetMarker != null)
                 {
                     ObjectPoolManager.instance.RecallObject(targetMarker);
+                }
+
+                if(markerCheck != null)
+                {
+                    Destroy(markerCheck);
                 }
             }
         }

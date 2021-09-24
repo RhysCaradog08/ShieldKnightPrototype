@@ -41,11 +41,6 @@ public class Turret : MonoBehaviour
             anim.SetTrigger("Fire");
             shotDelay = 3.5f;
         }
-
-        /*if (distToPlayer <= range)
-        {
-            Debug.Log("In Range");
-        }*/
     }
 
     void Shoot()

@@ -143,6 +143,13 @@ public class ShieldController : MonoBehaviour
                         ObjectPoolManager.instance.RecallObject(targetMarker);
                     }
                 }
+
+                MarkerCheck markerCheck = other.GetComponent<MarkerCheck>();
+                if(markerCheck != null)
+                {
+                    Debug.Log("Has MarkerCheck");
+                    Destroy(markerCheck);
+                }
                 //GameObject targetMarker = other.gameObject.transform.GetChild(0).gameObject;
 
                 /*if (targetMarker != null)
