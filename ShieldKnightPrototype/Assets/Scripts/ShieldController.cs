@@ -19,10 +19,12 @@ public class ShieldController : MonoBehaviour
     public bool hasTarget;
     public bool canThrow;
 
+
     [Header("Recall")]
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
+    [Header("UI")]
     private GameObject targetMarker;
 
     // Start is called before the first frame update
@@ -43,7 +45,11 @@ public class ShieldController : MonoBehaviour
         {
             if (hasTarget)
             {
-                StartCoroutine(TargetedThrow());
+                if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
+                {
+                    StartCoroutine(TargetedThrow()); 
+                }
+                else StartCoroutine(LockOnThrow());
             }
             else NonTargetThrow();
         }
@@ -56,7 +62,7 @@ public class ShieldController : MonoBehaviour
             }
         }
 
-        if (thrown)  //Stops Player stacking Throws.
+        if (thrown)  //Stops Player repeatedly throwing the shield.
         {
             canThrow = false;
         }
@@ -83,7 +89,6 @@ public class ShieldController : MonoBehaviour
             while (Vector3.Distance(transform.position, nextTargetPos) > 0.1f)
             {
                 transform.parent = null;
-                //thrown = true;
 
                 transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
 
@@ -124,6 +129,24 @@ public class ShieldController : MonoBehaviour
 
         shieldRB.isKinematic = true;
         thrown = false;
+    }
+
+    IEnumerator LockOnThrow()
+    {
+        thrown = true;
+
+        while (Vector3.Distance(transform.position, target.transform.position) > 0.1f)
+        {
+            transform.parent = null;
+
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, throwForce * Time.deltaTime);
+
+            yield return null;
+        }
+
+        //target = null;  //Once all targets are reached return Shield to Player.
+        //ts.visibleTargets.Clear();
+        StartCoroutine(RecallShield());
     }
 
     private void OnTriggerEnter(Collider other)

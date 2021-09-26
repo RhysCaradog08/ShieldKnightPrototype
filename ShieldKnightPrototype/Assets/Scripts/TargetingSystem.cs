@@ -43,25 +43,16 @@ public class TargetingSystem : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1") && !shield.thrown)
         {
-            taggedTargets = GameObject.FindGameObjectsWithTag("Target");
-
-            foreach(GameObject target in taggedTargets)
-            {
-                if(!targetLocations.Contains(target))
-                {
-                    targetLocations.Add(target);
-                }
-            }
+            GetTargets();
         }
 
         if (Input.GetButton("Fire1") && !shield.thrown) //Determine which targets fall within range and which is closest.
         {
             TargetsInView();
             FindClosestTarget();
-            GetTargets();
         }
 
-        if(Input.GetButtonUp("Fire1"))
+        if(Input.GetButtonUp("Fire1")) //Clears taggedTargets and targetLocations for next instance.
         {
             targetLocations.Clear();
 
@@ -72,10 +63,7 @@ public class TargetingSystem : MonoBehaviour
         {
             if (!lockedOn)
             {
-                foreach (GameObject go in GameObject.FindGameObjectsWithTag("Target"))
-                {
-                    targetLocations.Add(go);
-                }
+                GetTargets();
 
                 TargetsInView();
                 FindClosestTarget();
@@ -91,15 +79,24 @@ public class TargetingSystem : MonoBehaviour
             else if (lockedOn)
             {
                 lockedOn = false;
+                closest = null;
+                visibleTargets.Clear();
                 RemoveLockOnMarker();
             }
         }
         if (Input.GetKeyUp(KeyCode.Z))
         {
-            //visibleTargets.Clear();
             targetLocations.Clear();
 
             Array.Clear(taggedTargets, 0, taggedTargets.Length);
+        }
+
+        if (lockedOn && Vector3.Distance(transform.position, closest.transform.position) > range)
+        {
+            canLockOn = false;
+            lockedOn = false;
+            RemoveLockOnMarker();
+            closest = null;
         }
 
 
@@ -113,15 +110,6 @@ public class TargetingSystem : MonoBehaviour
         if (closest != null)
         {
             shield.hasTarget = true;
-
-            //Angle
-            float cosAngle = Vector3.Dot((closest.transform.position - transform.position).normalized, cam.transform.forward);
-            float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
-
-            if (angle < targetFOV)
-            {
-                Debug.Log("Closest is within angle");
-            }
         }
         else shield.hasTarget = false;
     }
@@ -157,16 +145,6 @@ public class TargetingSystem : MonoBehaviour
                 closestDistanceSqr = dSqrToTarget;
                 closest = target;
             }
-
-            /*Angle
-            float cosAngle = Vector3.Dot((closest.transform.position - transform.position).normalized, cam.transform.forward);
-            float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
-
-            if (angle < targetFOV)
-            {
-                Debug.DrawLine(transform.position, closest.transform.position, Color.green);
-                Debug.Log("Closest is within angle");
-            }*/
         }
     }
 
@@ -174,9 +152,9 @@ public class TargetingSystem : MonoBehaviour
     {
         foreach(GameObject target in visibleTargets)
         {
-            if(markerCheck == null)
+            if(markerCheck != null)
             {
-                markerCheck = target.AddComponent<MarkerCheck>();
+                markerCheck = target.GetComponent<MarkerCheck>();
             }
 
             if(markerCheck.canAddMarker == true)
@@ -187,16 +165,47 @@ public class TargetingSystem : MonoBehaviour
             }
         }
 
-        /*for (int i = 0; i < targetsInRange.Count; i++)
+        /*for (int i = 0; i < visibleTargets.Count; i++)
         {
-            Vector3 markerPos = targetsInRange[i].transform.position;
+            Vector3 markerPos = visibleTargets[i].transform.position;
 
-            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", targetsInRange[i].transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);  
+            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", visibleTargets[i].transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);  
+        }*/
+    }
+
+    void RemoveTargetMarker()
+    {
+        ObjectPoolManager.instance.RecallObject(targetMarker);
+        /*foreach (GameObject target in visibleTargets)
+        {
+            if (markerCheck != null)
+            {
+                markerCheck = target.GetComponent<MarkerCheck>();
+            }
+
+            if (markerCheck.canAddMarker == false)
+            {
+                ObjectPoolManager.instance.RecallObject(targetMarker);
+            }
         }*/
     }
 
     void GetTargets()
     {
+        taggedTargets = GameObject.FindGameObjectsWithTag("Target");
+
+        foreach (GameObject target in taggedTargets)
+        {
+            if (!targetLocations.Contains(target))
+            {
+                targetLocations.Add(target);
+            }
+        }
+
+        foreach (GameObject go in targetLocations)
+        {
+            markerCheck = go.AddComponent<MarkerCheck>();
+        }
         /*taggedTargets = GameObject.FindGameObjectsWithTag("Target");
 
         foreach (GameObject go in taggedTargets)
@@ -244,6 +253,7 @@ public class TargetingSystem : MonoBehaviour
             if (isVisible && !visibleTargets.Contains(targetLocations[i]))
             {
                 visibleTargets.Add(targetLocations[i]);
+
             }
             else if (visibleTargets.Contains(targetLocations[i]) && !isVisible)
             {
