@@ -76,7 +76,7 @@ public class ShieldController : MonoBehaviour
     {
         thrown = true;
 
-        foreach (GameObject nextTarget in ts.targetsInRange) //Sets nextTarget in list to be target and move shield towards target.
+        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
         {
             target = nextTarget;
             Vector3 nextTargetPos = nextTarget.transform.position;
@@ -91,7 +91,7 @@ public class ShieldController : MonoBehaviour
             }
         }
         target = null;  //Once all targets are reached return Shield to Player.
-        ts.targetsInRange.Clear();
+        ts.visibleTargets.Clear();
         StartCoroutine(RecallShield());
     }
 

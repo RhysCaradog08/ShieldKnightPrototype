@@ -2,10 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Basics.ObjectPool;
+using System;
 
 public class LockOnTarget : MonoBehaviour
 {
     [SerializeField] List<GameObject> targetLocations = new List<GameObject>();
+    [SerializeField]List<GameObject> visibleTargets = new List<GameObject>();
+    GameObject[] taggedTargets;
     [SerializeField] GameObject closest = null;
 
     [SerializeField] float range;
@@ -32,6 +35,7 @@ public class LockOnTarget : MonoBehaviour
                     targetLocations.Add(go);
                 }
 
+                TargetsInView();
                 FindClosestTarget();
                 CheckTargetDistance();
 
@@ -50,7 +54,10 @@ public class LockOnTarget : MonoBehaviour
         }
         if(Input.GetKeyUp(KeyCode.Z))
         {
+            visibleTargets.Clear();
             targetLocations.Clear();
+
+            Array.Clear(taggedTargets, 0, taggedTargets.Length);
         }
 
         if(lockedOn && Vector3.Distance(transform.position, closest.transform.position) > range)
@@ -61,15 +68,23 @@ public class LockOnTarget : MonoBehaviour
             closest = null;
         }
 
-        if(Input.GetKeyDown(KeyCode.X))
+        if(Input.GetKey(KeyCode.X))
         {
-            CheckTargetDistance();
+            TargetsInView();
+            //CheckTargetDistance();
 
             if(canLockOn)
             {
                 Debug.Log("Can Lock On");
             }
             else Debug.Log("Cannot Lock On");
+        }
+        if(Input.GetKeyUp(KeyCode.X))
+        {
+            visibleTargets.Clear();
+            targetLocations.Clear();
+
+            Array.Clear(taggedTargets, 0, taggedTargets.Length);
         }
 
         if (lockedOn)
@@ -84,17 +99,17 @@ public class LockOnTarget : MonoBehaviour
 
     GameObject FindClosestTarget()
     {
-        targetLocations.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
+        visibleTargets.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
         {
             return Vector3.Distance(transform.position, a.transform.position).CompareTo(Vector3.Distance(transform.position, b.transform.position));
         });
 
         float distance = Mathf.Infinity;
-        Vector3 position = transform.position;
+        Vector3 playerForward = transform.forward;
 
-        foreach(GameObject target in targetLocations)
+        foreach(GameObject target in visibleTargets)
         {
-            Vector3 diff = (target.transform.position - position);
+            Vector3 diff = (target.transform.position - playerForward);
             float currentDist = diff.sqrMagnitude;
 
             if(currentDist < distance)
@@ -132,5 +147,24 @@ public class LockOnTarget : MonoBehaviour
     void RemoveTargetMarker()
     {
         ObjectPoolManager.instance.RecallObject(lockOnMarker);
+    }
+
+    void TargetsInView()
+    {
+        for(int i = 0; i < targetLocations.Count; i ++)
+        {
+            Vector3 targetPos = Camera.main.WorldToViewportPoint(targetLocations[i].transform.position);
+
+            bool isVisible = (targetPos.z > 0 && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
+
+            if(isVisible && !visibleTargets.Contains(targetLocations[i]))
+            {
+                visibleTargets.Add(targetLocations[i]);
+            }
+            else if(visibleTargets.Contains(targetLocations[i]) && !isVisible)
+            {
+                visibleTargets.Remove(targetLocations[i]);
+            }
+        }
     }
 }
