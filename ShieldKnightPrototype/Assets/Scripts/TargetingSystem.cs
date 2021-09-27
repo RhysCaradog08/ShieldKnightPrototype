@@ -169,8 +169,9 @@ public class TargetingSystem : MonoBehaviour
         for (int i = 0; i < targetLocations.Count; i++)
         {
             Vector3 targetPos = Camera.main.WorldToViewportPoint(targetLocations[i].transform.position);
+            Vector3 playerPos = Camera.main.WorldToViewportPoint(transform.position);
 
-            bool isVisible = (targetPos.z > 0 && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
+            bool isVisible = (targetPos.z > playerPos.z && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
 
             if (isVisible && !visibleTargets.Contains(targetLocations[i]))
             {
