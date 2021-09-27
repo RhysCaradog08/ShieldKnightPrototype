@@ -11,8 +11,6 @@ public class TargetingSystem : MonoBehaviour
 
     Camera cam;
 
-    //[SerializeField] List<GameObject> targetsInRange = new List<GameObject>();
-    [SerializeField] GameObject [] taggedTargets;
     public List<GameObject> targetLocations = new List<GameObject>();
     public List<GameObject> visibleTargets = new List<GameObject>();
 
@@ -33,7 +31,6 @@ public class TargetingSystem : MonoBehaviour
         shield = GameObject.FindObjectOfType<ShieldController>();
         cam = Camera.main;
 
-        taggedTargets = GameObject.FindGameObjectsWithTag("Target");
     }
 
     private void Update()
@@ -54,7 +51,7 @@ public class TargetingSystem : MonoBehaviour
             FindClosestTarget();
         }
 
-        if(Input.GetButtonUp("Fire1")) //Clears taggedTargets and targetLocations for next instance.
+        if(Input.GetButtonUp("Fire1")) //Clears targetLocations for the next instance.
         {
             targetLocations.Clear();
         }
@@ -71,6 +68,16 @@ public class TargetingSystem : MonoBehaviour
 
                 if (canLockOn)
                 {
+                    foreach (GameObject target in visibleTargets)
+                    {
+                        markerCheck = target.GetComponent<MarkerCheck>();
+
+                        if (markerCheck.canAddMarker == false)
+                        {
+                            markerCheck.RemoveMarker();
+                        }
+                    }
+
                     AddLockOnMarker();
                     lockedOn = !lockedOn;
                 }
@@ -87,8 +94,6 @@ public class TargetingSystem : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Z))
         {
             targetLocations.Clear();
-
-            Array.Clear(taggedTargets, 0, taggedTargets.Length);
         }
 
         if (lockedOn && Vector3.Distance(transform.position, closest.transform.position) > range)
@@ -150,15 +155,20 @@ public class TargetingSystem : MonoBehaviour
 
     void GetTargets()
     {
-        foreach (GameObject target in taggedTargets)
-        {
-            if (!targetLocations.Contains(target))
-            {
-                targetLocations.Add(target);
+        Collider[] hitColliders = Physics.OverlapSphere(transform.position, range);
 
-                if(target.GetComponent<MarkerCheck>() == null)
+        foreach(Collider col in hitColliders)
+        {
+            if(col.tag == "Target")
+            {
+                if (!targetLocations.Contains(col.gameObject))
                 {
-                    target.AddComponent<MarkerCheck>();
+                    targetLocations.Add(col.gameObject);
+
+                    if (col.gameObject.GetComponent<MarkerCheck>() == null)
+                    {
+                        col.gameObject.AddComponent<MarkerCheck>();
+                    }
                 }
             }
         }

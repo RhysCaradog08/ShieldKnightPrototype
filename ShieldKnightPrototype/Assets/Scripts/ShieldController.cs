@@ -100,6 +100,13 @@ public class ShieldController : MonoBehaviour
             {
                 markerCheck.RemoveMarker();
             }
+
+            if (nextTarget.GetComponent<EnemyHealth>() != null)
+            {
+                EnemyHealth enemy = nextTarget.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);
+            }
         }
         target = null;  //Once all targets are reached return Shield to Player.
         ts.visibleTargets.Clear();
@@ -150,8 +157,13 @@ public class ShieldController : MonoBehaviour
             yield return null;
         }
 
-        //target = null;  //Once all targets are reached return Shield to Player.
-        //ts.visibleTargets.Clear();
+        if (target.GetComponent<EnemyHealth>() != null)
+        {
+            EnemyHealth enemy = target.GetComponent<EnemyHealth>();
+
+            enemy.TakeDamage(10);
+        }
+
         StartCoroutine(RecallShield());
     }
 
@@ -159,19 +171,17 @@ public class ShieldController : MonoBehaviour
     {
         if (thrown)
         {
-            /*if (other.CompareTag("Target"))  //Removes the Target marker from object.
-            {
-                MarkerCheck markerCheck = other.GetComponent<MarkerCheck>();
-                if(markerCheck != null)
-                {
-                    markerCheck.RemoveMarker();
-                }
-            }*/
-
             if (other.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
             {
                 shieldRB.isKinematic = true;
             }
+
+            /*if(other.GetComponent<EnemyHealth>() != null)
+            {
+                EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);
+            }*/
         }
     }
 }
