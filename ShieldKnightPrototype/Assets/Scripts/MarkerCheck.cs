@@ -9,20 +9,6 @@ public class MarkerCheck : MonoBehaviour
 
     public bool canAddMarker = true;
 
-    private void Update()
-    {
-        /*if(!canAddMarker) //&& marker == null)
-        {
-            Debug.Log("Add Marker");
-            AddMarker();
-        }
-        else if(canAddMarker) //&& marker != null)
-        {
-            Debug.Log("Remove Marker");
-            RemoveMarker();
-        }*/
-    }
-
     public void AddMarker()
     {
         Vector3 markerPos = transform.position;
