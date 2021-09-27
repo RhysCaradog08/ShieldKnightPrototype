@@ -32,6 +32,8 @@ public class TargetingSystem : MonoBehaviour
     {
         shield = GameObject.FindObjectOfType<ShieldController>();
         cam = Camera.main;
+
+        taggedTargets = GameObject.FindGameObjectsWithTag("Target");
     }
 
     private void Update()
@@ -55,8 +57,6 @@ public class TargetingSystem : MonoBehaviour
         if(Input.GetButtonUp("Fire1")) //Clears taggedTargets and targetLocations for next instance.
         {
             targetLocations.Clear();
-
-            Array.Clear(taggedTargets, 0, taggedTargets.Length);
         }
 
         if (Input.GetKeyDown(KeyCode.Z))
@@ -148,98 +148,20 @@ public class TargetingSystem : MonoBehaviour
         }
     }
 
-    void AddTargetMarker()
-    {
-        foreach(GameObject target in visibleTargets)
-        {
-            if(markerCheck != null)
-            {
-                markerCheck = target.GetComponent<MarkerCheck>();
-            }
-
-            if(markerCheck.canAddMarker == true)
-            {
-                Vector3 markerPos = target.transform.position;
-
-                targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", target.transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);
-            }
-        }
-
-        /*for (int i = 0; i < visibleTargets.Count; i++)
-        {
-            Vector3 markerPos = visibleTargets[i].transform.position;
-
-            targetMarker = ObjectPoolManager.instance.CallObject("TargetMarker", visibleTargets[i].transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);  
-        }*/
-    }
-
-    void RemoveTargetMarker()
-    {
-        ObjectPoolManager.instance.RecallObject(targetMarker);
-        /*foreach (GameObject target in visibleTargets)
-        {
-            if (markerCheck != null)
-            {
-                markerCheck = target.GetComponent<MarkerCheck>();
-            }
-
-            if (markerCheck.canAddMarker == false)
-            {
-                ObjectPoolManager.instance.RecallObject(targetMarker);
-            }
-        }*/
-    }
-
     void GetTargets()
     {
-        taggedTargets = GameObject.FindGameObjectsWithTag("Target");
-
         foreach (GameObject target in taggedTargets)
         {
             if (!targetLocations.Contains(target))
             {
                 targetLocations.Add(target);
+
+                if(target.GetComponent<MarkerCheck>() == null)
+                {
+                    target.AddComponent<MarkerCheck>();
+                }
             }
         }
-
-        foreach (GameObject go in targetLocations)
-        {
-            markerCheck = go.AddComponent<MarkerCheck>();
-        }
-        /*taggedTargets = GameObject.FindGameObjectsWithTag("Target");
-
-        foreach (GameObject go in taggedTargets)
-        {
-            Debug.DrawLine(transform.position, go.transform.position, Color.red);
-
-            float cosAngle = Vector3.Dot((go.transform.position - transform.position).normalized, cam.transform.forward);
-            float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
-
-            if((angle < targetFOV) && (Vector3.Distance(transform.position, go.transform.position) < range))
-            {
-                Debug.DrawLine(transform.position, go.transform.position, Color.green);
-                if (!targetsInRange.Contains(go))
-                {
-                    targetsInRange.Add(go);
-                }
-
-                AddTargetMarker();
-            }
-            else if ((angle > targetFOV) || Vector3.Distance(transform.position, go.transform.position) > range)
-            {
-                targetsInRange.Remove(go);
-
-                if (targetMarker != null)
-                {
-                    ObjectPoolManager.instance.RecallObject(targetMarker);
-                }
-
-                if(markerCheck != null)
-                {
-                    Destroy(markerCheck);
-                }
-            }
-        }*/
     }
 
     void TargetsInView() //Adds and removes target objects from visibleTargets list if visible on screen or not.
@@ -254,9 +176,28 @@ public class TargetingSystem : MonoBehaviour
             {
                 visibleTargets.Add(targetLocations[i]);
 
+                foreach (GameObject target in visibleTargets)
+                {
+                    markerCheck = target.GetComponent<MarkerCheck>();
+
+                    if (markerCheck.canAddMarker == true)
+                    {
+                        markerCheck.AddMarker();
+                    }
+                }
             }
             else if (visibleTargets.Contains(targetLocations[i]) && !isVisible)
             {
+                foreach (GameObject target in visibleTargets)
+                {
+                    markerCheck = target.GetComponent<MarkerCheck>();
+
+                    if (markerCheck.canAddMarker == false)
+                    {
+                        markerCheck.RemoveMarker();
+                    }
+                }
+
                 visibleTargets.Remove(targetLocations[i]);
             }
         }

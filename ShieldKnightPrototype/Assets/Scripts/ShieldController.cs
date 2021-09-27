@@ -94,6 +94,12 @@ public class ShieldController : MonoBehaviour
 
                 yield return null;
             }
+
+            MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
+            if (markerCheck != null)
+            {
+                markerCheck.RemoveMarker();
+            }
         }
         target = null;  //Once all targets are reached return Shield to Player.
         ts.visibleTargets.Clear();
@@ -153,34 +159,14 @@ public class ShieldController : MonoBehaviour
     {
         if (thrown)
         {
-            if (other.CompareTag("Target"))  //Removes the Target marker from object.
+            /*if (other.CompareTag("Target"))  //Removes the Target marker from object.
             {
-                foreach(Transform child in other.transform)
-                {
-                    if(child.tag == "Marker")
-                    {
-                        GameObject targetMarker = child.transform.gameObject;
-
-                        //Debug.Log(targetMarker.transform.parent.name + " Remove Marker!");
-
-                        ObjectPoolManager.instance.RecallObject(targetMarker);
-                    }
-                }
-
                 MarkerCheck markerCheck = other.GetComponent<MarkerCheck>();
                 if(markerCheck != null)
                 {
-                    Debug.Log("Has MarkerCheck");
-                    Destroy(markerCheck);
+                    markerCheck.RemoveMarker();
                 }
-                //GameObject targetMarker = other.gameObject.transform.GetChild(0).gameObject;
-
-                /*if (targetMarker != null)
-                {
-                    //Debug.Log("Has Marker!");
-                    ObjectPoolManager.instance.RecallObject(targetMarker);
-                }*/
-            }
+            }*/
 
             if (other.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
             {
