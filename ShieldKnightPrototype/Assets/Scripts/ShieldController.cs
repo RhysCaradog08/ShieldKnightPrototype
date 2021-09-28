@@ -183,6 +183,17 @@ public class ShieldController : MonoBehaviour
                 shieldRB.isKinematic = true;
             }
         }
+
+        if(isBarging)
+        {
+            if(other.gameObject.GetComponent<EnemyHealth>())
+            {
+                Debug.Log("Hit by Barge");
+                EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);
+            }
+        }
     }
 }
 

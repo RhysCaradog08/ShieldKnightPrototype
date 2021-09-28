@@ -198,8 +198,13 @@ public class PlayerController : MonoBehaviour
         if (isBarging) //Sets Barge animation.
         {
             anim.SetBool("Barging", true);
+            shield.isBarging = true;
         }
-        else anim.SetBool("Barging", false);
+        else
+        {
+            anim.SetBool("Barging", false);
+            shield.isBarging = false;
+        }
 
         speed = moveSpeed;
         canBarge = true;
