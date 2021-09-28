@@ -15,7 +15,7 @@ public class ShieldController : MonoBehaviour
     public GameObject target;
     public GameObject model;
     public float rotateSpeed;
-    public bool thrown;
+    public bool thrown = false;
     public bool hasTarget;
     public bool canThrow;
 
@@ -24,11 +24,17 @@ public class ShieldController : MonoBehaviour
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
+    [Header("Barge")]
+    public bool isBarging;
+
+    [Header("Slam")]
+    public bool isSlamming;
+
     [Header("UI")]
     private GameObject targetMarker;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         shieldRB = GetComponent<Rigidbody>();
 
@@ -41,7 +47,7 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        if (canThrow && !thrown)  //Perform Throw action if Player has possession of Shield. 
+        if (canThrow)  //Perform Throw action if Player has possession of Shield. 
         {
             if (hasTarget)
             {
@@ -141,6 +147,7 @@ public class ShieldController : MonoBehaviour
         meshCol.enabled = true;
 
         shieldRB.isKinematic = true;
+
         thrown = false;
     }
 
@@ -175,13 +182,6 @@ public class ShieldController : MonoBehaviour
             {
                 shieldRB.isKinematic = true;
             }
-
-            /*if(other.GetComponent<EnemyHealth>() != null)
-            {
-                EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-
-                enemy.TakeDamage(10);
-            }*/
         }
     }
 }

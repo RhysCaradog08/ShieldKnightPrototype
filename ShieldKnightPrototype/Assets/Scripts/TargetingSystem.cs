@@ -11,6 +11,8 @@ public class TargetingSystem : MonoBehaviour
 
     Camera cam;
 
+    Collider[] hitColliders;
+
     public List<GameObject> targetLocations = new List<GameObject>();
     public List<GameObject> visibleTargets = new List<GameObject>();
 
@@ -19,6 +21,7 @@ public class TargetingSystem : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private float targetFOV;
 
+    bool inRange;
     bool canLockOn;
     public bool lockedOn;
 
@@ -26,11 +29,10 @@ public class TargetingSystem : MonoBehaviour
     public GameObject targetMarker;
     public GameObject lockOnMarker;
 
-    private void Start()
+    private void Awake()
     {
         shield = GameObject.FindObjectOfType<ShieldController>();
         cam = Camera.main;
-
     }
 
     private void Update()
@@ -155,7 +157,7 @@ public class TargetingSystem : MonoBehaviour
 
     void GetTargets()
     {
-        Collider[] hitColliders = Physics.OverlapSphere(transform.position, range);
+        hitColliders = Physics.OverlapSphere(transform.position, 50);
 
         foreach(Collider col in hitColliders)
         {
@@ -172,6 +174,8 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
         }
+
+        Array.Clear(hitColliders, 0, hitColliders.Length);
     }
 
     void TargetsInView() //Adds and removes target objects from visibleTargets list if visible on screen or not.
@@ -183,33 +187,48 @@ public class TargetingSystem : MonoBehaviour
 
             bool isVisible = (targetPos.z > playerPos.z && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
 
+            if (Vector3.Distance(transform.position, targetLocations[i].transform.position) < range)
+            {
+                inRange = true;
+            }
+            else inRange = false;
+
             if (isVisible && !visibleTargets.Contains(targetLocations[i]))
             {
-                visibleTargets.Add(targetLocations[i]);
+                if (Vector3.Distance(transform.position, targetLocations[i].transform.position) < range)
+                {
+                    if (visibleTargets.Count < 3)
+                    {
+                        visibleTargets.Add(targetLocations[i]);
+                    }
+                }
 
                 foreach (GameObject target in visibleTargets)
                 {
-                    markerCheck = target.GetComponent<MarkerCheck>();
+                        markerCheck = target.GetComponent<MarkerCheck>();
 
-                    if (markerCheck.canAddMarker == true)
-                    {
-                        markerCheck.AddMarker();
-                    }
+                        if (markerCheck.canAddMarker == true)
+                        {
+                            markerCheck.AddMarker();
+                        }
                 }
             }
             else if (visibleTargets.Contains(targetLocations[i]) && !isVisible)
             {
-                foreach (GameObject target in visibleTargets)
+                if (Vector3.Distance(transform.position, targetLocations[i].transform.position) > range)
                 {
-                    markerCheck = target.GetComponent<MarkerCheck>();
-
-                    if (markerCheck.canAddMarker == false)
+                    foreach (GameObject target in visibleTargets)
                     {
-                        markerCheck.RemoveMarker();
-                    }
-                }
+                        markerCheck = target.GetComponent<MarkerCheck>();
 
-                visibleTargets.Remove(targetLocations[i]);
+                        if (markerCheck.canAddMarker == false)
+                        {
+                            markerCheck.RemoveMarker();
+                        }
+                    }
+
+                    visibleTargets.Remove(targetLocations[i]);
+                }
             }
         }
     }
@@ -241,4 +260,12 @@ public class TargetingSystem : MonoBehaviour
     {
         ObjectPoolManager.instance.RecallObject(lockOnMarker);
     }
+
+    /*void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        Gizmos.DrawWireSphere(transform.position, range);
+        Gizmos.DrawWireSphere(transform.position, 50);
+    }*/
 }

@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Basics.ObjectPool;
 
 public class PlayerController : MonoBehaviour
 {
@@ -44,6 +46,12 @@ public class PlayerController : MonoBehaviour
     public float bargeTime;
     public float bargeSpeed;
     float bargeDelay;
+    [SerializeField]Collider[] targets;
+    [SerializeField] List<GameObject> bargeTargets = new List<GameObject>();
+    [SerializeField] float bargeDist;
+    public GameObject closest = null;
+    GameObject marker;
+
 
     [Header("Slam")]
     public bool slamming;
@@ -174,6 +182,13 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Fire3")) //Input to perform Barge action.
         {
+            FindClosestTarget();
+
+            if (closest != null)
+            {
+                Debug.Log(closest.name + " is closest");
+            }
+
             if (canBarge && bargeDelay <= 0)
             {
                 StartCoroutine(Barge());
@@ -256,6 +271,12 @@ public class PlayerController : MonoBehaviour
 
         new WaitForSeconds(1); //Prevents player from stacking Barges.
 
+        if(closest != null)
+        {
+            Vector3 markerPos = closest.transform.position;
+            marker = ObjectPoolManager.instance.CallObject("TargetMarker", closest.transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);
+        }
+
         while (Time.time < startTime + bargeTime)  //Player movement speed is disabled then moved by bargeSpeed over bargeTime;
         {
             isBarging = true;
@@ -263,11 +284,24 @@ public class PlayerController : MonoBehaviour
             speed = 0;
 
             canBarge = false;
-            cc.Move(moveDir * bargeSpeed * Time.deltaTime);
+
+            if(closest != null)
+            {
+                Vector3 closestDir = (closest.transform.position - transform.position).normalized;
+                Vector3 closestRot = Vector3.RotateTowards(transform.forward, closestDir, 10, 0);
+                transform.rotation = Quaternion.LookRotation(closestRot);
+
+                cc.Move(closestDir * bargeSpeed * Time.deltaTime);
+            }
+            else cc.Move(moveDir * bargeSpeed * Time.deltaTime);
+
             bargeDelay = 0.5f;
 
             yield return null;
         }
+
+        closest = null;
+        ObjectPoolManager.instance.RecallObject(marker);
     }
 
     IEnumerator Slam() //Player movement is frozen then directed down by slamForce.
@@ -278,5 +312,59 @@ public class PlayerController : MonoBehaviour
         velocity.y = slamForce;
 
         stopped = false;
+    }
+
+    public GameObject FindClosestTarget()
+    {
+        targets = Physics.OverlapSphere(transform.position, bargeDist);
+        
+        foreach (Collider col in targets)
+        {
+            if(col.gameObject.tag == "Target")
+            {
+                if(!bargeTargets.Contains(col.gameObject))
+                {
+                    bargeTargets.Add(col.gameObject);
+                }
+            }
+        }
+
+        bargeTargets.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
+        {
+            return Vector3.Distance(transform.position, a.transform.position)
+            .CompareTo(
+              Vector3.Distance(transform.position, b.transform.position));
+        });
+
+        closest = null;
+        float distance = 100;
+        Vector3 position = transform.position;
+
+        foreach (GameObject go in bargeTargets)
+        {
+            Debug.DrawLine(transform.position, go.transform.position, Color.red);
+
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                Debug.DrawLine(transform.position, go.transform.position, Color.green);
+
+                closest = go;
+                distance = curDistance;
+            }
+        }
+
+        bargeTargets.Clear();
+        Array.Clear(targets, 0, targets.Length);
+
+        return closest;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        Gizmos.DrawWireSphere(transform.position, bargeDist);
     }
 }
