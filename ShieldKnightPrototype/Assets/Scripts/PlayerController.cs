@@ -311,7 +311,11 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        ObjectPoolManager.instance.RecallObject(marker);
+        if(marker != null)
+        {
+            ObjectPoolManager.instance.RecallObject(marker);
+        }
+
         closest = null;
     }
 

@@ -188,7 +188,6 @@ public class ShieldController : MonoBehaviour
         {
             if(other.gameObject.GetComponent<EnemyHealth>())
             {
-                Debug.Log("Hit by Barge");
                 EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
 
                 enemy.TakeDamage(10);
