@@ -163,8 +163,8 @@ public class PlayerController : MonoBehaviour
 
         if (buttonHeld) //Sets Guarding animation.
         {
-            stopped = true;
             anim.SetBool("Guarding", true);
+            stopped = true;
         }
         else
         {
@@ -305,8 +305,8 @@ public class PlayerController : MonoBehaviour
             yield return null;
         }
 
-        closest = null;
         ObjectPoolManager.instance.RecallObject(marker);
+        closest = null;
     }
 
     IEnumerator Slam() //Player movement is frozen then directed down by slamForce.
