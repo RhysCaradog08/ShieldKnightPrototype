@@ -142,28 +142,35 @@ public class TargetingSystem : MonoBehaviour
 
         foreach (GameObject target in visibleTargets) //Measures distance from player to targets and if it falls within an angle of focus then calculates which target is closest.
         {
-            Debug.DrawLine(transform.position, target.transform.position, Color.red);
+                Debug.DrawLine(transform.position, target.transform.position, Color.red);
 
-            //Distance
-            Vector3 directionToTarget = target.transform.position - currentPosition;
-            float dSqrToTarget = directionToTarget.sqrMagnitude;
+                markerCheck = target.GetComponent<MarkerCheck>();
 
-            //Angle
-            float cosAngle = Vector3.Dot((target.transform.position - transform.position).normalized, cam.transform.forward);
-            float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
+                if (markerCheck.canAddMarker == true)
+                {
+                    markerCheck.AddMarker();
+                }
 
-            if (dSqrToTarget < closestDistanceSqr && angle < targetFOV)
-            {
-                Debug.DrawLine(transform.position, target.transform.position, Color.green);
-                closestDistanceSqr = dSqrToTarget;
-                closest = target;
-            }
+                //Distance
+                Vector3 directionToTarget = target.transform.position - currentPosition;
+                float dSqrToTarget = directionToTarget.sqrMagnitude;
+
+                //Angle
+                float cosAngle = Vector3.Dot((target.transform.position - transform.position).normalized, cam.transform.forward);
+                float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
+
+                if (dSqrToTarget < closestDistanceSqr && angle < targetFOV)
+                {
+                    Debug.DrawLine(transform.position, target.transform.position, Color.green);
+                    closestDistanceSqr = dSqrToTarget;
+                    closest = target;
+                }
         }
     }
 
     void GetTargets()
     {
-        hitColliders = Physics.OverlapSphere(transform.position, 50);
+        hitColliders = Physics.OverlapSphere(transform.position, 100);
 
         foreach(Collider col in hitColliders)
         {
@@ -207,34 +214,40 @@ public class TargetingSystem : MonoBehaviour
                     {
                         visibleTargets.Add(targetLocations[i]);
                     }
-                }
 
-                foreach (GameObject target in visibleTargets)
-                {
+                    foreach (GameObject target in visibleTargets)
+                    {
                         markerCheck = target.GetComponent<MarkerCheck>();
 
                         if (markerCheck.canAddMarker == true)
                         {
                             markerCheck.AddMarker();
                         }
+                    }
                 }
             }
-            else if (visibleTargets.Contains(targetLocations[i]) && !isVisible)
+            else if (isVisible && visibleTargets.Contains(targetLocations[i]))
             {
                 if (Vector3.Distance(transform.position, targetLocations[i].transform.position) > range)
                 {
                     foreach (GameObject target in visibleTargets)
                     {
                         markerCheck = target.GetComponent<MarkerCheck>();
-
-                        if (markerCheck.canAddMarker == false)
-                        {
-                            markerCheck.RemoveMarker();
-                        }
+                        markerCheck.RemoveMarker();
                     }
 
                     visibleTargets.Remove(targetLocations[i]);
                 }
+            }
+            else if (visibleTargets.Contains(targetLocations[i]) && !isVisible)
+            {
+                    foreach (GameObject target in visibleTargets)
+                    {
+                        markerCheck = target.GetComponent<MarkerCheck>();
+                        markerCheck.RemoveMarker();
+                    }
+
+                    visibleTargets.Remove(targetLocations[i]);
             }
         }
     }
@@ -267,11 +280,11 @@ public class TargetingSystem : MonoBehaviour
         ObjectPoolManager.instance.RecallObject(lockOnMarker);
     }
 
-    /*void OnDrawGizmosSelected()
+    void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
         //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
         Gizmos.DrawWireSphere(transform.position, range);
-        Gizmos.DrawWireSphere(transform.position, 50);
-    }*/
+        Gizmos.DrawWireSphere(transform.position, 100);
+    }
 }

@@ -428,8 +428,8 @@ GameObject:
   - component: {fileID: 8036554191315456639}
   - component: {fileID: 7497695169061485915}
   - component: {fileID: 7497695169061485913}
-  - component: {fileID: 7497695169061485916}
   - component: {fileID: 2533803295020318120}
+  - component: {fileID: 7497695169061485916}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -491,6 +491,26 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &2533803295020318120
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7263254900563806405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8a6353d32fc7e94497aa5a010aa0df7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLocations: []
+  visibleTargets: []
+  closest: {fileID: 0}
+  range: 20
+  targetFOV: 45
+  lockedOn: 0
+  targetMarker: {fileID: 0}
+  lockOnMarker: {fileID: 0}
 --- !u!114 &7497695169061485916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,31 +541,14 @@ MonoBehaviour:
   isBarging: 0
   bargeTime: 0.25
   bargeSpeed: 50
+  targets: []
+  bargeTargets: []
+  bargeDist: 0
+  closest: {fileID: 0}
   slamming: 0
   slamDelay: 0.1
   slamForce: -25
   waitTime: 0
---- !u!114 &2533803295020318120
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7263254900563806405}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a6353d32fc7e94497aa5a010aa0df7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  taggedTargets: []
-  targetLocations: []
-  visibleTargets: []
-  closest: {fileID: 0}
-  range: 20
-  targetFOV: 45
-  lockedOn: 0
-  targetMarker: {fileID: 0}
-  lockOnMarker: {fileID: 0}
 --- !u!1 &7353806600589281001
 GameObject:
   m_ObjectHideFlags: 0
