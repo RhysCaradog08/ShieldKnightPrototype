@@ -182,12 +182,12 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Fire3")) //Input to perform Barge action.
         {
-            FindClosestTarget();
+            /*FindClosestTarget();
 
             if (closest != null)
             {
                 Debug.Log(closest.name + " is closest");
-            }
+            }*/
 
             if (canBarge && bargeDelay <= 0)
             {
@@ -290,7 +290,7 @@ public class PlayerController : MonoBehaviour
 
             canBarge = false;
 
-            if(closest != null)
+            /*if(closest != null)
             {
                 Vector3 closestDir = (closest.transform.position - transform.position).normalized;
                 Vector3 closestRot = Vector3.RotateTowards(transform.forward, closestDir, 10, 0);
@@ -298,7 +298,7 @@ public class PlayerController : MonoBehaviour
 
                 cc.Move(closestDir * bargeSpeed * Time.deltaTime);
             }
-            else cc.Move(moveDir * bargeSpeed * Time.deltaTime);
+            else*/ cc.Move(moveDir * bargeSpeed * Time.deltaTime);
 
             bargeDelay = 0.5f;
 

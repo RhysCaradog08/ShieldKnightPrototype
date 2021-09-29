@@ -44,13 +44,19 @@ public class TargetingSystem : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1") && !shield.thrown)
         {
-            GetTargets();
+            if(!lockedOn)
+            {
+                GetTargets();
+            }
         }
 
         if (Input.GetButton("Fire1") && !shield.thrown) //Determine which targets fall within range and which is closest.
         {
-            TargetsInView();
-            FindClosestTarget();
+            if(!lockedOn)
+            {
+                TargetsInView();
+                FindClosestTarget();
+            }
         }
 
         if(Input.GetButtonUp("Fire1")) //Clears targetLocations for the next instance.
