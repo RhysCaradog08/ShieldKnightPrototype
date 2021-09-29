@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Shield")]
     [SerializeField] ShieldController shield;
+    TargetingSystem ts;
 
     [Header("Movement")]
     float speed;
@@ -60,7 +61,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float waitTime;
     //public GameObject gpSphere;
 
-    private void Start()
+    private void Awake()
     {
         cc = GetComponent<CharacterController>();
 
@@ -70,6 +71,11 @@ public class PlayerController : MonoBehaviour
 
         shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
 
+        ts = GetComponent<TargetingSystem>();
+    }
+
+    private void Start()
+    {
         speed = moveSpeed;
     }
 
@@ -290,15 +296,15 @@ public class PlayerController : MonoBehaviour
 
             canBarge = false;
 
-            /*if(closest != null)
+            if(ts.lockedOn)
             {
-                Vector3 closestDir = (closest.transform.position - transform.position).normalized;
+                Vector3 closestDir = (ts.closest.transform.position - transform.position).normalized;
                 Vector3 closestRot = Vector3.RotateTowards(transform.forward, closestDir, 10, 0);
                 transform.rotation = Quaternion.LookRotation(closestRot);
 
                 cc.Move(closestDir * bargeSpeed * Time.deltaTime);
             }
-            else*/ cc.Move(moveDir * bargeSpeed * Time.deltaTime);
+            else cc.Move(moveDir * bargeSpeed * Time.deltaTime);
 
             bargeDelay = 0.5f;
 
