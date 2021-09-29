@@ -272,7 +272,7 @@ public class TargetingSystem : MonoBehaviour
     {
         Vector3 markerPos = closest.transform.position;
 
-        lockOnMarker = ObjectPoolManager.instance.CallObject("LockOnMarker", closest.transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z), Quaternion.Euler(180, 0, 0));
+        lockOnMarker = ObjectPoolManager.instance.CallObject("LockOnMarker", closest.transform, new Vector3(markerPos.x, markerPos.y + (closest.transform.localScale.y + 1), markerPos.z), Quaternion.Euler(180, 0, 0));
     }
 
     void RemoveLockOnMarker()

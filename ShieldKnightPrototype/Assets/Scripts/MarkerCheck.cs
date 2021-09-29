@@ -13,7 +13,7 @@ public class MarkerCheck : MonoBehaviour
     {
         Vector3 markerPos = transform.position;
 
-        marker = ObjectPoolManager.instance.CallObject("TargetMarker", transform, new Vector3(markerPos.x, markerPos.y + 2, markerPos.z - 0.65f), Quaternion.identity);
+        marker = ObjectPoolManager.instance.CallObject("TargetMarker", transform, new Vector3(markerPos.x, markerPos.y + (transform.localScale.y + 1), markerPos.z - 0.65f), Quaternion.identity);
 
         canAddMarker = false;
     }
