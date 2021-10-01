@@ -13,6 +13,7 @@ public class PlayerController : MonoBehaviour
     [Header("Shield")]
     [SerializeField] ShieldController shield;
     TargetingSystem ts;
+    public bool hasShield;
 
     [Header("Movement")]
     float speed;
@@ -60,6 +61,14 @@ public class PlayerController : MonoBehaviour
     public float slamForce;
     [SerializeField] float waitTime;
     //public GameObject gpSphere;
+
+    [Header("Dodging")]
+    public bool canDodge;
+    bool isDodging;
+    public float dodgeTime;
+    public float dodgeSpeed;
+    float dodgeDelay;
+
 
     private void Awake()
     {
@@ -154,9 +163,15 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
-        //cc.Move(velocity * Time.deltaTime);
 
         bargeDelay -= Time.deltaTime;
+        dodgeDelay -= Time.deltaTime;
+
+        if (shield.transform.root == this.transform)
+        {
+            hasShield = true;
+        }
+        else hasShield = false;
 
         if (Input.GetButtonUp("Fire1") && !shield.thrown)  //Sets Throw/Catch animation.
         {
@@ -186,18 +201,21 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(velocity * Time.deltaTime);
 
-        if (Input.GetButtonDown("Fire3")) //Input to perform Barge action.
+        if (Input.GetButtonDown("Fire3")) //Input to perform Barge/Dodge action.
         {
-            /*FindClosestTarget();
-
-            if (closest != null)
+            if (hasShield)
             {
-                Debug.Log(closest.name + " is closest");
-            }*/
-
-            if (canBarge && bargeDelay <= 0)
+                if (canBarge && bargeDelay <= 0)
+                {
+                    StartCoroutine(Barge());
+                }
+            }
+            else if(!hasShield)
             {
-                StartCoroutine(Barge());
+                if(canDodge && dodgeDelay <= 0)
+                {
+                    StartCoroutine(Dodge());
+                }
             }
         }
 
@@ -212,9 +230,21 @@ public class PlayerController : MonoBehaviour
             shield.isBarging = false;
         }
 
+        if(isDodging)
+        {
+            anim.SetTrigger("Dodge");
+        }
+        else
+        {
+            anim.ResetTrigger("Dodge");
+        }
+
         speed = moveSpeed;
         canBarge = true;
         isBarging = false;
+
+        canDodge = true;
+        isDodging = false;
 
         if (slamming)
         {
@@ -374,6 +404,28 @@ public class PlayerController : MonoBehaviour
         Array.Clear(targets, 0, targets.Length);
 
         return closest;
+    }
+
+    IEnumerator Dodge()
+    {
+        float startTime = Time.time;
+
+        new WaitForSeconds(1); //Prevents player from stacking Dodges.
+
+        while (Time.time < startTime + bargeTime)  //Player movement speed is disabled then moved by dodgeSpeed over dodgeTime;
+        {
+            isDodging = true;
+            //trailEffect.SetActive(true);
+            speed = 0;
+
+            canDodge = false;
+            
+            cc.Move(moveDir * dodgeSpeed * Time.deltaTime);
+
+            dodgeDelay = 0.5f;
+
+            yield return null;
+        }
     }
 
     void OnDrawGizmosSelected()
