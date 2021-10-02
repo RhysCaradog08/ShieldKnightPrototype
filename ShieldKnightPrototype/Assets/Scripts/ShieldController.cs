@@ -15,6 +15,7 @@ public class ShieldController : MonoBehaviour
     public GameObject target;
     public GameObject model;
     public float rotateSpeed;
+    TrailRenderer trail;
     public bool thrown = false;
     public bool hasTarget;
     public bool canThrow;
@@ -28,7 +29,11 @@ public class ShieldController : MonoBehaviour
     public bool isBarging;
 
     [Header("Slam")]
+    [SerializeField] float slamForce;
+    [SerializeField] float slamRadius;
+    [SerializeField] float slamLift;
     public bool isSlamming;
+    [SerializeField]float damageDelay = 0.5f;
 
     [Header("UI")]
     private GameObject targetMarker;
@@ -41,6 +46,7 @@ public class ShieldController : MonoBehaviour
         shieldHoldPos = transform.parent.transform;
 
         ts = transform.root.GetComponent<TargetingSystem>();
+        trail = GetComponent<TrailRenderer>();
 
         meshCol = GetComponentInChildren<MeshCollider>();
     }
@@ -53,16 +59,16 @@ public class ShieldController : MonoBehaviour
             {
                 if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
                 {
-                    StartCoroutine(TargetedThrow()); 
+                    StartCoroutine(TargetedThrow());
                 }
                 else StartCoroutine(LockOnThrow());
             }
             else NonTargetThrow();
         }
 
-        if(Input.GetButtonDown("Fire1") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
+        if (Input.GetButtonDown("Fire1") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
         {
-            if(!hasTarget)
+            if (!hasTarget)
             {
                 StartCoroutine(RecallShield());
             }
@@ -70,8 +76,33 @@ public class ShieldController : MonoBehaviour
 
         if (thrown)  //Stops Player repeatedly throwing the shield.
         {
+            trail.enabled = true;
             canThrow = false;
         }
+        else trail.enabled = false;
+
+        if (isSlamming)
+        {
+            Ray ray;
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, -transform.up * 10, out hit))
+            {
+                //Debug.DrawLine(transform.position, transform.right, Color.red);
+                float distToGround = hit.distance;
+
+                if (distToGround < 1)
+                {
+                    Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
+                    Debug.Log("Slamming Ground");
+
+                    damageDelay -= Time.deltaTime;
+
+                    Slam();
+                }
+            }
+        }
+        else damageDelay = 0.5f;
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
@@ -174,6 +205,31 @@ public class ShieldController : MonoBehaviour
         StartCoroutine(RecallShield());
     }
 
+    void Slam()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
+
+        foreach (Collider col in colliders)
+        {
+            Rigidbody slamRB = col.GetComponent<Rigidbody>();
+
+            if (slamRB != null)
+            {
+                slamRB.AddExplosionForce(slamForce, transform.position, slamRadius, slamLift, ForceMode.Impulse);
+            }
+
+            EnemyHealth enemy = col.GetComponent<EnemyHealth>();
+
+            if(enemy != null)
+            {
+                if (damageDelay <= 0)
+                {
+                    enemy.TakeDamage(10);
+                }
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (thrown)
@@ -184,15 +240,35 @@ public class ShieldController : MonoBehaviour
             }
         }
 
-        if(isBarging)
+        if (isBarging)
         {
-            if(other.gameObject.GetComponent<EnemyHealth>())
+            if (other.gameObject.GetComponent<EnemyHealth>())
             {
                 EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
 
                 enemy.TakeDamage(10);
             }
         }
+
+        if (isSlamming)
+        {
+            if (other.gameObject.GetComponent<EnemyHealth>())
+            {
+                Debug.Log("Squash Object");
+                other.gameObject.transform.localScale = new Vector3 (other.gameObject.transform.localScale.x, 0.1f, other.gameObject.transform.localScale.z);
+
+                /*EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);*/
+            }
+        }
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        Gizmos.DrawWireSphere(transform.position, slamRadius);
     }
 }
 

@@ -251,13 +251,13 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(Slam());
 
             anim.SetBool("Slamming", true);
-
+            shield.isSlamming = true;
             //gpSphere.SetActive(true);
         }
         else
         {
             anim.SetBool("Slamming", false);
-
+            shield.isSlamming = false;
            // gpSphere.SetActive(false);
         } 
         if (cc.isGrounded && slamming)
