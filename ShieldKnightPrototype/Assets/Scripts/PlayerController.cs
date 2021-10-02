@@ -146,20 +146,23 @@ public class PlayerController : MonoBehaviour
 
         move = new Vector3(horizontal, 0, vertical).normalized;
 
-        if (move.magnitude >= Mathf.Epsilon) //Orients the player to have forward orientation relevant to camera rotation.
+        if (!stopped)
         {
-            float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
-            float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
-            transform.rotation = Quaternion.Euler(0f, angle, 0f);
+            if (move.magnitude >= Mathf.Epsilon) //Orients the player to have forward orientation relevant to camera rotation.
+            {
+                float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
+                float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
+                transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
-            moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            cc.Move(moveDir.normalized * speed * Time.deltaTime);
+                moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+                cc.Move(moveDir.normalized * speed * Time.deltaTime);
 
-            anim.SetBool("Moving", true);
-        }
-        else
-        {
-            anim.SetBool("Moving", false);
+                anim.SetBool("Moving", true);
+            }
+            else
+            {
+                anim.SetBool("Moving", false);
+            }
         }
 
         velocity.y += gravity * Time.deltaTime;
@@ -196,8 +199,13 @@ public class PlayerController : MonoBehaviour
         if (stopped)  //Disables Character Controller to keep player in place. 
         {
             cc.enabled = false;
+            speed = 0;
         }
-        else cc.enabled = true;
+        else
+        {
+            cc.enabled = true;
+            speed = moveSpeed;
+        }
 
         cc.Move(velocity * Time.deltaTime);
 
@@ -248,6 +256,8 @@ public class PlayerController : MonoBehaviour
 
         if (slamming)
         {
+            stopped = true;
+
             StartCoroutine(Slam());
 
             anim.SetBool("Slamming", true);
@@ -258,6 +268,8 @@ public class PlayerController : MonoBehaviour
         {
             anim.SetBool("Slamming", false);
             shield.isSlamming = false;
+
+            stopped = false;
            // gpSphere.SetActive(false);
         } 
         if (cc.isGrounded && slamming)
@@ -351,12 +363,12 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Slam() //Player movement is frozen then directed down by slamForce.
     {
-        stopped = true;
+        //stopped = true;
 
         yield return new WaitForSeconds(slamDelay);
         velocity.y = slamForce;
 
-        stopped = false;
+        //stopped = false;
     }
 
     public GameObject FindClosestTarget()

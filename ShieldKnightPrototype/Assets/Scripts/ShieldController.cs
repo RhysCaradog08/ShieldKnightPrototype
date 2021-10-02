@@ -255,11 +255,13 @@ public class ShieldController : MonoBehaviour
             if (other.gameObject.GetComponent<EnemyHealth>())
             {
                 Debug.Log("Squash Object");
-                other.gameObject.transform.localScale = new Vector3 (other.gameObject.transform.localScale.x, 0.1f, other.gameObject.transform.localScale.z);
 
-                /*EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
+                EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
 
-                enemy.TakeDamage(10);*/
+                if (!enemy.squashed)
+                {
+                    enemy.Squash();
+                }
             }
         }
     }
