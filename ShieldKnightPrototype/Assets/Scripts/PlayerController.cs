@@ -440,10 +440,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnDrawGizmosSelected()
+    /*void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
         //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
         Gizmos.DrawWireSphere(transform.position, bargeDist);
-    }
+    }*/
 }

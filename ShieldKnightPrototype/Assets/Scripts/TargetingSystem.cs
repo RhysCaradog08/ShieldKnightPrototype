@@ -21,7 +21,6 @@ public class TargetingSystem : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private float targetFOV;
 
-    bool inRange;
     bool canLockOn;
     public bool lockedOn;
 
@@ -44,7 +43,7 @@ public class TargetingSystem : MonoBehaviour
 
         if (Input.GetButtonDown("Fire1") && !shield.thrown)
         {
-            if(!lockedOn)
+            if (!lockedOn)
             {
                 GetTargets();
             }
@@ -52,14 +51,14 @@ public class TargetingSystem : MonoBehaviour
 
         if (Input.GetButton("Fire1") && !shield.thrown) //Determine which targets fall within range and which is closest.
         {
-            if(!lockedOn)
+            if (!lockedOn)
             {
                 TargetsInView();
                 FindClosestTarget();
             }
         }
 
-        if(Input.GetButtonUp("Fire1")) //Clears targetLocations for the next instance.
+        if (Input.GetButtonUp("Fire1")) //Clears targetLocations for the next instance.
         {
             targetLocations.Clear();
         }
@@ -115,7 +114,7 @@ public class TargetingSystem : MonoBehaviour
 
         if (visibleTargets.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
-            shield.target = closest;            
+            shield.target = closest;
         }
         else closest = null;
 
@@ -142,29 +141,24 @@ public class TargetingSystem : MonoBehaviour
 
         foreach (GameObject target in visibleTargets) //Measures distance from player to targets and if it falls within an angle of focus then calculates which target is closest.
         {
-                Debug.DrawLine(transform.position, target.transform.position, Color.red);
+            Debug.DrawLine(transform.position, target.transform.position, Color.red);
 
-                markerCheck = target.GetComponent<MarkerCheck>();
+            markerCheck = target.GetComponent<MarkerCheck>();
 
-                if (markerCheck.canAddMarker == true)
-                {
-                    markerCheck.AddMarker();
-                }
+            if (markerCheck.canAddMarker == true)
+            {
+                markerCheck.AddMarker();
+            }
 
-                //Distance
-                Vector3 directionToTarget = target.transform.position - currentPosition;
-                float dSqrToTarget = directionToTarget.sqrMagnitude;
+            //Distance
+            Vector3 directionToTarget = target.transform.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
 
-                //Angle
-                float cosAngle = Vector3.Dot((target.transform.position - transform.position).normalized, cam.transform.forward);
-                float angle = Mathf.Acos(cosAngle) * Mathf.Rad2Deg;
-
-                if (dSqrToTarget < closestDistanceSqr && angle < targetFOV)
-                {
-                    Debug.DrawLine(transform.position, target.transform.position, Color.green);
-                    closestDistanceSqr = dSqrToTarget;
-                    closest = target;
-                }
+            if (dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                closest = target;
+            }
         }
     }
 
@@ -172,9 +166,9 @@ public class TargetingSystem : MonoBehaviour
     {
         hitColliders = Physics.OverlapSphere(transform.position, 100);
 
-        foreach(Collider col in hitColliders)
+        foreach (Collider col in hitColliders)
         {
-            if(col.tag == "Target")
+            if (col.tag == "Target")
             {
                 if (!targetLocations.Contains(col.gameObject))
                 {
@@ -200,30 +194,24 @@ public class TargetingSystem : MonoBehaviour
 
             bool isVisible = (targetPos.z > playerPos.z && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
 
-            if (Vector3.Distance(transform.position, targetLocations[i].transform.position) < range)
-            {
-                inRange = true;
-            }
-            else inRange = false;
-
             if (isVisible && !visibleTargets.Contains(targetLocations[i]))
             {
                 if (Vector3.Distance(transform.position, targetLocations[i].transform.position) < range)
                 {
-                    if (visibleTargets.Count < 3)
-                    {
-                        visibleTargets.Add(targetLocations[i]);
-                    }
-
-                    foreach (GameObject target in visibleTargets)
-                    {
-                        markerCheck = target.GetComponent<MarkerCheck>();
-
-                        if (markerCheck.canAddMarker == true)
+                        if (visibleTargets.Count < 3)
                         {
-                            markerCheck.AddMarker();
+                            visibleTargets.Add(targetLocations[i]);
                         }
-                    }
+
+                        foreach (GameObject target in visibleTargets)
+                        {
+                            markerCheck = target.GetComponent<MarkerCheck>();
+
+                            if (markerCheck.canAddMarker == true)
+                            {
+                                markerCheck.AddMarker();
+                            }
+                        }
                 }
             }
             else if (isVisible && visibleTargets.Contains(targetLocations[i]))
@@ -241,13 +229,13 @@ public class TargetingSystem : MonoBehaviour
             }
             else if (visibleTargets.Contains(targetLocations[i]) && !isVisible)
             {
-                    foreach (GameObject target in visibleTargets)
-                    {
-                        markerCheck = target.GetComponent<MarkerCheck>();
-                        markerCheck.RemoveMarker();
-                    }
+                foreach (GameObject target in visibleTargets)
+                {
+                    markerCheck = target.GetComponent<MarkerCheck>();
+                    markerCheck.RemoveMarker();
+                }
 
-                    visibleTargets.Remove(targetLocations[i]);
+                visibleTargets.Remove(targetLocations[i]);
             }
         }
     }
