@@ -16,10 +16,10 @@ public class ShieldController : MonoBehaviour
     public GameObject model;
     public float rotateSpeed;
     TrailRenderer trail;
+    GameObject hitStars;
     public bool thrown = false;
     public bool hasTarget;
     public bool canThrow;
-    GameObject hitStars;
 
 
     [Header("Recall")]
@@ -33,8 +33,10 @@ public class ShieldController : MonoBehaviour
     [SerializeField] float slamForce;
     [SerializeField] float slamRadius;
     [SerializeField] float slamLift;
-    public bool isSlamming;
     [SerializeField]float damageDelay = 0.5f;
+    GameObject slamStars;
+    public bool isSlamming;
+    bool showSlamVFX = false;
 
     [Header("UI")]
     private GameObject targetMarker;
@@ -84,7 +86,6 @@ public class ShieldController : MonoBehaviour
 
         if (isSlamming)
         {
-            Ray ray;
             RaycastHit hit;
 
             if (Physics.Raycast(transform.position, -transform.up * 10, out hit))
@@ -100,10 +101,20 @@ public class ShieldController : MonoBehaviour
                     damageDelay -= Time.deltaTime;
 
                     Slam();
+
+                    if (!showSlamVFX)
+                    {
+                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, transform.position, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                        showSlamVFX = true;
+                    }
                 }
             }
         }
-        else damageDelay = 0.5f;
+        else
+        {
+            damageDelay = 0.5f;
+            showSlamVFX = false;
+        }
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.

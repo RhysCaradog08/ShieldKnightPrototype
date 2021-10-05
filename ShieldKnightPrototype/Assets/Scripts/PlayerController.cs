@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     Vector3 moveDir;
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
-    [SerializeField] bool stopped;
+    [SerializeField] bool stopped = false;
 
     [Header("Jumping")]
     public float jumpSpeed = 5;
@@ -44,7 +44,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Barging")]
     public bool canBarge;
-    [SerializeField] bool isBarging;
+    [SerializeField] bool isBarging = false;
     public float bargeTime;
     public float bargeSpeed;
     float bargeDelay;
@@ -56,7 +56,7 @@ public class PlayerController : MonoBehaviour
 
 
     [Header("Slam")]
-    public bool slamming;
+    public bool slamming = false;
     public float slamDelay;
     public float slamForce;
     [SerializeField] float waitTime;
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Dodging")]
     public bool canDodge;
-    bool isDodging;
+    bool isDodging = false;
     public float dodgeTime;
     public float dodgeSpeed;
     float dodgeDelay;
@@ -90,6 +90,8 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        Debug.Log("Is  Grounded " + cc.isGrounded);
+
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
         {
             canPressSpace = true;
@@ -97,7 +99,6 @@ public class PlayerController : MonoBehaviour
 
         if (cc.isGrounded)
         {
-            velocity.y = 0f;  //Reverts Players Y position to zero if grounded.
 
             if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
@@ -140,6 +141,7 @@ public class PlayerController : MonoBehaviour
             waitTime = 0.5f;
             slamming = true;
         }
+
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
