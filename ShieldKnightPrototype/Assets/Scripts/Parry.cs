@@ -12,6 +12,8 @@ public class Parry : MonoBehaviour
         {
             Debug.Log("Parry!!!");
 
+            other.gameObject.AddComponent<ParriedObject>();
+
             Rigidbody projRb = other.GetComponent<Rigidbody>();
 
             projRb.AddForce(transform.forward * parryForce, ForceMode.Impulse);
