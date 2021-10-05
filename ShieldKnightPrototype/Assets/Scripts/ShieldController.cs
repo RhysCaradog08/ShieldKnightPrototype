@@ -19,6 +19,7 @@ public class ShieldController : MonoBehaviour
     public bool thrown = false;
     public bool hasTarget;
     public bool canThrow;
+    GameObject hitStars;
 
 
     [Header("Recall")]
@@ -132,9 +133,15 @@ public class ShieldController : MonoBehaviour
                 yield return null;
             }
 
-            MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
-            if (markerCheck != null)
+            if (Vector3.Distance(transform.position, nextTargetPos) < 0.1f)
             {
+                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTargetPos, Quaternion.identity, 1);
+            }
+            
+            if (nextTarget.GetComponent<MarkerCheck>() != null)
+            {
+                MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
+
                 markerCheck.RemoveMarker();
             }
 
@@ -265,6 +272,8 @@ public class ShieldController : MonoBehaviour
             }
         }
     }
+
+  
 
     /*private void OnDrawGizmosSelected()
     {

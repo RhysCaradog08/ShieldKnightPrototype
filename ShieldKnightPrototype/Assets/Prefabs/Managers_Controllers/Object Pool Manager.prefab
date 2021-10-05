@@ -65,4 +65,11 @@ MonoBehaviour:
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}
+  - objectToPool: {fileID: 8557921807325624489, guid: 5714212a0ae4a5e409364ef54b452d4a,
+      type: 3}
+    stringID: HitStars
+    startCount: 10
+    activePool: []
+    inactivePool: []
+    parentTransform: {fileID: 0}
   setUpPoolsOnAwake: 1

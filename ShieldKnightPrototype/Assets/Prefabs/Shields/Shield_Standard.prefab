@@ -28,7 +28,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3269704654489049286}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.33, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 0.2, z: 3}
   m_Children:
   - {fileID: 4096215735944235611}
@@ -85,6 +85,8 @@ MonoBehaviour:
   thrown: 0
   hasTarget: 0
   canThrow: 0
+  hitStars: {fileID: 8291907526407948301, guid: 5714212a0ae4a5e409364ef54b452d4a,
+    type: 3}
   meshCol: {fileID: 0}
   isBarging: 0
   slamForce: 0
