@@ -213,6 +213,11 @@ public class ShieldController : MonoBehaviour
             yield return null;
         }
 
+        if (Vector3.Distance(transform.position, target.transform.position) < 0.1f)
+        {
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, target.transform.position, Quaternion.identity, 1);
+        }
+
         if (target.GetComponent<EnemyHealth>() != null)
         {
             EnemyHealth enemy = target.GetComponent<EnemyHealth>();
@@ -260,6 +265,8 @@ public class ShieldController : MonoBehaviour
 
         if (isBarging)
         {
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, other.transform.position, Quaternion.identity, 1);
+
             if (other.gameObject.GetComponent<EnemyHealth>())
             {
                 EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
