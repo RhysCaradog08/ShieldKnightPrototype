@@ -72,6 +72,13 @@ MonoBehaviour:
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}
+  - objectToPool: {fileID: 6776734871921729845, guid: adb628913eed66e48adcd0b3f0b9cbfe,
+      type: 3}
+    stringID: Cloud
+    startCount: 1
+    activePool: []
+    inactivePool: []
+    parentTransform: {fileID: 0}
   - objectToPool: {fileID: 8011315954350407281, guid: 41db374e2d8061940be5389afeb98801,
       type: 3}
     stringID: SlamStars

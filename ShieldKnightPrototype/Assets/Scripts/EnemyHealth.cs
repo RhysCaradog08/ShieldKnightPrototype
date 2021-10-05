@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class EnemyHealth : MonoBehaviour
 {
     TargetingSystem ts;
+
+    GameObject cloud;
 
     public float health;
 
@@ -54,6 +57,9 @@ public class EnemyHealth : MonoBehaviour
             ts.lockedOn = false;
             ts.visibleTargets.Clear();
         }
+
+        cloud = ObjectPoolManager.instance.CallObject("Cloud", null, transform.position, Quaternion.identity, 1);
+
         Destroy(this.gameObject);
     }
 }
