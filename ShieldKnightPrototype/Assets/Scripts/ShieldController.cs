@@ -9,6 +9,7 @@ public class ShieldController : MonoBehaviour
 
     Rigidbody shieldRB;
     Transform shieldHoldPos;
+    PlayerController player;
 
     [Header("Throw")]
     public float throwForce;
@@ -23,6 +24,7 @@ public class ShieldController : MonoBehaviour
 
 
     [Header("Recall")]
+    public Transform curvePoint;
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
@@ -45,8 +47,9 @@ public class ShieldController : MonoBehaviour
     void Awake()
     {
         shieldRB = GetComponent<Rigidbody>();
-
         shieldHoldPos = transform.parent.transform;
+
+        player = FindObjectOfType<PlayerController>();
 
         ts = transform.root.GetComponent<TargetingSystem>();
         trail = GetComponent<TrailRenderer>();
@@ -168,20 +171,15 @@ public class ShieldController : MonoBehaviour
     {
         shieldRB.isKinematic = false;
 
-        Vector3 startPos = transform.position; //Get position of both Shield's current location the Shield Holder.
-        Vector3 endPos = shieldHoldPos.position;
-
-        Vector3 startRot = transform.eulerAngles; // Get rotation of Shield and Shield Holder.
-        Vector3 endRot = shieldHoldPos.eulerAngles;
-
         float t = 0f;
         while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
         {
             t += Time.deltaTime;
+            //transform.position = BezierQuadraticCurve(t/lerpTime, transform.position, curvePoint.position, shieldHoldPos.position);
             transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, t / lerpTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t / lerpTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t/lerpTime); // lerpTime);
 
-            meshCol.enabled = false;
+            meshCol.enabled = false; //Prevents from unecessary collisions upon return.
 
             yield return null;
         }
@@ -249,6 +247,16 @@ public class ShieldController : MonoBehaviour
         }
     }
 
+    Vector3 BezierQuadraticCurve(float t, Vector3 p0, Vector3 p1, Vector3 p2)
+    {
+        float u = 1 - t;
+        float tt = t * t;
+        float uu = u * u;
+        Vector3 p = uu * p0 + (2 * u * t * p1) + (tt * p2);
+
+        return p;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (thrown)
@@ -262,6 +270,15 @@ public class ShieldController : MonoBehaviour
         if (isBarging)
         {
             hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, other.transform.position, Quaternion.identity, 1);
+
+            Vector3 knockbackDir = other.transform.position - player.transform.position;
+            knockbackDir = knockbackDir.normalized;
+
+            if(other.gameObject.layer == 7)
+            {
+                Debug.Log("Knockback");
+                player.GetComponent<PlayerController>().Knockback(knockbackDir);
+            }
 
             if (other.gameObject.GetComponent<EnemyHealth>())
             {

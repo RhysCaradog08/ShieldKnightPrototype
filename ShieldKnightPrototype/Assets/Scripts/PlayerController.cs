@@ -54,6 +54,10 @@ public class PlayerController : MonoBehaviour
     public GameObject closest = null;
     GameObject marker;
 
+    [Header("Knockback")]
+    [SerializeField] float knockbackForce;
+    [SerializeField] float knockbackTime;
+    [SerializeField] float knockbackCounter;
 
     [Header("Slam")]
     public bool slamming = false;
@@ -97,9 +101,8 @@ public class PlayerController : MonoBehaviour
             canPressSpace = true;
         }
 
-        if (cc.isGrounded)
+        if (cc.isGrounded && knockbackCounter <= 0)
         {
-
             if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
@@ -148,7 +151,7 @@ public class PlayerController : MonoBehaviour
 
         move = new Vector3(horizontal, 0, vertical).normalized;
 
-        if (!stopped)
+        if (!stopped && knockbackCounter <= 0)
         {
             if (move.magnitude >= Mathf.Epsilon) //Orients the player to have forward orientation relevant to camera rotation.
             {
@@ -165,6 +168,11 @@ public class PlayerController : MonoBehaviour
             {
                 anim.SetBool("Moving", false);
             }
+        }
+
+        if (knockbackCounter > 0)
+        {
+            knockbackCounter -= Time.deltaTime;
         }
 
         velocity.y += gravity * Time.deltaTime;
@@ -440,6 +448,20 @@ public class PlayerController : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public void Knockback(Vector3 direction)
+    {
+        if(isBarging)
+        {
+            StopCoroutine(Barge());
+            speed = 0;
+        }
+
+        knockbackCounter = knockbackTime;
+
+        moveDir = direction * knockbackForce;
+        moveDir.y = knockbackForce;
     }
 
     /*void OnDrawGizmosSelected()

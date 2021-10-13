@@ -451,6 +451,7 @@ Transform:
   - {fileID: 8403847074626517569}
   - {fileID: 954389280887709631}
   - {fileID: 4596031683782545689}
+  - {fileID: 4872557269761670420}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -524,6 +525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: {fileID: 0}
+  hasShield: 0
   moveSpeed: 10
   pivot: {fileID: 954389280887709631}
   model: {fileID: 7353806600589281001}
@@ -549,6 +551,9 @@ MonoBehaviour:
   slamDelay: 0.1
   slamForce: -25
   waitTime: 0
+  canDodge: 0
+  dodgeTime: 0
+  dodgeSpeed: 0
 --- !u!1 &7353806600589281001
 GameObject:
   m_ObjectHideFlags: 0
@@ -698,6 +703,36 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!1 &7836781574748268813
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4872557269761670420}
+  m_Layer: 0
+  m_Name: Curve Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4872557269761670420
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7836781574748268813}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 32.42, y: 0, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8036554191315456639}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8887744250925180310
 GameObject:
   m_ObjectHideFlags: 0
