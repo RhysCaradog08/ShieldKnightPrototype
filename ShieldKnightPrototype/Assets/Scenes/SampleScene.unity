@@ -142,7 +142,7 @@ GameObject:
   - component: {fileID: 50531685}
   - component: {fileID: 50531684}
   - component: {fileID: 50531683}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (1)
   m_TagString: Sticky
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 58909495}
   - component: {fileID: 58909494}
   - component: {fileID: 58909498}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder (3)
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &86649620
 GameObject:
@@ -516,6 +516,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -540,7 +545,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &125646834
 BoxCollider:
@@ -636,7 +641,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &144489862
 BoxCollider:
@@ -802,6 +807,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
+      propertyPath: lerpTime
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
       propertyPath: slamLift
       value: 2
       objectReference: {fileID: 0}
@@ -810,6 +820,11 @@ PrefabInstance:
       propertyPath: slamForce
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: curvePoint
+      value: 
+      objectReference: {fileID: 669233566}
     - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: isSlamming
@@ -824,6 +839,16 @@ PrefabInstance:
         type: 3}
       propertyPath: damageDelay
       value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872557269761670420, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4872557269761670420, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5017473974773945862, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
@@ -934,6 +959,16 @@ PrefabInstance:
         type: 3}
       propertyPath: dodgeSpeed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: knockbackTime
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: knockbackForce
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8036554191315456639, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
@@ -1081,7 +1116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1001 &223796835
 PrefabInstance:
@@ -1143,6 +1178,11 @@ PrefabInstance:
     - target: {fileID: 16632719372559099, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
@@ -1253,6 +1293,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -1289,7 +1334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &593406690 stripped
 GameObject:
@@ -1315,7 +1360,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &599997627
 GameObject:
@@ -1406,7 +1451,7 @@ GameObject:
   - component: {fileID: 644357159}
   - component: {fileID: 644357158}
   - component: {fileID: 644357162}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder (5)
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -1522,6 +1567,12 @@ MonoBehaviour:
   dirRight: 1
   speed: 10
   limit: 10
+--- !u!4 &669233566 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4872557269761670420, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+    type: 3}
+  m_PrefabInstance: {fileID: 201656873}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &679265357 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
@@ -1546,7 +1597,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &705507993
 GameObject:
@@ -1665,7 +1716,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1001 &719230237
 PrefabInstance:
@@ -1729,11 +1780,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
       value: Crate (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 3028546966952160938, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: a3cad066090966f4ca91b4800e9a0e3a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc066c995e855a3449d5c3ba6f49f4d3, type: 3}
 --- !u!1 &744589275
@@ -1750,7 +1811,7 @@ GameObject:
   - component: {fileID: 744589278}
   - component: {fileID: 744589277}
   - component: {fileID: 744589281}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder (2)
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -1928,6 +1989,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -2083,7 +2149,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &963194225
 GameObject:
@@ -2219,7 +2285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &1162843584 stripped
 GameObject:
@@ -2245,7 +2311,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &1172532847
 GameObject:
@@ -2259,7 +2325,7 @@ GameObject:
   - component: {fileID: 1172532851}
   - component: {fileID: 1172532850}
   - component: {fileID: 1172532849}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (2)
   m_TagString: Sticky
   m_Icon: {fileID: 0}
@@ -2405,6 +2471,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -2473,7 +2544,7 @@ GameObject:
   - component: {fileID: 1223689246}
   - component: {fileID: 1223689245}
   - component: {fileID: 1223689244}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder (1)
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -2654,7 +2725,7 @@ GameObject:
   - component: {fileID: 1243864776}
   - component: {fileID: 1243864775}
   - component: {fileID: 1243864774}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder (6)
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -2931,6 +3002,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -3000,6 +3076,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -3025,7 +3106,7 @@ GameObject:
   - component: {fileID: 1373400419}
   - component: {fileID: 1373400418}
   - component: {fileID: 1373400421}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -3150,7 +3231,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1001 &1516329254
 PrefabInstance:
@@ -3214,6 +3295,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -3245,7 +3331,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1001 &1558244825
 PrefabInstance:
@@ -3309,6 +3395,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -3338,7 +3429,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &1563142320
 BoxCollider:
@@ -3454,7 +3545,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &1679920504
 BoxCollider:
@@ -3545,7 +3636,7 @@ GameObject:
   - component: {fileID: 1741007002}
   - component: {fileID: 1741007001}
   - component: {fileID: 1741007000}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube
   m_TagString: Sticky
   m_Icon: {fileID: 0}
@@ -3646,7 +3737,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &1754644019
 BoxCollider:
@@ -3787,6 +3878,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -3818,7 +3914,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1 &1912392565
 GameObject:
@@ -3882,7 +3978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cab9bde815f6c564dbbdcbd8f56d0da8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  health: 10
+  health: 50
   squashed: 0
 --- !u!1001 &2060770956
 PrefabInstance:
@@ -3944,6 +4040,11 @@ PrefabInstance:
     - target: {fileID: 16632719372559099, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
@@ -4033,7 +4134,7 @@ GameObject:
   - component: {fileID: 2114295315}
   - component: {fileID: 2114295314}
   - component: {fileID: 2114295318}
-  m_Layer: 8
+  m_Layer: 7
   m_Name: Cylinder (4)
   m_TagString: Target
   m_Icon: {fileID: 0}
@@ -4161,7 +4262,7 @@ GameObject:
   - component: {fileID: 2123292970}
   - component: {fileID: 2123292969}
   - component: {fileID: 2123292968}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cube (3)
   m_TagString: Sticky
   m_Icon: {fileID: 0}
@@ -4386,6 +4487,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 865957139751178525, guid: cc066c995e855a3449d5c3ba6f49f4d3,
+        type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
         type: 3}
       propertyPath: m_Name
@@ -4477,8 +4583,48 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4512958605155440520, guid: fd72e6a96884d8043be4918443e59039,
         type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512958605155440520, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4512958605155440520, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669621523471359452, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669621523471359452, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669621524282704281, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669621524282704281, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669621525185659779, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8669621525185659779, guid: fd72e6a96884d8043be4918443e59039,
+        type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fd72e6a96884d8043be4918443e59039, type: 3}
