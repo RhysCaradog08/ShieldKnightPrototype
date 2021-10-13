@@ -96,9 +96,6 @@ public class ShieldController : MonoBehaviour
                 if (distToGround < 1)
                 {
                     Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
-                    Debug.Log("Slamming Ground");
-
-                    damageDelay -= Time.deltaTime;
 
                     Slam();
 
@@ -112,7 +109,6 @@ public class ShieldController : MonoBehaviour
         }
         else
         {
-            damageDelay = 0.5f;
             showSlamVFX = false;
         }
     }
@@ -279,8 +275,6 @@ public class ShieldController : MonoBehaviour
         {
             if (other.gameObject.GetComponent<EnemyHealth>())
             {
-                Debug.Log("Squash Object");
-
                 EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
 
                 if (!enemy.squashed)

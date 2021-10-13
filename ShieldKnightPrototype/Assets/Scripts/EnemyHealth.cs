@@ -9,13 +9,19 @@ public class EnemyHealth : MonoBehaviour
 
     GameObject cloud;
 
+    Rigidbody rb;
+
     public float health;
+
+    Vector3 fullSize;
 
     public bool squashed = false;
 
     private void Start()
     {
         ts = FindObjectOfType<TargetingSystem>();
+        fullSize = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -32,15 +38,19 @@ public class EnemyHealth : MonoBehaviour
     public void TakeDamage(float damage)
     {
         health -= damage;
+
+        Debug.Log(gameObject.name + "Damage Taken: " + damage);
     }
 
     public void Squash()
     {
-        transform.localScale = new Vector3(transform.localScale.x, 0.1f, transform.localScale.z);
-
-        transform.Translate(-Vector3.up * 10 *Time.deltaTime);
-
         squashed = true;
+
+        rb.isKinematic = true;
+
+        transform.localScale = new Vector3(fullSize.x, 0.1f, fullSize.z);
+
+        transform.Translate(Vector3.down * 9.81f *Time.deltaTime);
 
         Invoke("SquashDamage", 0.5f);
     }
@@ -48,6 +58,15 @@ public class EnemyHealth : MonoBehaviour
     void SquashDamage()
     {
         TakeDamage(10);
+        UnSquash();
+    }
+
+    void UnSquash()
+    {
+        transform.localScale = new Vector3(fullSize.x, fullSize.y, fullSize.z);
+        rb.isKinematic = false;
+
+        squashed = false;
     }
 
     void Die()
