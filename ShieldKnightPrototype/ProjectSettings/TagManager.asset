@@ -9,6 +9,7 @@ TagManager:
   - Sticky
   - Projectile
   - Marker
+  - PShield
   layers:
   - Default
   - TransparentFX
