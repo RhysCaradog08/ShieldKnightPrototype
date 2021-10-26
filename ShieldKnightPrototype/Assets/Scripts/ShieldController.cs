@@ -265,6 +265,16 @@ public class ShieldController : MonoBehaviour
             {
                 shieldRB.isKinematic = true;
             }
+
+            if (other.transform.gameObject.GetComponent<Lever>())
+            {
+                Lever lever = other.transform.gameObject.GetComponent<Lever>();
+
+                if (lever.canChange)
+                {
+                    lever.ChangeLever();
+                }
+            }
         }
 
         if (isBarging)

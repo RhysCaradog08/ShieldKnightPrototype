@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 466837230684678389}
   - component: {fileID: 6440224330499420337}
+  - component: {fileID: 373295996284152415}
+  - component: {fileID: 8116277015758165053}
   m_Layer: 0
   m_Name: Lever
   m_TagString: Target
@@ -52,6 +54,37 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!65 &373295996284152415
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933360411168588921}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2, y: 1, z: 2}
+  m_Center: {x: 0, y: -0.5, z: 0}
+--- !u!114 &8116277015758165053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1933360411168588921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca4a9838ab4cbbc4b863129479822aa0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obj: {fileID: 0}
+  onDest: {x: 0, y: 0, z: 0}
+  offDest: {x: 0, y: 0, z: 0}
+  speed: 0
+  isOn: 0
+  canChange: 1
 --- !u!1 &4176920140141778952
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,7 +224,6 @@ GameObject:
   - component: {fileID: 6023241178650972235}
   - component: {fileID: 4276358369458442843}
   - component: {fileID: 4785855292693740358}
-  - component: {fileID: 5017674063422098716}
   m_Layer: 0
   m_Name: Base
   m_TagString: Untagged
@@ -263,17 +295,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5017674063422098716
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8600090246316720669}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
