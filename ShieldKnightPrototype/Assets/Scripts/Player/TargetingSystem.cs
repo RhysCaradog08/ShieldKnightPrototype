@@ -41,7 +41,7 @@ public class TargetingSystem : MonoBehaviour
             transform.LookAt(new Vector3(closest.transform.position.x, transform.position.y, closest.transform.position.z));
         }
 
-        if (Input.GetButtonDown("Fire1") && !shield.thrown)
+        if (Input.GetButtonDown("Throw") && !shield.thrown)
         {
             if (!lockedOn)
             {
@@ -49,7 +49,7 @@ public class TargetingSystem : MonoBehaviour
             }
         }
 
-        if (Input.GetButton("Fire1") && !shield.thrown) //Determine which targets fall within range and which is closest.
+        if (Input.GetButton("Throw") && !shield.thrown) //Determine which targets fall within range and which is closest.
         {
             if (!lockedOn)
             {
@@ -58,7 +58,7 @@ public class TargetingSystem : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonUp("Fire1")) //Clears targetLocations for the next instance.
+        if (Input.GetButtonUp("Throw")) //Clears targetLocations for the next instance.
         {
             targetLocations.Clear();
         }

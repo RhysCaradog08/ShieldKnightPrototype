@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
         }
 
-        if (!cc.isGrounded && Input.GetButtonDown("Fire2"))  //Input to perform Slam action.
+        if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
         {
             waitTime = 0.5f;
             slamming = true;
@@ -186,11 +186,11 @@ public class PlayerController : MonoBehaviour
         }
         else hasShield = false;
 
-        if (Input.GetButtonUp("Fire1") && !shield.thrown)  //Sets Throw/Catch animation.
+        if (Input.GetButtonUp("Throw") && !shield.thrown)  //Sets Throw/Catch animation.
         {
             anim.SetTrigger("Throw");
         }
-        else if (Input.GetButtonDown("Fire1") && shield.thrown)
+        else if (Input.GetButtonDown("Throw") && shield.thrown)
         {
             anim.SetTrigger("Catch");
         }
@@ -219,7 +219,7 @@ public class PlayerController : MonoBehaviour
 
         cc.Move(velocity * Time.deltaTime);
 
-        if (Input.GetButtonDown("Fire3")) //Input to perform Barge/Dodge action.
+        if (Input.GetButtonDown("Barge")) //Input to perform Barge/Dodge action.
         {
             if (hasShield)
             {
@@ -289,12 +289,12 @@ public class PlayerController : MonoBehaviour
 
         if (!shield.thrown)
         {
-            if (Input.GetButtonDown("Fire2") &&  cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
+            if (Input.GetButtonDown("Guard") &&  cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
             {
                 buttonHeldTime = Time.timeSinceLevelLoad;
                 buttonHeld = false;
             }
-            else if (Input.GetButtonUp("Fire2") && cc.isGrounded)
+            else if (Input.GetButtonUp("Guard") && cc.isGrounded)
             {
                 if (!buttonHeld)//If button is released without being held.
                 {                  
@@ -303,7 +303,7 @@ public class PlayerController : MonoBehaviour
                 buttonHeld = false;
             }
 
-            if (Input.GetButton("Fire2") && cc.isGrounded)
+            if (Input.GetButton("Guard") && cc.isGrounded)
             {
                 if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
                 {

@@ -47,7 +47,7 @@ MonoBehaviour:
   - objectToPool: {fileID: 6425561609425224638, guid: c07c93d676a2f06488cc83d56b467c26,
       type: 3}
     stringID: TargetMarker
-    startCount: 3
+    startCount: 5
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}
@@ -75,7 +75,7 @@ MonoBehaviour:
   - objectToPool: {fileID: 6776734871921729845, guid: adb628913eed66e48adcd0b3f0b9cbfe,
       type: 3}
     stringID: Cloud
-    startCount: 1
+    startCount: 10
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}
@@ -83,6 +83,13 @@ MonoBehaviour:
       type: 3}
     stringID: SlamStars
     startCount: 1
+    activePool: []
+    inactivePool: []
+    parentTransform: {fileID: 0}
+  - objectToPool: {fileID: 6661881024213805056, guid: 93f33292c0d2e6a42a9cd6dcdaf69080,
+      type: 3}
+    stringID: ShieldProjectile
+    startCount: 3
     activePool: []
     inactivePool: []
     parentTransform: {fileID: 0}

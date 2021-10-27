@@ -72,7 +72,7 @@ public class ShieldController : MonoBehaviour
             else NonTargetThrow();
         }
 
-        if (Input.GetButtonDown("Fire1") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
+        if (Input.GetButtonDown("Throw") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
         {
             if (!hasTarget)
             {
