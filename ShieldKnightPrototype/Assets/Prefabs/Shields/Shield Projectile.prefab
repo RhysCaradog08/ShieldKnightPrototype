@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6661881024213805059}
   - component: {fileID: 6661881024213805058}
   - component: {fileID: 222620367034068021}
-  - component: {fileID: 6523070315105633748}
+  - component: {fileID: 2186355247607548450}
   - component: {fileID: 6217124916759574126}
   m_Layer: 10
   m_Name: Shield Projectile
@@ -99,7 +99,7 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
---- !u!54 &6523070315105633748
+--- !u!54 &2186355247607548450
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

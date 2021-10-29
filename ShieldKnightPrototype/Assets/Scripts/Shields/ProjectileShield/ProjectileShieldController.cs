@@ -8,6 +8,7 @@ public class ProjectileShieldController : MonoBehaviour
     [SerializeField] List<GameObject> projectiles = new List<GameObject>();
 
     public float rotateSpeed;
+    Quaternion currentRotation;
 
     [SerializeField] GameObject shieldProjectile1;
     [SerializeField] GameObject shieldProjectile2;
@@ -25,6 +26,10 @@ public class ProjectileShieldController : MonoBehaviour
 
     private void Update()
     {
+        Debug.DrawLine(transform.position, transform.position + transform.up * 10, Color.green);
+        Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.blue);
+        Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);
+
         shootDelay -= Time.deltaTime;
 
         if (shootDelay <= 0)
@@ -93,7 +98,9 @@ public class ProjectileShieldController : MonoBehaviour
         {
             float radius = 1.5f;
             float angle = i * Mathf.PI * 2f / radius;
+
             Vector3 newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
+
             projectiles[i].transform.position = newPos;
         }
     }
@@ -102,7 +109,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         for (int i = 0; i < projectiles.Count; i++)
         {
-            projectiles[i].transform.RotateAround(this.transform.position, Vector3.up, rotateSpeed);
+            projectiles[i].transform.RotateAround(transform.position, transform.up, rotateSpeed);
         }
     }
 
@@ -111,7 +118,7 @@ public class ProjectileShieldController : MonoBehaviour
         currentProjectile.transform.parent = null;
         projectiles.Remove(currentProjectile);
 
-        Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
+        Rigidbody projRb = currentProjectile.GetComponentInChildren<Rigidbody>();
 
         projRb.isKinematic = false;
         projRb.AddForce(transform.forward * shootForce, ForceMode.Impulse);
