@@ -14,8 +14,6 @@ public class ShieldController : MonoBehaviour
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
-    public GameObject model;
-    public float rotateSpeed;
     TrailRenderer trail;
     GameObject hitStars;
     public bool thrown = false;

@@ -5,8 +5,11 @@ using Basics.ObjectPool;
 
 public class ProjectileShieldController : MonoBehaviour
 {
+    TargetingSystem ts;
+
     [SerializeField] List<GameObject> projectiles = new List<GameObject>();
     Transform player;
+    public GameObject target;
 
     public float rotateSpeed;
     Quaternion currentRotation;
@@ -22,17 +25,20 @@ public class ProjectileShieldController : MonoBehaviour
     [SerializeField] float shootForce;
     [SerializeField] float shootDelay;
 
+    public bool hasTarget;
+
     private void Start()
     {
+        ts = transform.root.GetComponent<TargetingSystem>();
         player = transform.root;
         CallProjectiles();
     }
 
     private void Update()
     {
-        Debug.DrawLine(transform.position, transform.position + transform.up * 10, Color.green);
+        /*Debug.DrawLine(transform.position, transform.position + transform.up * 10, Color.green);
         Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.blue);
-        Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);
+        Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);*/
 
         currentRotation = transform.rotation;
         zRotation = transform.rotation.x;
@@ -49,7 +55,7 @@ public class ProjectileShieldController : MonoBehaviour
         {
             if (projectiles.Count < 1)
             {
-                Debug.Log("Call Projectiles");
+                //Debug.Log("Call Projectiles");
 
                 CallProjectiles();
             }

@@ -389,59 +389,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator Slam() //Player movement is frozen then directed down by slamForce.
     {
-        //stopped = true;
-
         yield return new WaitForSeconds(slamDelay);
         velocity.y = slamForce;
-
-        //stopped = false;
-    }
-
-    public GameObject FindClosestTarget()
-    {
-        targets = Physics.OverlapSphere(transform.position, bargeDist);
-        
-        foreach (Collider col in targets)
-        {
-            if(col.gameObject.tag == "Target")
-            {
-                if(!bargeTargets.Contains(col.gameObject))
-                {
-                    bargeTargets.Add(col.gameObject);
-                }
-            }
-        }
-
-        bargeTargets.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
-        {
-            return Vector3.Distance(transform.position, a.transform.position)
-            .CompareTo(
-              Vector3.Distance(transform.position, b.transform.position));
-        });
-
-        closest = null;
-        float distance = 100;
-        Vector3 position = transform.position;
-
-        foreach (GameObject go in bargeTargets)
-        {
-            Debug.DrawLine(transform.position, go.transform.position, Color.red);
-
-            Vector3 diff = go.transform.position - position;
-            float curDistance = diff.sqrMagnitude;
-            if (curDistance < distance)
-            {
-                Debug.DrawLine(transform.position, go.transform.position, Color.green);
-
-                closest = go;
-                distance = curDistance;
-            }
-        }
-
-        bargeTargets.Clear();
-        Array.Clear(targets, 0, targets.Length);
-
-        return closest;
     }
 
     IEnumerator Dodge()

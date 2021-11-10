@@ -6,8 +6,11 @@ using System;
 
 public class TargetingSystem : MonoBehaviour
 {
+    PlayerController player;
+
     MarkerCheck markerCheck;
     ShieldController shield;
+    ProjectileShieldController projectile;
 
     Camera cam;
 
@@ -21,16 +24,20 @@ public class TargetingSystem : MonoBehaviour
     [SerializeField] private float range;
     [SerializeField] private float targetFOV;
 
-    bool canLockOn;
-    public bool lockedOn;
 
     [Header("UI")]
     public GameObject targetMarker;
     public GameObject lockOnMarker;
 
+    [Header("Booleans")]
+    bool canLockOn;
+    public bool lockedOn;
+
     private void Awake()
     {
+        player = GameObject.FindObjectOfType<PlayerController>();
         shield = GameObject.FindObjectOfType<ShieldController>();
+        projectile = GameObject.FindObjectOfType<ProjectileShieldController>();
         cam = Camera.main;
     }
 
@@ -114,16 +121,36 @@ public class TargetingSystem : MonoBehaviour
 
         if (visibleTargets.Count > 0) //If there are targets in list, shield.target will be the closest.
         {
-            shield.target = closest;
+            if(player.hasShield)
+            {
+                shield.target = closest;
+            }
+
+            if (player.hasProjectile)
+            {
+                projectile.target = closest;
+            }
         }
         else closest = null;
 
 
         if (closest != null)
         {
-            shield.hasTarget = true;
+            if (player.hasShield)
+            {
+                shield.hasTarget = true;
+            }
+
+            if (player.hasProjectile)
+            {
+                projectile.hasTarget = true;
+            }
         }
-        else shield.hasTarget = false;
+        else
+        {
+            shield.hasTarget = false;
+            projectile.hasTarget = false;
+        }
     }
 
     void FindClosestTarget()
