@@ -7,6 +7,11 @@ public class ShieldProjectile : MonoBehaviour
 {
     GameObject shieldP;
     Vector3 scale;
+    Rigidbody rb;
+
+    float interactDelay = 0.5f;
+
+    public bool shot = false;
 
     private void Awake()
     {
@@ -15,6 +20,7 @@ public class ShieldProjectile : MonoBehaviour
 
     private void Start()
     {
+        rb = GetComponent<Rigidbody>();
         shieldP = this.gameObject;
         Physics.IgnoreLayerCollision(10, 10);
     }
@@ -22,14 +28,20 @@ public class ShieldProjectile : MonoBehaviour
     private void Update()
     {
         transform.localScale = scale;
+
+        if(shot)
+        {
+            interactDelay -= Time.deltaTime;
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Rigidbody rb = GetComponent<Rigidbody>();
-        rb.isKinematic = true;
+        if(interactDelay <= 0)
+        {
+            rb.isKinematic = true;
 
-        ObjectPoolManager.instance.RecallObject(shieldP);
-
+            ObjectPoolManager.instance.RecallObject(shieldP);
+        }
     }
 }

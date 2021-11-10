@@ -6,6 +6,7 @@ using Basics.ObjectPool;
 public class ProjectileShieldController : MonoBehaviour
 {
     [SerializeField] List<GameObject> projectiles = new List<GameObject>();
+    Transform player;
 
     public float rotateSpeed;
     Quaternion currentRotation;
@@ -23,6 +24,7 @@ public class ProjectileShieldController : MonoBehaviour
 
     private void Start()
     {
+        player = transform.root;
         CallProjectiles();
     }
 
@@ -133,10 +135,12 @@ public class ProjectileShieldController : MonoBehaviour
         currentProjectile.transform.parent = null;
         projectiles.Remove(currentProjectile);
 
-        Rigidbody projRb = currentProjectile.GetComponentInChildren<Rigidbody>();
+        ShieldProjectile SP = currentProjectile.GetComponent<ShieldProjectile>();
+        Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
 
         projRb.isKinematic = false;
-        projRb.AddForce(transform.forward * shootForce, ForceMode.Impulse);
+        projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
+        SP.shot = true;
 
         if(currentProjectile == shieldProjectile1)
         {
