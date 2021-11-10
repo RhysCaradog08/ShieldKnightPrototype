@@ -9,6 +9,8 @@ public class ProjectileShieldController : MonoBehaviour
 
     public float rotateSpeed;
     Quaternion currentRotation;
+    float zRotation;
+    Vector3 upVector;
 
     [SerializeField] GameObject shieldProjectile1;
     [SerializeField] GameObject shieldProjectile2;
@@ -29,6 +31,10 @@ public class ProjectileShieldController : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + transform.up * 10, Color.green);
         Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.blue);
         Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);
+
+        currentRotation = transform.rotation;
+        zRotation = transform.rotation.x;
+        upVector = transform.up;
 
         shootDelay -= Time.deltaTime;
 
@@ -72,21 +78,21 @@ public class ProjectileShieldController : MonoBehaviour
 
         if (shieldProjectile1 == null)
         {
-            shieldProjectile1 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, Quaternion.identity);
+            shieldProjectile1 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, currentRotation);
             projectiles.Add(shieldProjectile1);
             PositionInCircle();
         }
 
         if (shieldProjectile2 == null)
         {
-            shieldProjectile2 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, Quaternion.identity);
+            shieldProjectile2 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, currentRotation);
             projectiles.Add(shieldProjectile2);
             PositionInCircle();
         }
 
         if (shieldProjectile3 == null)
         {
-            shieldProjectile3 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, Quaternion.identity);
+            shieldProjectile3 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, currentRotation);
             projectiles.Add(shieldProjectile3);
             PositionInCircle();
         }
@@ -99,9 +105,18 @@ public class ProjectileShieldController : MonoBehaviour
             float radius = 1.5f;
             float angle = i * Mathf.PI * 2f / radius;
 
-            Vector3 newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
+            if (zRotation > 0)
+            {
+                Vector3 newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
 
-            projectiles[i].transform.position = newPos;
+                projectiles[i].transform.position = newPos;
+            }
+            else
+            {
+                Vector3 newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
+
+                projectiles[i].transform.position = newPos;
+            }
         }
     }
 
@@ -109,7 +124,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         for (int i = 0; i < projectiles.Count; i++)
         {
-            projectiles[i].transform.RotateAround(transform.position, transform.up, rotateSpeed);
+            projectiles[i].transform.RotateAround(transform.position, upVector, rotateSpeed);
         }
     }
 
