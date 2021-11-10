@@ -12,8 +12,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Shield")]
     [SerializeField] ShieldController shield;
+    [SerializeField] ProjectileShieldController projectile;
     TargetingSystem ts;
-    public bool hasShield;
 
     [Header("Movement")]
     float speed;
@@ -64,7 +64,6 @@ public class PlayerController : MonoBehaviour
     public float slamDelay;
     public float slamForce;
     [SerializeField] float waitTime;
-    //public GameObject gpSphere;
 
     [Header("Dodging")]
     public bool canDodge;
@@ -72,6 +71,10 @@ public class PlayerController : MonoBehaviour
     public float dodgeTime;
     public float dodgeSpeed;
     float dodgeDelay;
+
+    [Header("Shield Booleans")]
+    public bool hasShield;
+    public bool hasProjectile;
 
 
     private void Awake()
@@ -83,6 +86,7 @@ public class PlayerController : MonoBehaviour
         cam = Camera.main.transform;
 
         shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
+        projectile = transform.GetComponentInChildren<ProjectileShieldController>();
 
         ts = GetComponent<TargetingSystem>();
     }
@@ -94,14 +98,27 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        Debug.Log("Is  Grounded " + cc.isGrounded);
+        //Debug.Log("Is  Grounded " + cc.isGrounded);
+
+        if (shield.gameObject.activeInHierarchy)
+        {
+            hasShield = true;
+        }
+        else hasShield = false;
+
+        if (projectile.gameObject.activeInHierarchy)
+        {
+            hasProjectile = true;
+        }
+        else hasProjectile = false;
+
 
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
         {
             canPressSpace = true;
         }
 
-        if (cc.isGrounded && knockbackCounter <= 0)
+        if (cc.isGrounded)
         {
             if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
@@ -151,7 +168,7 @@ public class PlayerController : MonoBehaviour
 
         move = new Vector3(horizontal, 0, vertical).normalized;
 
-        if (!stopped && knockbackCounter <= 0)
+        if (!stopped)
         {
             if (move.magnitude >= Mathf.Epsilon) //Orients the player to have forward orientation relevant to camera rotation.
             {
@@ -170,40 +187,37 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (knockbackCounter > 0)
+        /*if (knockbackCounter > 0)
         {
             knockbackCounter -= Time.deltaTime;
-        }
+        }*/
 
         velocity.y += gravity * Time.deltaTime;
 
         bargeDelay -= Time.deltaTime;
         dodgeDelay -= Time.deltaTime;
 
-        if (shield.transform.root == this.transform)
+        if (hasShield)
         {
-            hasShield = true;
-        }
-        else hasShield = false;
+            if (Input.GetButtonUp("Throw") && !shield.thrown)  //Sets Throw/Catch animation.
+            {
+                anim.SetTrigger("Throw");
+            }
+            else if (Input.GetButtonDown("Throw") && shield.thrown)
+            {
+                anim.SetTrigger("Catch");
+            }
 
-        if (Input.GetButtonUp("Throw") && !shield.thrown)  //Sets Throw/Catch animation.
-        {
-            anim.SetTrigger("Throw");
-        }
-        else if (Input.GetButtonDown("Throw") && shield.thrown)
-        {
-            anim.SetTrigger("Catch");
-        }
-
-        if (buttonHeld) //Sets Guarding animation.
-        {
-            anim.SetBool("Guarding", true);
-            stopped = true;
-        }
-        else
-        {
-            stopped = false;
-            anim.SetBool("Guarding", false);
+            if (buttonHeld) //Sets Guarding animation.
+            {
+                anim.SetBool("Guarding", true);
+                stopped = true;
+            }
+            else
+            {
+                stopped = false;
+                anim.SetBool("Guarding", false);
+            }
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 
@@ -272,7 +286,6 @@ public class PlayerController : MonoBehaviour
 
             anim.SetBool("Slamming", true);
             shield.isSlamming = true;
-            //gpSphere.SetActive(true);
         }
         else
         {
@@ -280,8 +293,8 @@ public class PlayerController : MonoBehaviour
             shield.isSlamming = false;
 
             stopped = false;
-           // gpSphere.SetActive(false);
         } 
+
         if (cc.isGrounded && slamming)
         {
             waitTime -= Time.deltaTime;

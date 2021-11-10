@@ -9,13 +9,15 @@ public class ShieldProjectile : MonoBehaviour
     Vector3 scale;
     Rigidbody rb;
 
-    float interactDelay = 0.5f;
+    float interactDelay;
 
-    public bool shot = false;
+    public bool shot;
 
     private void Awake()
     {
         scale = transform.localScale;
+        interactDelay = 0.5f;
+        shot = false;
     }
 
     private void Start()
