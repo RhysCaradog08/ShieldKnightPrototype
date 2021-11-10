@@ -158,8 +158,11 @@ public class PlayerController : MonoBehaviour
 
         if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
         {
-            waitTime = 0.5f;
-            slamming = true;
+            if (hasShield)
+            {
+                waitTime = 0.5f;
+                slamming = true;
+            }
         }
 
 
