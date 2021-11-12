@@ -68,7 +68,16 @@ public class ProjectileShieldController : MonoBehaviour
 
                 if (shootDelay <= 0)
                 {
-                    ShootProjectile();
+                    if(hasTarget)
+                    {
+                        if(ts.lockedOn)
+                        {
+                            Debug.DrawLine(currentProjectile.transform.position, target.transform.position, Color.yellow, 10, false);
+                            //Debug.Log("Lock On Shoot");
+                            LockOnShoot();
+                        }
+                    }
+                    else ShootProjectile();
                 }
             }
         }
@@ -88,6 +97,10 @@ public class ProjectileShieldController : MonoBehaviour
         {
             shieldProjectile1 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, currentRotation);
             projectiles.Add(shieldProjectile1);
+
+            ShieldProjectile SP = shieldProjectile1.GetComponent<ShieldProjectile>();
+            SP.interactDelay = 0.1f;
+
             PositionInCircle();
         }
 
@@ -95,6 +108,10 @@ public class ProjectileShieldController : MonoBehaviour
         {
             shieldProjectile2 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, currentRotation);
             projectiles.Add(shieldProjectile2);
+
+            ShieldProjectile SP = shieldProjectile2.GetComponent<ShieldProjectile>();
+            SP.interactDelay = 0.1f;
+
             PositionInCircle();
         }
 
@@ -102,6 +119,10 @@ public class ProjectileShieldController : MonoBehaviour
         {
             shieldProjectile3 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, this.transform.position, currentRotation);
             projectiles.Add(shieldProjectile3);
+
+            ShieldProjectile SP = shieldProjectile3.GetComponent<ShieldProjectile>();
+            SP.interactDelay = 0.1f;
+
             PositionInCircle();
         }
     }
@@ -138,6 +159,8 @@ public class ProjectileShieldController : MonoBehaviour
 
     void ShootProjectile()
     {
+        Debug.Log("Shoot Projectile");
+
         currentProjectile.transform.parent = null;
         projectiles.Remove(currentProjectile);
 
@@ -149,6 +172,44 @@ public class ProjectileShieldController : MonoBehaviour
         SP.shot = true;
 
         if(currentProjectile == shieldProjectile1)
+        {
+            shieldProjectile1 = null;
+        }
+        else if (currentProjectile == shieldProjectile2)
+        {
+            shieldProjectile2 = null;
+        }
+        else if (currentProjectile == shieldProjectile3)
+        {
+            shieldProjectile3 = null;
+        }
+
+        currentProjectile = null;
+    }
+
+    void ShootAtTargets()
+    {
+        //Shoot each projectile at each assigned targets.
+    }
+
+    void LockOnShoot()
+    {
+        Debug.Log("Lock On Shoot");
+
+        currentProjectile.transform.parent = null;
+        projectiles.Remove(currentProjectile);
+
+        ShieldProjectile SP = currentProjectile.GetComponent<ShieldProjectile>();
+        Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
+
+        projRb.isKinematic = false;
+
+        Vector3 lockOnDir = (target.transform.position - currentProjectile.transform.position).normalized;
+
+        projRb.AddForce(lockOnDir * shootForce, ForceMode.Impulse);
+        SP.shot = true;
+
+        if (currentProjectile == shieldProjectile1)
         {
             shieldProjectile1 = null;
         }

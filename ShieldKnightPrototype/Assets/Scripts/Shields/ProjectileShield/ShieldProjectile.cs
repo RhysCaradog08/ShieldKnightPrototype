@@ -9,14 +9,15 @@ public class ShieldProjectile : MonoBehaviour
     Vector3 scale;
     Rigidbody rb;
 
-    float interactDelay;
+    GameObject hitStars;
+
+    public float interactDelay;
 
     public bool shot;
 
     private void Awake()
     {
         scale = transform.localScale;
-        interactDelay = 0.5f;
         shot = false;
     }
 
@@ -34,14 +35,19 @@ public class ShieldProjectile : MonoBehaviour
         if(shot)
         {
             interactDelay -= Time.deltaTime;
+            Debug.Log("Interact Delay: " + interactDelay);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
+        //Debug.Log("Hit Something!");
         if(interactDelay <= 0)
         {
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, collision.transform.position, Quaternion.identity, 1);
+
             rb.isKinematic = true;
+            shot = false;
 
             ObjectPoolManager.instance.RecallObject(shieldP);
         }
