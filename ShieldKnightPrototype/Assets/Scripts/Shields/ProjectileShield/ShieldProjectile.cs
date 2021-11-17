@@ -37,28 +37,33 @@ public class ShieldProjectile : MonoBehaviour
             interactDelay -= Time.deltaTime;
             //Debug.Log("Interact Delay: " + interactDelay);
         }
+
+        if(interactDelay <= 0)
+        {
+            interactDelay = 0;
+        }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
         //Debug.Log("Hit Something!");
         if(interactDelay <= 0)
         {
-            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, collision.transform.position, Quaternion.identity, 1);
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);
 
             rb.isKinematic = true;
             shot = false;
 
-            if (collision.gameObject.GetComponent<MarkerCheck>() != null)
+            if (other.gameObject.GetComponent<MarkerCheck>() != null)
             {
-                MarkerCheck markerCheck = collision.gameObject.GetComponent<MarkerCheck>();
+                MarkerCheck markerCheck = other.gameObject.GetComponent<MarkerCheck>();
 
                 markerCheck.RemoveMarker();
             }
 
-            if (collision.gameObject.GetComponent<EnemyHealth>() != null)
+            if (other.gameObject.GetComponent<EnemyHealth>() != null)
             {
-                EnemyHealth enemy = collision.gameObject.GetComponent<EnemyHealth>();
+                EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
 
                 enemy.TakeDamage(10);
             }

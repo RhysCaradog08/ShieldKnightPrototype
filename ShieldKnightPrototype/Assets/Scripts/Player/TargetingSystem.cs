@@ -74,11 +74,25 @@ public class TargetingSystem : MonoBehaviour
         {
             if (!lockedOn)
             {
-                GetTargets();
+                if (player.hasProjectile)
+                {
+                    if (projectile.projectiles.Count > 0)
+                    {
+                        GetTargets();
 
-                TargetsInView();
-                FindClosestTarget();
-                CheckTargetDistance();
+                        TargetsInView();
+                        FindClosestTarget();
+                        CheckTargetDistance();
+                    }
+                }
+                else
+                {
+                    GetTargets();
+
+                    TargetsInView();
+                    FindClosestTarget();
+                    CheckTargetDistance();
+                }
 
                 if (canLockOn)
                 {

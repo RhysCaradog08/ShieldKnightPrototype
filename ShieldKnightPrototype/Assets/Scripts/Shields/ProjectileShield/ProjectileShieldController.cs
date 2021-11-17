@@ -84,6 +84,8 @@ public class ProjectileShieldController : MonoBehaviour
         {
             RotateProjectiles();
         }
+
+        //Debug.Log("Projectiles Count: " + projectiles.Count);
     }
 
     void CallProjectiles()
@@ -229,11 +231,10 @@ public class ProjectileShieldController : MonoBehaviour
 
                 currentProjectile = null;
             }
-
-            new WaitForSeconds(0.1f); 
         }
 
         ts.visibleTargets.Clear();
+        Debug.Log("Clear Visible Targets");
     }
 
     void LockOnShoot()

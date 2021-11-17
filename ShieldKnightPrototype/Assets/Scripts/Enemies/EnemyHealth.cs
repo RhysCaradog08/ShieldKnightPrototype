@@ -39,7 +39,7 @@ public class EnemyHealth : MonoBehaviour
     {
         health -= damage;
 
-        Debug.Log(gameObject.name + "Damage Taken: " + damage);
+        //Debug.Log(gameObject.name + "Damage Taken: " + damage);
     }
 
     public void Squash()
