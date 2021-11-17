@@ -35,7 +35,7 @@ public class ShieldProjectile : MonoBehaviour
         if(shot)
         {
             interactDelay -= Time.deltaTime;
-            Debug.Log("Interact Delay: " + interactDelay);
+            //Debug.Log("Interact Delay: " + interactDelay);
         }
     }
 

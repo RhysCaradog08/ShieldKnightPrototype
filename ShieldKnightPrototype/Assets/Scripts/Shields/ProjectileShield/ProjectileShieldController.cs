@@ -16,6 +16,9 @@ public class ProjectileShieldController : MonoBehaviour
     float zRotation;
     Vector3 upVector;
 
+    ShieldProjectile SP;
+    Rigidbody projRb;
+
     [SerializeField] GameObject shieldProjectile1;
     [SerializeField] GameObject shieldProjectile2;
     [SerializeField] GameObject shieldProjectile3;
@@ -40,6 +43,7 @@ public class ProjectileShieldController : MonoBehaviour
         Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.blue);
         Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);*/
 
+
         currentRotation = transform.rotation;
         zRotation = transform.rotation.x;
         upVector = transform.up;
@@ -55,30 +59,25 @@ public class ProjectileShieldController : MonoBehaviour
         {
             if (projectiles.Count < 1)
             {
-                //Debug.Log("Call Projectiles");
-
                 CallProjectiles();
             }
-            else
-            {
-                for (int i = 0; i < projectiles.Count; i++)
-                {
-                    currentProjectile = projectiles[i];
-                }
+        }
 
-                if (shootDelay <= 0)
+        if(Input.GetButtonUp("Throw"))
+        {
+            if (shootDelay <= 0)
+            {
+                if (hasTarget)
                 {
-                    if(hasTarget)
+                    if (ts.lockedOn)
                     {
-                        if(ts.lockedOn)
-                        {
-                            Debug.DrawLine(currentProjectile.transform.position, target.transform.position, Color.yellow, 10, false);
-                            //Debug.Log("Lock On Shoot");
-                            LockOnShoot();
-                        }
+                        //Debug.DrawLine(currentProjectile.transform.position, target.transform.position, Color.yellow, 10, false);
+                        
+                        LockOnShoot();
                     }
-                    else ShootProjectile();
+                    else ShootAtTargets();
                 }
+                else ShootProjectile();
             }
         }
 
@@ -161,6 +160,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         Debug.Log("Shoot Projectile");
 
+        currentProjectile = projectiles[0];
         currentProjectile.transform.parent = null;
         projectiles.Remove(currentProjectile);
 
@@ -168,8 +168,10 @@ public class ProjectileShieldController : MonoBehaviour
         Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
 
         projRb.isKinematic = false;
+
         projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
         SP.shot = true;
+
 
         if(currentProjectile == shieldProjectile1)
         {
@@ -190,12 +192,16 @@ public class ProjectileShieldController : MonoBehaviour
     void ShootAtTargets()
     {
         //Shoot each projectile at each assigned targets.
+        Debug.Log("Shoot at Targets");
+
+        
     }
 
     void LockOnShoot()
     {
         Debug.Log("Lock On Shoot");
 
+        currentProjectile = projectiles[0];
         currentProjectile.transform.parent = null;
         projectiles.Remove(currentProjectile);
 
