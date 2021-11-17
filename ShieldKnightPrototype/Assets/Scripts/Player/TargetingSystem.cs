@@ -225,10 +225,20 @@ public class TargetingSystem : MonoBehaviour
             {
                 if (Vector3.Distance(transform.position, targetLocations[i].transform.position) < range)
                 {
+                    if (player.hasShield)
+                    {
                         if (visibleTargets.Count < 3)
                         {
                             visibleTargets.Add(targetLocations[i]);
                         }
+                    }
+                    else if(player.hasProjectile)
+                    {
+                        if(visibleTargets.Count < projectile.projectiles.Count)
+                        {
+                            visibleTargets.Add(targetLocations[i]);
+                        }
+                    }
 
                         foreach (GameObject target in visibleTargets)
                         {
@@ -239,6 +249,7 @@ public class TargetingSystem : MonoBehaviour
                                 markerCheck.AddMarker();
                             }
                         }
+
                 }
             }
             else if (isVisible && visibleTargets.Contains(targetLocations[i]))

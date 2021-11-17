@@ -7,7 +7,7 @@ public class ProjectileShieldController : MonoBehaviour
 {
     TargetingSystem ts;
 
-    [SerializeField] List<GameObject> projectiles = new List<GameObject>();
+    public List<GameObject> projectiles = new List<GameObject>();
     Transform player;
     public GameObject target;
 
@@ -16,8 +16,7 @@ public class ProjectileShieldController : MonoBehaviour
     float zRotation;
     Vector3 upVector;
 
-    ShieldProjectile SP;
-    Rigidbody projRb;
+    public int targetCount;
 
     [SerializeField] GameObject shieldProjectile1;
     [SerializeField] GameObject shieldProjectile2;
@@ -194,7 +193,47 @@ public class ProjectileShieldController : MonoBehaviour
         //Shoot each projectile at each assigned targets.
         Debug.Log("Shoot at Targets");
 
-        
+        for (int i = 0; i < ts.visibleTargets.Count; i++)
+        {
+            foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
+            {
+                target = nextTarget;
+                Vector3 nextTargetPos = nextTarget.transform.position;
+
+                currentProjectile = projectiles[0];
+                currentProjectile.transform.parent = null;
+                projectiles.Remove(currentProjectile);
+
+                ShieldProjectile SP = currentProjectile.GetComponent<ShieldProjectile>();
+                Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
+
+                projRb.isKinematic = false;
+
+                Vector3 shootDir = (nextTargetPos - currentProjectile.transform.position).normalized;
+
+                projRb.AddForce(shootDir * shootForce, ForceMode.Impulse);
+                SP.shot = true;
+
+                if (currentProjectile == shieldProjectile1)
+                {
+                    shieldProjectile1 = null;
+                }
+                else if (currentProjectile == shieldProjectile2)
+                {
+                    shieldProjectile2 = null;
+                }
+                else if (currentProjectile == shieldProjectile3)
+                {
+                    shieldProjectile3 = null;
+                }
+
+                currentProjectile = null;
+            }
+
+            new WaitForSeconds(0.1f); 
+        }
+
+        ts.visibleTargets.Clear();
     }
 
     void LockOnShoot()

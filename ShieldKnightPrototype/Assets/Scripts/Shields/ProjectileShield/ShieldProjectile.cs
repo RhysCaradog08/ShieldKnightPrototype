@@ -49,6 +49,20 @@ public class ShieldProjectile : MonoBehaviour
             rb.isKinematic = true;
             shot = false;
 
+            if (collision.gameObject.GetComponent<MarkerCheck>() != null)
+            {
+                MarkerCheck markerCheck = collision.gameObject.GetComponent<MarkerCheck>();
+
+                markerCheck.RemoveMarker();
+            }
+
+            if (collision.gameObject.GetComponent<EnemyHealth>() != null)
+            {
+                EnemyHealth enemy = collision.gameObject.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);
+            }
+
             ObjectPoolManager.instance.RecallObject(shieldP);
         }
     }
