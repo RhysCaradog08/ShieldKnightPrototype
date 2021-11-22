@@ -35,7 +35,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         ts = transform.root.GetComponent<TargetingSystem>();
         player = transform.root;
-        CallProjectiles(3, transform.position, 3);
+        CallProjectiles();
     }
 
     private void Update()
@@ -46,8 +46,10 @@ public class ProjectileShieldController : MonoBehaviour
 
 
         currentRotation = transform.rotation;
-        zRotation = transform.rotation.x;
+        zRotation = this.transform.eulerAngles.z;
         upVector = transform.up;
+
+        Debug.Log("z rotation: " + zRotation);
 
         shootDelay -= Time.deltaTime;
 
@@ -60,7 +62,7 @@ public class ProjectileShieldController : MonoBehaviour
         {
             if (projectiles.Count < 1)
             {
-                CallProjectiles(3, transform.position, 3);
+                CallProjectiles();
             }
         }
 
@@ -90,7 +92,7 @@ public class ProjectileShieldController : MonoBehaviour
         //Debug.Log("Projectiles Count: " + projectiles.Count);
     }
 
-    /*void CallProjectiles()
+    void CallProjectiles()
     {
         Debug.Log("Get Projectiles");
         shootDelay = 0.5f;
@@ -127,64 +129,6 @@ public class ProjectileShieldController : MonoBehaviour
 
             PositionInCircle();
         }
-    }*/
-
-    void CallProjectiles(int num, Vector3 point, float radius)
-    {
-        Debug.Log("Call Projectiles");
-
-        shootDelay = 0.5f;
-
-        for (int i = 0; i < num; i++)
-        {
-            /* Distance around the circle */
-            float radians = 2 * Mathf.PI / num * i;
-
-            /* Get the vector direction */
-            float vertical = Mathf.Sin(radians);
-            float horizontal = Mathf.Cos(radians);
-
-            Vector3 spawnDir = new Vector3(horizontal, 0, vertical);
-
-            /* Get the spawn position */
-            Vector3 spawnPos = point + spawnDir * radius; // Radius is just the distance away from the point
-
-            if (shieldProjectile1 == null)
-            {
-                shieldProjectile1 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, spawnPos, currentRotation);
-                shieldProjectile1.transform.Translate(new Vector3(0, shieldProjectile1.transform.localScale.y / 2, 0));
-                projectiles.Add(shieldProjectile1);
-
-                ShieldProjectile SP = shieldProjectile1.GetComponent<ShieldProjectile>();
-                SP.interactDelay = 0.1f;
-
-                PositionInCircle();
-            }
-
-            if (shieldProjectile2 == null)
-            {
-                shieldProjectile2 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, spawnPos, currentRotation);
-                shieldProjectile2.transform.Translate(new Vector3(0, shieldProjectile2.transform.localScale.y / 2, 0));
-                projectiles.Add(shieldProjectile2);
-
-                ShieldProjectile SP = shieldProjectile2.GetComponent<ShieldProjectile>();
-                SP.interactDelay = 0.1f;
-
-                PositionInCircle();
-            }
-
-            if (shieldProjectile3 == null)
-            {
-                shieldProjectile3 = ObjectPoolManager.instance.CallObject("ShieldProjectile", this.transform, spawnPos, currentRotation);
-                shieldProjectile3.transform.Translate(new Vector3(0, shieldProjectile3.transform.localScale.y / 2, 0));
-                projectiles.Add(shieldProjectile3);
-
-                ShieldProjectile SP = shieldProjectile3.GetComponent<ShieldProjectile>();
-                SP.interactDelay = 0.1f;
-
-                PositionInCircle();
-            }
-        }
     }
 
     public void PositionInCircle()
@@ -193,8 +137,20 @@ public class ProjectileShieldController : MonoBehaviour
         {
             float radius = 1.5f;
             float angle = i * Mathf.PI * 2f / radius;
+            Vector3 newPos = Vector3.zero;
 
-            Vector3 newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
+            newPos = transform.position + (new Vector3(0, Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius));
+
+            /*if (zRotation <= 90)
+            {
+                Debug.Log("Radius y axis");
+                newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
+            }
+            else if(zRotation > 90)
+            {
+                Debug.Log("Radius x axis");
+                newPos = transform.position + (new Vector3(0, Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius));
+            }*/
 
             projectiles[i].transform.position = newPos;
         }
