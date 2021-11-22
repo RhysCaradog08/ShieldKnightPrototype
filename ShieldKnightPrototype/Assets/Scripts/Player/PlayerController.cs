@@ -223,6 +223,20 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(hasProjectile)
+        {
+            if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
+            {
+                anim.SetBool("Guarding", true);
+                stopped = true;
+            }
+            else
+            {
+                stopped = false;
+                anim.SetBool("Guarding", false);
+            }
+        }
+
         if (stopped)  //Disables Character Controller to keep player in place. 
         {
             cc.enabled = false;

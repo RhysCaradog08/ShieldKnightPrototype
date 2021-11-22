@@ -14,11 +14,13 @@ public class ShieldProjectile : MonoBehaviour
     public float interactDelay;
 
     public bool shot;
+    public bool hit;
 
     private void Awake()
     {
         scale = transform.localScale;
         shot = false;
+        hit = false;
     }
 
     private void Start()
@@ -42,17 +44,29 @@ public class ShieldProjectile : MonoBehaviour
         {
             interactDelay = 0;
         }
-    }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        //Debug.Log("Hit Something!");
-        if(interactDelay <= 0)
+        if (hit && interactDelay <= 0)
         {
             hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);
 
             rb.isKinematic = true;
             shot = false;
+            hit = false;
+
+            ObjectPoolManager.instance.RecallObject(shieldP);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        hit = true;
+        //Debug.Log("Hit Something!");
+        if(interactDelay <= 0)
+        {
+            /*hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);
+
+            rb.isKinematic = true;
+            shot = false;*/
 
             if (other.gameObject.GetComponent<MarkerCheck>() != null)
             {
@@ -68,7 +82,17 @@ public class ShieldProjectile : MonoBehaviour
                 enemy.TakeDamage(10);
             }
 
-            ObjectPoolManager.instance.RecallObject(shieldP);
+            if (other.transform.gameObject.GetComponent<Lever>())
+            {
+                Lever lever = other.transform.gameObject.GetComponent<Lever>();
+
+                if (lever.canChange)
+                {
+                    lever.ChangeLever();
+                }
+            }
+
         }
+            //ObjectPoolManager.instance.RecallObject(shieldP);
     }
 }
