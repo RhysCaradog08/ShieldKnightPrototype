@@ -35,7 +35,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         ts = transform.root.GetComponent<TargetingSystem>();
         player = transform.root;
-        //CallProjectiles();
+        Invoke("CallProjectiles", 0.25f);
     }
 
     private void Update()

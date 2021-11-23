@@ -27,6 +27,7 @@ public class ShieldProjectile : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         shieldP = this.gameObject;
+        Physics.IgnoreLayerCollision(10, 3);
         Physics.IgnoreLayerCollision(10, 10);
     }
 
