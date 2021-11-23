@@ -4717,6 +4717,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6302830512198690463, guid: 30db0c650e2614444a627bd21336888e,
         type: 3}
+      propertyPath: idleRotSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6302830512198690463, guid: 30db0c650e2614444a627bd21336888e,
+        type: 3}
+      propertyPath: guardRotSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6302830512198690463, guid: 30db0c650e2614444a627bd21336888e,
+        type: 3}
       propertyPath: projectilePrefab
       value: 
       objectReference: {fileID: 6661881024213805056, guid: 93f33292c0d2e6a42a9cd6dcdaf69080,

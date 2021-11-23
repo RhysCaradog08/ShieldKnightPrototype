@@ -11,12 +11,13 @@ public class ProjectileShieldController : MonoBehaviour
     Transform player;
     public GameObject target;
 
-    public float rotateSpeed;
     Quaternion currentRotation;
     float zRotation;
     Vector3 upVector;
 
-    public int targetCount;
+    float rotateSpeed;
+    public float idleRotSpeed;
+    public float guardRotSpeed;
 
     public GameObject projectilePrefab;
 
@@ -30,12 +31,15 @@ public class ProjectileShieldController : MonoBehaviour
     [SerializeField] float shootDelay;
 
     public bool hasTarget;
+    bool canShoot;
 
     private void Start()
     {
         ts = transform.root.GetComponent<TargetingSystem>();
         player = transform.root;
         Invoke("CallProjectiles", 0.25f);
+        rotateSpeed = idleRotSpeed;
+        canShoot = true;
     }
 
     private void Update()
@@ -68,19 +72,22 @@ public class ProjectileShieldController : MonoBehaviour
 
         if(Input.GetButtonUp("Throw"))
         {
-            if (shootDelay <= 0)
+            if (canShoot)
             {
-                if (hasTarget)
+                if (shootDelay <= 0)
                 {
-                    if (ts.lockedOn)
+                    if (hasTarget)
                     {
-                        //Debug.DrawLine(currentProjectile.transform.position, target.transform.position, Color.yellow, 10, false);
-                        
-                        LockOnShoot();
+                        if (ts.lockedOn)
+                        {
+                            //Debug.DrawLine(currentProjectile.transform.position, target.transform.position, Color.yellow, 10, false);
+
+                            LockOnShoot();
+                        }
+                        else ShootAtTargets();
                     }
-                    else ShootAtTargets();
+                    else ShootProjectile();
                 }
-                else ShootProjectile();
             }
         }
 
@@ -88,6 +95,17 @@ public class ProjectileShieldController : MonoBehaviour
         {
             //PositionInCircle();
             RotateProjectiles();
+        }
+
+        if (Input.GetButton("Guard"))
+        {
+            canShoot = false;
+            rotateSpeed = guardRotSpeed;
+        }
+        else
+        {
+            canShoot = true;
+            rotateSpeed = idleRotSpeed;
         }
 
         //Debug.Log("Projectiles Count: " + projectiles.Count);
