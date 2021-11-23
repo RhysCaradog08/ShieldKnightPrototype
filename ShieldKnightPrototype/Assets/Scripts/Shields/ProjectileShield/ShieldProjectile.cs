@@ -59,8 +59,12 @@ public class ShieldProjectile : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        hit = true;
-        //Debug.Log("Hit Something!");
+        if(shot)
+        {
+            hit = true;
+            //Debug.Log("Hit Something!");
+        }
+
         if(interactDelay <= 0)
         {
             /*hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);

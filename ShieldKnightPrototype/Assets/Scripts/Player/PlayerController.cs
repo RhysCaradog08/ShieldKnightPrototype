@@ -225,6 +225,17 @@ public class PlayerController : MonoBehaviour
 
         if(hasProjectile)
         {
+            if (Input.GetButton("Throw"))
+            {
+                anim.SetBool("Aiming", true);
+            }
+            else anim.SetBool("Aiming", false);
+
+            if(Input.GetButtonUp("Throw"))
+            {
+                anim.SetTrigger("Shoot");
+            }
+
             if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
             {
                 anim.SetBool("Guarding", true);
