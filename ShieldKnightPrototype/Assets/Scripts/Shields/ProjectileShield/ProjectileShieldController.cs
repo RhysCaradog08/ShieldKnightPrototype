@@ -18,12 +18,11 @@ public class ProjectileShieldController : MonoBehaviour
     float rotateSpeed;
     public float idleRotSpeed;
     public float guardRotSpeed;
+    public GameObject guardTrigger;
 
-    public GameObject projectilePrefab;
-
-    [SerializeField] GameObject shieldProjectile1;
-    [SerializeField] GameObject shieldProjectile2;
-    [SerializeField] GameObject shieldProjectile3;
+    public GameObject shieldProjectile1;
+    public GameObject shieldProjectile2;
+    public GameObject shieldProjectile3;
 
     [SerializeField] GameObject currentProjectile;
 
@@ -37,8 +36,12 @@ public class ProjectileShieldController : MonoBehaviour
     {
         ts = transform.root.GetComponent<TargetingSystem>();
         player = transform.root;
+
         Invoke("CallProjectiles", 0.25f);
+
         rotateSpeed = idleRotSpeed;
+        guardTrigger.SetActive(false);
+
         canShoot = true;
     }
 
@@ -101,11 +104,18 @@ public class ProjectileShieldController : MonoBehaviour
         {
             canShoot = false;
             rotateSpeed = guardRotSpeed;
+
+            if (projectiles.Count > 0)
+            {
+                guardTrigger.SetActive(true);
+            }
+            else guardTrigger.SetActive(false);
         }
         else
         {
             canShoot = true;
             rotateSpeed = idleRotSpeed;
+            guardTrigger.SetActive(false);
         }
 
         //Debug.Log("Projectiles Count: " + projectiles.Count);
