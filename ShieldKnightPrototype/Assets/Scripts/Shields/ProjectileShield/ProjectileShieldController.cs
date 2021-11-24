@@ -9,26 +9,29 @@ public class ProjectileShieldController : MonoBehaviour
 
     public List<GameObject> projectiles = new List<GameObject>();
     Transform player;
-    public GameObject target;
 
     Quaternion currentRotation;
     float zRotation;
     Vector3 upVector;
 
-    float rotateSpeed;
-    public float idleRotSpeed;
-    public float guardRotSpeed;
-    public GameObject guardTrigger;
-
+    [Header("Projectiles")]
     public GameObject shieldProjectile1;
     public GameObject shieldProjectile2;
     public GameObject shieldProjectile3;
 
+    [Header("Shooting")]
+    public GameObject target;
     [SerializeField] GameObject currentProjectile;
-
     [SerializeField] float shootForce;
     [SerializeField] float shootDelay;
 
+    [Header("Guarding")]
+    [SerializeField] float rotateSpeed;
+    [SerializeField] float idleRotSpeed;
+    [SerializeField] float guardRotSpeed;
+    public GameObject guardTrigger;
+
+    [Header("Booleans")]
     public bool hasTarget;
     bool canShoot;
 
@@ -53,8 +56,6 @@ public class ProjectileShieldController : MonoBehaviour
 
 
         currentRotation = transform.rotation;
-        zRotation = this.transform.localEulerAngles.z;
-        upVector = transform.up;
 
         Debug.Log("z rotation: " + zRotation);
 
@@ -83,8 +84,6 @@ public class ProjectileShieldController : MonoBehaviour
                     {
                         if (ts.lockedOn)
                         {
-                            //Debug.DrawLine(currentProjectile.transform.position, target.transform.position, Color.yellow, 10, false);
-
                             LockOnShoot();
                         }
                         else ShootAtTargets();
@@ -96,8 +95,15 @@ public class ProjectileShieldController : MonoBehaviour
 
         if (projectiles.Count > 0)
         {
-            //PositionInCircle();
             RotateProjectiles();
+        }
+
+        if(Input.GetButtonDown("Guard"))
+        {
+            if (projectiles.Count < 1)
+            {
+                CallProjectiles();
+            }
         }
 
         if (Input.GetButton("Guard"))
@@ -117,8 +123,6 @@ public class ProjectileShieldController : MonoBehaviour
             rotateSpeed = idleRotSpeed;
             guardTrigger.SetActive(false);
         }
-
-        //Debug.Log("Projectiles Count: " + projectiles.Count);
     }
 
     void CallProjectiles()
@@ -133,8 +137,6 @@ public class ProjectileShieldController : MonoBehaviour
 
             ShieldProjectile SP = shieldProjectile1.GetComponent<ShieldProjectile>();
             SP.interactDelay = 0.1f;
-
-            //PositionInCircle();
         }
 
         if (shieldProjectile2 == null)
@@ -144,8 +146,6 @@ public class ProjectileShieldController : MonoBehaviour
 
             ShieldProjectile SP = shieldProjectile2.GetComponent<ShieldProjectile>();
             SP.interactDelay = 0.1f;
-
-            //PositionInCircle();
         }
 
         if (shieldProjectile3 == null)
@@ -155,8 +155,6 @@ public class ProjectileShieldController : MonoBehaviour
 
             ShieldProjectile SP = shieldProjectile3.GetComponent<ShieldProjectile>();
             SP.interactDelay = 0.1f;
-
-            //PositionInCircle();
         }
 
         PositionInCircle();
@@ -170,16 +168,7 @@ public class ProjectileShieldController : MonoBehaviour
             float angle = i * Mathf.PI * 2f / radius;
             Vector3 newPos = Vector3.zero;
 
-            if (zRotation >= 45)
-            {
-                Debug.Log("Radius y axis");
-                newPos = transform.position + (new Vector3(Mathf.Cos(angle) * radius, 0, Mathf.Sin(angle) * radius));
-            }
-            else if(zRotation < 45)
-            {
-                Debug.Log("Radius x axis");
-                newPos = transform.position + (new Vector3(0, Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius));
-            }
+            newPos = transform.position + (new Vector3(0, Mathf.Cos(angle) * radius, Mathf.Sin(angle) * radius));
 
             projectiles[i].transform.position = newPos;
         }
@@ -189,7 +178,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         for (int i = 0; i < projectiles.Count; i++)
         {
-            projectiles[i].transform.RotateAround(transform.position, upVector, rotateSpeed);
+            projectiles[i].transform.RotateAround(transform.position, transform.up, rotateSpeed);
         }
     }
 

@@ -165,6 +165,17 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (!cc.isGrounded && Input.GetButton("Guard"))
+        {
+            if (hasProjectile)
+            {
+                Debug.LogFormat("Slow Descent");
+                anim.SetBool("Helicopter", true);
+                velocity.y = -2;
+            }
+        }
+        else anim.SetBool("Helicopter", false);
+
 
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
@@ -196,6 +207,10 @@ public class PlayerController : MonoBehaviour
         }*/
 
         velocity.y += gravity * Time.deltaTime;
+        if(cc.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2;
+        }
 
         bargeDelay -= Time.deltaTime;
         dodgeDelay -= Time.deltaTime;
