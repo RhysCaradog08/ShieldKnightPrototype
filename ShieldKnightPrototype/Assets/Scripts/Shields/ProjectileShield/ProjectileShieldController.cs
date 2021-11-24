@@ -25,6 +25,9 @@ public class ProjectileShieldController : MonoBehaviour
     [SerializeField] float shootForce;
     [SerializeField] float shootDelay;
 
+    [Header("Spiral Attack")]
+    public GameObject spiral;
+
     [Header("Guarding")]
     [SerializeField] float rotateSpeed;
     [SerializeField] float idleRotSpeed;
@@ -88,6 +91,11 @@ public class ProjectileShieldController : MonoBehaviour
                     else ShootProjectile();
                 }
             }
+        }
+
+        if(Input.GetButtonUp("Barge"))
+        {
+            SpiralAttack();
         }
 
         if (projectiles.Count > 0)
@@ -175,7 +183,10 @@ public class ProjectileShieldController : MonoBehaviour
     {
         for (int i = 0; i < projectiles.Count; i++)
         {
-            projectiles[i].transform.RotateAround(transform.position, transform.up, rotateSpeed);
+            if (projectiles[i].transform.parent == this.transform)
+            {
+                projectiles[i].transform.RotateAround(transform.position, transform.up, rotateSpeed);
+            }
         }
     }
 
@@ -291,5 +302,29 @@ public class ProjectileShieldController : MonoBehaviour
         }
 
         currentProjectile = null;
+    }
+
+    void SpiralAttack()
+    {
+        SpiralAttack sa = FindObjectOfType<SpiralAttack>();
+
+        Rigidbody rb = spiral.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+
+        for(int i = 0; i < projectiles.Count; i++)
+        {
+            projectiles[i].transform.parent = spiral.transform;
+            projectiles[i].transform.RotateAround(spiral.transform.position, transform.up, rotateSpeed);
+        }
+
+        if(target != null)
+        {
+
+        }
+        else
+        {
+            sa.shot = true;
+            rb.AddForce(transform.forward * shootForce, ForceMode.Impulse);
+        }
     }
 }

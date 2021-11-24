@@ -278,14 +278,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetButtonDown("Barge")) //Input to perform Barge/Dodge action.
         {
-            if (hasShield)
+            if (hasShield && !shield.thrown)
             {
                 if (canBarge && bargeDelay <= 0)
                 {
                     StartCoroutine(Barge());
                 }
             }
-            else if(!hasShield)
+            else if(hasShield && shield.thrown)
             {
                 if(canDodge && dodgeDelay <= 0)
                 {
