@@ -50,14 +50,11 @@ public class ProjectileShieldController : MonoBehaviour
 
     private void Update()
     {
-        Debug.DrawLine(transform.position, transform.position + transform.up * 10, Color.green);
+        /*Debug.DrawLine(transform.position, transform.position + transform.up * 10, Color.green);
         Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.blue);
-        Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);
-
+        Debug.DrawLine(transform.position, transform.position + transform.right * 10, Color.red);*/
 
         currentRotation = transform.rotation;
-
-        Debug.Log("z rotation: " + zRotation);
 
         shootDelay -= Time.deltaTime;
 
