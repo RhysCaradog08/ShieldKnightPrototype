@@ -4819,6 +4819,11 @@ PrefabInstance:
       objectReference: {fileID: 1175665728}
     - target: {fileID: 6302830512198690463, guid: 30db0c650e2614444a627bd21336888e,
         type: 3}
+      propertyPath: maxRotSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6302830512198690463, guid: 30db0c650e2614444a627bd21336888e,
+        type: 3}
       propertyPath: idleRotSpeed
       value: 2
       objectReference: {fileID: 0}

@@ -352,7 +352,7 @@ public class PlayerController : MonoBehaviour
             }
             else if (Input.GetButtonUp("Guard") && cc.isGrounded)
             {
-                if (!buttonHeld)//If button is released without being held.
+                if (!buttonHeld && hasShield)//If button is released without being held.
                 {                  
                     anim.SetTrigger("Parry");
                 }

@@ -95,7 +95,10 @@ public class ProjectileShieldController : MonoBehaviour
 
         if(Input.GetButtonUp("Barge"))
         {
-            SpiralAttack();
+            if(projectiles.Count == 3)
+            {
+                SpiralAttack();
+            }
         }
 
         if (projectiles.Count > 0)
