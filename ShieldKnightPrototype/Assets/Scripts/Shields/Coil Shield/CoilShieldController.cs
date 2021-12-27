@@ -15,6 +15,8 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float range;
     [SerializeField] float dist;
     [SerializeField] bool whipping;
+    [SerializeField] bool extending;
+
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
@@ -29,6 +31,7 @@ public class CoilShieldController : MonoBehaviour
         lr = GetComponent<LineRenderer>();
 
         whipping = false;
+        extending = false;
 
         startScale = coil.transform.localScale;
     }
@@ -39,6 +42,7 @@ public class CoilShieldController : MonoBehaviour
         if(Input.GetButtonDown("Throw") && !whipping)
         {
             whipping = true;
+            extending = true;
         }
 
         if(whipping)
@@ -46,10 +50,8 @@ public class CoilShieldController : MonoBehaviour
             head.SetActive(true);
             lr.enabled = true;
 
-            head.transform.Translate(transform.forward * whipSpeed * Time.deltaTime);
-
-            StartCoroutine(ShrinkCoil());
-            CalculateDistance();
+            StartCoroutine(ScaleCoil());
+            NonTargetWhip();
         }
         else
         {
@@ -65,20 +67,29 @@ public class CoilShieldController : MonoBehaviour
         }
     }
 
-    void CalculateDistance()
+    void NonTargetWhip()
     {
         dist = Vector3.Distance(transform.position, head.transform.position);
 
-        if (dist >= range)
+        if (dist < range && extending)
         {
-            head.transform.position = transform.position;
-            whipping = false;
+            head.transform.Translate(transform.forward * whipSpeed * Time.deltaTime);
         }
 
         if (dist >= range)
         {
-            whipping = false;
-            head.transform.position = transform.position;
+            extending = false;
+        }
+
+        if(!extending)
+        {
+            head.transform.Translate(-transform.forward * (whipSpeed * 2) * Time.deltaTime);
+
+            if(dist < 1)
+            {
+                whipping = false;
+                head.transform.position = transform.position;
+            }
         }
     }
 
@@ -88,11 +99,17 @@ public class CoilShieldController : MonoBehaviour
         lr.SetPosition(1, head.transform.position);
     }
 
-    IEnumerator ShrinkCoil()
+    IEnumerator ScaleCoil()
     {
-        while (minScale < coil.transform.localScale.x)
+        while(minScale < coil.transform.localScale.x && extending)
         {
             coil.transform.localScale -= startScale * Time.deltaTime * dist/whipSpeed;
+            yield return null;
+        }
+        
+        while(coil.transform.localScale.x < startScale.x && !extending)
+        {
+            coil.transform.localScale += startScale * Time.deltaTime * dist/(whipSpeed * 2);
             yield return null;
         }
     }
