@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CoilShieldController : MonoBehaviour
 {
+    Camera cam;
     TargetingSystem ts;
 
     public GameObject coil;
@@ -26,6 +27,7 @@ public class CoilShieldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        cam = Camera.main;
         ts = FindObjectOfType<TargetingSystem>();
 
         lr = GetComponent<LineRenderer>();

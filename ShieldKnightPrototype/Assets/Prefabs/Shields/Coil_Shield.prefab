@@ -25,13 +25,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 849340775734509260}
-  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.25, y: 0.05, z: 1.25}
   m_Children: []
   m_Father: {fileID: 5389605274654521263}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &4746290965528559125
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -108,13 +108,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3070269114508886830}
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 0.25}
   m_Children: []
   m_Father: {fileID: 5389605274654521263}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &6639515438042307077
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -264,7 +264,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.23015827
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -305,7 +305,7 @@ LineRenderer:
       m_NumAlphaKeys: 2
     numCornerVertices: 0
     numCapVertices: 0
-    alignment: 1
+    alignment: 0
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 0
@@ -323,4 +323,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf1740c74e83b3499818c2fd657986b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  coil: {fileID: 849340775734509260}
   head: {fileID: 3070269114508886830}
+  whipSpeed: 25
+  range: 10
+  dist: 0
+  whipping: 0
+  extending: 0
+  startScale: {x: 0, y: 0, z: 0}
+  minScale: 0.25
