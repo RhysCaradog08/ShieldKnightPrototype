@@ -16,9 +16,7 @@ public class ShieldController : MonoBehaviour
     public GameObject target;
     TrailRenderer trail;
     GameObject hitStars;
-    public bool thrown = false;
-    public bool hasTarget;
-    public bool canThrow;
+    public bool thrown, hasTarget, canThrow;
 
 
     [Header("Recall")]
@@ -30,10 +28,7 @@ public class ShieldController : MonoBehaviour
     public bool isBarging;
 
     [Header("Slam")]
-    [SerializeField] float slamForce;
-    [SerializeField] float slamRadius;
-    [SerializeField] float slamLift;
-    [SerializeField]float damageDelay = 0.5f;
+    [SerializeField] float slamForce, slamRadius, slamLift, damageDelay;
     GameObject slamStars;
     public bool isSlamming;
     bool showSlamVFX = false;
@@ -46,13 +41,15 @@ public class ShieldController : MonoBehaviour
     {
         shieldRB = GetComponent<Rigidbody>();
         shieldHoldPos = transform.parent.transform;
-
         player = FindObjectOfType<PlayerController>();
 
         ts = transform.root.GetComponent<TargetingSystem>();
         trail = GetComponent<TrailRenderer>();
 
+        thrown = false;
+
         meshCol = GetComponentInChildren<MeshCollider>();
+        damageDelay = 0.5f;
     }
 
     private void Update()
@@ -281,12 +278,6 @@ public class ShieldController : MonoBehaviour
 
             Vector3 knockbackDir = other.transform.position - player.transform.position;
             knockbackDir = knockbackDir.normalized;
-
-            if(other.gameObject.layer == 7)
-            {
-                Debug.Log("Knockback");
-                player.GetComponent<PlayerController>().Knockback(knockbackDir);
-            }
 
             if (other.gameObject.GetComponent<EnemyHealth>())
             {

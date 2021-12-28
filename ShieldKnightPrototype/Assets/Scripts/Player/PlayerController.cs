@@ -13,40 +13,36 @@ public class PlayerController : MonoBehaviour
     [Header("Shield")]
     [SerializeField] ShieldController shield;
     [SerializeField] ProjectileShieldController projectile;
+    [SerializeField] CoilShieldController coil;
     TargetingSystem ts;
 
     [Header("Movement")]
-    float speed;
-    public float moveSpeed;
     public Transform pivot;
     public GameObject model;
-    public float rotateSpeed;
-    Vector3 move;
-    Vector3 moveDir;
+    float speed;
+    public float moveSpeed, rotateSpeed;
+    Vector3 move, moveDir;
     public float turnSmoothTime = 0.1f;
     float turnSmoothVelocity;
     [SerializeField] bool stopped = false;
 
     [Header("Jumping")]
-    public float jumpSpeed = 5;
     [SerializeField] float gravity = -9.81F;
     [SerializeField] Vector3 velocity;
-    public float fallMultiplier = 2;
-    public float lowJumpMultiplier = 2.5f;
+    public float jumpSpeed, fallMultiplier, lowJumpMultiplier;
     bool hasJumped;
     [SerializeField] bool canPressSpace = true;
 
     [Header("Guard/Parry")]
     const float minButtonHold = 0.25f;
-    float buttonHeldTime = 0f;
+    float buttonHeldTime;
     bool buttonHeld = false;
     public GameObject parryBox;
 
     [Header("Barging")]
     public bool canBarge;
     [SerializeField] bool isBarging = false;
-    public float bargeTime;
-    public float bargeSpeed;
+    public float bargeTime, bargeSpeed;
     float bargeDelay;
     [SerializeField]Collider[] targets;
     [SerializeField] List<GameObject> bargeTargets = new List<GameObject>();
@@ -54,27 +50,19 @@ public class PlayerController : MonoBehaviour
     public GameObject closest = null;
     GameObject marker;
 
-    [Header("Knockback")]
-    [SerializeField] float knockbackForce;
-    [SerializeField] float knockbackTime;
-    [SerializeField] float knockbackCounter;
-
     [Header("Slam")]
     public bool slamming = false;
-    public float slamDelay;
-    public float slamForce;
+    public float slamDelay, slamForce;
     [SerializeField] float waitTime;
 
     [Header("Dodging")]
     public bool canDodge;
     bool isDodging = false;
-    public float dodgeTime;
-    public float dodgeSpeed;
+    public float dodgeTime, dodgeSpeed;
     float dodgeDelay;
 
     [Header("Shield Booleans")]
-    public bool hasShield;
-    public bool hasProjectile;
+    public bool hasShield, hasProjectile, hasCoil;
 
 
     private void Awake()
@@ -85,10 +73,16 @@ public class PlayerController : MonoBehaviour
 
         cam = Camera.main.transform;
 
-        shield = GameObject.FindGameObjectWithTag("Shield").GetComponent<ShieldController>();
-        projectile = transform.GetComponentInChildren<ProjectileShieldController>();
+        shield = FindObjectOfType<ShieldController>();
+        projectile = FindObjectOfType<ProjectileShieldController>();
+        coil = FindObjectOfType<CoilShieldController>();
 
         ts = GetComponent<TargetingSystem>();
+
+        jumpSpeed = 5;
+        fallMultiplier = 2;
+        lowJumpMultiplier = 2.5f;
+        buttonHeldTime = 0;
     }
 
     private void Start()
@@ -111,6 +105,12 @@ public class PlayerController : MonoBehaviour
             hasProjectile = true;
         }
         else hasProjectile = false;
+
+        if (coil.gameObject.activeInHierarchy)
+        {
+            hasCoil = true;
+        }
+        else hasCoil = false;
 
 
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
@@ -453,20 +453,6 @@ public class PlayerController : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    public void Knockback(Vector3 direction)
-    {
-        if(isBarging)
-        {
-            StopCoroutine(Barge());
-            speed = 0;
-        }
-
-        knockbackCounter = knockbackTime;
-
-        moveDir = direction * knockbackForce;
-        moveDir.y = knockbackForce;
     }
 
     /*void OnDrawGizmosSelected()

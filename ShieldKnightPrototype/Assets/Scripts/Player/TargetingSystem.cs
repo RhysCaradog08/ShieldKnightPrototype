@@ -7,27 +7,23 @@ using System;
 public class TargetingSystem : MonoBehaviour
 {
     PlayerController player;
+    Camera cam;
 
     MarkerCheck markerCheck;
     ShieldController shield;
     ProjectileShieldController projectile;
-
-    Camera cam;
+    CoilShieldController coil;
 
     Collider[] hitColliders;
 
-    public List<GameObject> targetLocations = new List<GameObject>();
-    public List<GameObject> visibleTargets = new List<GameObject>();
+    public List<GameObject> targetLocations = new List<GameObject>(), visibleTargets = new List<GameObject>();
 
     public GameObject closest;
 
-    [SerializeField] private float range;
-    [SerializeField] private float targetFOV;
-
+    [SerializeField] private float range, targetFOV;
 
     [Header("UI")]
-    public GameObject targetMarker;
-    public GameObject lockOnMarker;
+    public GameObject targetMarker, lockOnMarker;
 
     [Header("Booleans")]
     bool canLockOn;
@@ -36,9 +32,11 @@ public class TargetingSystem : MonoBehaviour
     private void Awake()
     {
         player = GameObject.FindObjectOfType<PlayerController>();
-        shield = GameObject.FindObjectOfType<ShieldController>();
-        projectile = GameObject.FindObjectOfType<ProjectileShieldController>();
         cam = Camera.main;
+
+        shield = FindObjectOfType<ShieldController>();
+        projectile = FindObjectOfType<ProjectileShieldController>();
+        coil = FindObjectOfType<CoilShieldController>();
     }
 
     private void Update()
@@ -144,6 +142,11 @@ public class TargetingSystem : MonoBehaviour
             {
                 projectile.target = closest;
             }
+
+            if(player.hasCoil)
+            {
+                coil.target = closest;
+            }
         }
         else closest = null;
 
@@ -159,11 +162,17 @@ public class TargetingSystem : MonoBehaviour
             {
                 projectile.hasTarget = true;
             }
+
+            if(player.hasCoil)
+            {
+                coil.hasTarget = true;
+            }
         }
         else
         {
             shield.hasTarget = false;
             projectile.hasTarget = false;
+            coil.hasTarget = false;
         }
     }
 
@@ -249,6 +258,13 @@ public class TargetingSystem : MonoBehaviour
                     else if(player.hasProjectile)
                     {
                         if(visibleTargets.Count < projectile.projectiles.Count)
+                        {
+                            visibleTargets.Add(targetLocations[i]);
+                        }
+                    }
+                    else if(player.hasCoil)
+                    {
+                        if (visibleTargets.Count < 1)
                         {
                             visibleTargets.Add(targetLocations[i]);
                         }
