@@ -13,8 +13,7 @@ public class ShieldProjectile : MonoBehaviour
 
     public float interactDelay;
 
-    public bool shot;
-    public bool hit;
+    public bool shot, hit;
 
     private void Awake()
     {

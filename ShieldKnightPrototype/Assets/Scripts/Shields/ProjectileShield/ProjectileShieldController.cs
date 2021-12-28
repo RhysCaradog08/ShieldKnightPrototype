@@ -15,23 +15,18 @@ public class ProjectileShieldController : MonoBehaviour
     Vector3 upVector;
 
     [Header("Projectiles")]
-    public GameObject shieldProjectile1;
-    public GameObject shieldProjectile2;
-    public GameObject shieldProjectile3;
+    public GameObject shieldProjectile1, shieldProjectile2, shieldProjectile3;
 
     [Header("Shooting")]
     public GameObject target;
     [SerializeField] GameObject currentProjectile;
-    [SerializeField] float shootForce;
-    [SerializeField] float shootDelay;
+    [SerializeField] float shootForce, shootDelay;
 
     [Header("Spiral Attack")]
     public GameObject spiral;
 
     [Header("Guarding")]
-    [SerializeField] float rotateSpeed;
-    [SerializeField] float idleRotSpeed;
-    [SerializeField] float guardRotSpeed;
+    [SerializeField] float rotateSpeed, idleRotSpeed, guardRotSpeed;
     public GameObject guardTrigger;
 
     [Header("Booleans")]
