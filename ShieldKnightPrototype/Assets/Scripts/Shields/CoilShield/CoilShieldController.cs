@@ -38,6 +38,12 @@ public class CoilShieldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (target != null)
+        {
+            hasTarget = true;
+        }
+        else hasTarget = false;
+
         if (Input.GetButtonDown("Throw") && !whipping)
         {
             whipping = true;
@@ -76,6 +82,11 @@ public class CoilShieldController : MonoBehaviour
             coil.transform.localScale = startScale;
         }
 
+        if(dist >= range)
+        {
+            extending = false;
+        }
+
         if (!extending)
         {
             head.transform.Translate(-transform.forward * (whipSpeed * 2) * Time.deltaTime);
@@ -99,22 +110,6 @@ public class CoilShieldController : MonoBehaviour
         {
             head.transform.Translate(transform.forward * whipSpeed * Time.deltaTime);
         }
-
-        if (dist >= range)
-        {
-            extending = false;
-        }
-
-        /*if(!extending)
-        {
-            head.transform.Translate(-transform.forward * (whipSpeed * 2) * Time.deltaTime);
-
-            if(dist < 1)
-            {
-                whipping = false;
-                head.transform.position = transform.position;
-            }
-        }*/
     }
 
     void TargetedWhip()
@@ -124,11 +119,6 @@ public class CoilShieldController : MonoBehaviour
         if (dist < range && extending)
         {
             head.transform.Translate(dir * whipSpeed * Time.deltaTime);
-        }
-
-        if (dist >= range)
-        {
-            extending = false;
         }
     }
 

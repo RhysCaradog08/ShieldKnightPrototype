@@ -61,6 +61,12 @@ public class ProjectileShieldController : MonoBehaviour
             shootDelay = 0;
         }
 
+        if (target != null)
+        {
+            hasTarget = true;
+        }
+        else hasTarget = false;
+
         if (Input.GetButtonDown("Throw"))
         {
             if (projectiles.Count < 1)

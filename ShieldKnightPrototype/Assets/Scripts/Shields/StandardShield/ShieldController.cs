@@ -54,6 +54,12 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
+        if (target != null)
+        {
+            hasTarget = true;
+        }
+        else hasTarget = false;
+
         if (canThrow)  //Perform Throw action if Player has possession of Shield. 
         {
             if (hasTarget)

@@ -149,31 +149,6 @@ public class TargetingSystem : MonoBehaviour
             }
         }
         else closest = null;
-
-
-        if (closest != null)
-        {
-            if (player.hasShield)
-            {
-                shield.hasTarget = true;
-            }
-
-            if (player.hasProjectile)
-            {
-                projectile.hasTarget = true;
-            }
-
-            if(player.hasCoil)
-            {
-                coil.hasTarget = true;
-            }
-        }
-        else
-        {
-            shield.hasTarget = false;
-            projectile.hasTarget = false;
-            coil.hasTarget = false;
-        }
     }
 
     void FindClosestTarget()
