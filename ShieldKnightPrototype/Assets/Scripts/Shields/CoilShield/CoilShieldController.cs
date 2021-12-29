@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CoilShieldController : MonoBehaviour
 {
+    Transform player;
     Camera cam;
     TargetingSystem ts;
 
@@ -24,6 +25,7 @@ public class CoilShieldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player").transform;
         cam = Camera.main;
         ts = FindObjectOfType<TargetingSystem>();
 
@@ -62,9 +64,6 @@ public class CoilShieldController : MonoBehaviour
 
         if (whipping)
         {
-            dist = Vector3.Distance(transform.position, head.transform.position);
-
-            head.SetActive(true);
             lr.enabled = true;
 
             StartCoroutine(ScaleCoil());
@@ -76,22 +75,24 @@ public class CoilShieldController : MonoBehaviour
         }
         else
         {
-            head.SetActive(false);
             lr.enabled = false;
 
             coil.transform.localScale = startScale;
         }
 
-        if(dist >= range)
+        if(extending && dist < 1)
         {
+            Debug.Log("Coil Over Extended");
             extending = false;
         }
 
         if (!extending)
         {
-            head.transform.Translate(-transform.forward * (whipSpeed * 2) * Time.deltaTime);
+            dist = Vector3.Distance(head.transform.position, transform.position);
 
-            if (dist < 1)
+            head.transform.position = Vector3.Lerp(head.transform.position, transform.position, whipSpeed * Time.deltaTime);
+
+            if (dist < 0.1f)
             {
                 whipping = false;
                 head.transform.position = transform.position;
@@ -106,19 +107,21 @@ public class CoilShieldController : MonoBehaviour
 
     void NonTargetWhip()
     {
-        if (dist < range && extending)
+        dist = Vector3.Distance(head.transform.position, player.forward * range);
+
+        if (dist >= 1 && extending)
         {
-            head.transform.Translate(transform.forward * whipSpeed * Time.deltaTime);
+            head.transform.position = Vector3.Lerp(head.transform.position, player.transform.forward * range, whipSpeed * Time.deltaTime);
         }
     }
 
     void TargetedWhip()
     {
-        Vector3 dir = target.transform.position - transform.position.normalized;
+        dist = Vector3.Distance(head.transform.position, target.transform.position);
 
-        if (dist < range && extending)
+        if (dist >= 1 && extending)
         {
-            head.transform.Translate(dir * whipSpeed * Time.deltaTime);
+            head.transform.position = Vector3.Lerp(head.transform.position, target.transform.position, whipSpeed + 5 * Time.deltaTime);
         }
     }
 
