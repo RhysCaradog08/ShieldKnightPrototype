@@ -40,8 +40,6 @@ public class CoilShieldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.DrawLine(player.position, player.forward * 10, Color.red);
-
         if (target != null)
         {
             hasTarget = true;
@@ -112,7 +110,7 @@ public class CoilShieldController : MonoBehaviour
     {
         Vector3 whipDir = player.position + player.forward * 10;
         Debug.DrawLine(player.position, whipDir * range, Color.green);
-        Debug.Log("Whip Range: " + whipDir.z * range);
+        //Debug.Log("Whip Range: " + whipDir.z * range);
 
         dist = Vector3.Distance(head.transform.position, whipDir * range);
 
