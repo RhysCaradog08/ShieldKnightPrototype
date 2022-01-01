@@ -93,6 +93,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Debug.Log("Is  Grounded " + cc.isGrounded);
+        Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.red);
 
         if (shield.gameObject.activeInHierarchy)
         {
@@ -200,11 +201,6 @@ public class PlayerController : MonoBehaviour
                 anim.SetBool("Moving", false);
             }
         }
-
-        /*if (knockbackCounter > 0)
-        {
-            knockbackCounter -= Time.deltaTime;
-        }*/
 
         velocity.y += gravity * Time.deltaTime;
         if(cc.isGrounded && velocity.y < 0)

@@ -40,13 +40,15 @@ public class CoilShieldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Debug.DrawLine(player.position, player.forward * 10, Color.red);
+
         if (target != null)
         {
             hasTarget = true;
         }
         else hasTarget = false;
 
-        if (Input.GetButtonDown("Throw") && !whipping)
+        if (Input.GetButtonUp("Throw") && !whipping)
         {
             whipping = true;
             extending = true;
@@ -96,6 +98,7 @@ public class CoilShieldController : MonoBehaviour
             {
                 whipping = false;
                 head.transform.position = transform.position;
+                target = null;
             }
         }
 
@@ -107,11 +110,15 @@ public class CoilShieldController : MonoBehaviour
 
     void NonTargetWhip()
     {
-        dist = Vector3.Distance(head.transform.position, player.forward * range);
+        Vector3 whipDir = player.position + player.forward * 10;
+        Debug.DrawLine(player.position, whipDir * range, Color.green);
+        Debug.Log("Whip Range: " + whipDir.z * range);
+
+        dist = Vector3.Distance(head.transform.position, whipDir * range);
 
         if (dist >= 1 && extending)
         {
-            head.transform.position = Vector3.Lerp(head.transform.position, player.transform.forward * range, whipSpeed * Time.deltaTime);
+            head.transform.position = Vector3.Lerp(head.transform.position, whipDir * range, whipSpeed * Time.deltaTime);
         }
     }
 

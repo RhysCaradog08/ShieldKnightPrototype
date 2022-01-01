@@ -148,7 +148,6 @@ public class TargetingSystem : MonoBehaviour
                 coil.target = closest;
             }
         }
-        else closest = null;
     }
 
     void FindClosestTarget()
