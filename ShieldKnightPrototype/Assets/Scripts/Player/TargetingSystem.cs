@@ -9,7 +9,7 @@ public class TargetingSystem : MonoBehaviour
     PlayerController player;
     Camera cam;
 
-    MarkerCheck markerCheck;
+    public MarkerCheck markerCheck;
     ShieldController shield;
     ProjectileShieldController projectile;
     CoilShieldController coil;
@@ -68,6 +68,31 @@ public class TargetingSystem : MonoBehaviour
             targetLocations.Clear();
         }
 
+        if(player.hasCoil)
+        {
+            if (Input.GetButtonDown("Barge")) //&& player.hasCoil)
+            {
+                if (!lockedOn)
+                {
+                    GetTargets();
+                }
+            }
+
+            if (Input.GetButton("Barge")) //&& player.hasCoil)
+            {
+                if (!lockedOn)
+                {
+                    TargetsInView();
+                    FindClosestTarget();
+                }
+            }
+
+            if (Input.GetButtonUp("Throw") || Input.GetButtonUp("Barge")) //Clears targetLocations for the next instance.
+            {
+                targetLocations.Clear();
+            }
+        }
+
         if (Input.GetKeyDown(KeyCode.Z))
         {
             if (!lockedOn)
@@ -94,16 +119,6 @@ public class TargetingSystem : MonoBehaviour
 
                 if (canLockOn)
                 {
-                    foreach (GameObject target in visibleTargets)
-                    {
-                        markerCheck = target.GetComponent<MarkerCheck>();
-
-                        if (markerCheck.canAddMarker == false)
-                        {
-                            markerCheck.RemoveMarker();
-                        }
-                    }
-
                     AddLockOnMarker();
                     lockedOn = !lockedOn;
                 }
@@ -117,6 +132,7 @@ public class TargetingSystem : MonoBehaviour
                 RemoveLockOnMarker();
             }
         }
+
         if (Input.GetKeyUp(KeyCode.Z))
         {
             targetLocations.Clear();
@@ -147,6 +163,12 @@ public class TargetingSystem : MonoBehaviour
             {
                 coil.target = closest;
             }
+        }
+        else
+        {
+            shield.target = null;
+            projectile.target = null;
+            coil.target = null;
         }
     }
 
@@ -244,16 +266,15 @@ public class TargetingSystem : MonoBehaviour
                         }
                     }
 
-                        foreach (GameObject target in visibleTargets)
+                    foreach (GameObject target in visibleTargets)
+                    {
+                        markerCheck = target.GetComponent<MarkerCheck>();
+
+                        if (markerCheck.canAddMarker == true)
                         {
-                            markerCheck = target.GetComponent<MarkerCheck>();
-
-                            if (markerCheck.canAddMarker == true)
-                            {
-                                markerCheck.AddMarker();
-                            }
+                            markerCheck.AddMarker();
                         }
-
+                    }
                 }
             }
             else if (isVisible && visibleTargets.Contains(targetLocations[i]))

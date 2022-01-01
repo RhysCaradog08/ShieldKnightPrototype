@@ -13,9 +13,9 @@ public class CoilShieldController : MonoBehaviour
 
     [Header("Whip")]
     [SerializeField] float whipSpeed, range, dist;
-    [SerializeField] bool whipping, extending;
     public GameObject target;
-    public bool hasTarget;
+    public Transform tetherPoint;
+    public bool canWhip, whipping, hasTarget, canTether, tethered;
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
@@ -31,8 +31,10 @@ public class CoilShieldController : MonoBehaviour
 
         lr = GetComponent<LineRenderer>();
 
+        canWhip = true;
         whipping = false;
-        extending = false;
+        canTether = false;
+        tethered = false;
 
         startScale = coil.transform.localScale;
     }
@@ -46,24 +48,32 @@ public class CoilShieldController : MonoBehaviour
         }
         else hasTarget = false;
 
-        if (Input.GetButtonUp("Throw") && !whipping)
+        if (Input.GetButtonUp("Throw") && canWhip)
         {
             whipping = true;
-            extending = true;
         }
         else if (Input.GetButtonDown("Throw") && whipping)
         {
             whipping = false;
-            if(extending)
+
+            if(tethered)
             {
-                extending = false;
+                tethered = false;
+                tetherPoint = null;
             }
 
-            head.transform.position = transform.position; 
+            head.transform.position = transform.position;
+        }
+
+        if (Input.GetButtonUp("Barge"))
+        {
+            canTether = true;
+            whipping = true;
         }
 
         if (whipping)
         {
+            canWhip = false;
             lr.enabled = true;
 
             StartCoroutine(ScaleCoil());
@@ -80,24 +90,35 @@ public class CoilShieldController : MonoBehaviour
             coil.transform.localScale = startScale;
         }
 
-        if(extending && dist < 1)
+        if(whipping && dist < 1 && !tethered)
         {
             Debug.Log("Coil Over Extended");
-            extending = false;
+            whipping = false;
         }
 
-        if (!extending)
+        if (!whipping)
         {
             dist = Vector3.Distance(head.transform.position, transform.position);
 
             head.transform.position = Vector3.Lerp(head.transform.position, transform.position, whipSpeed * Time.deltaTime);
 
+            if (canTether)
+            {
+                canTether = false;
+            }
+
             if (dist < 0.1f)
             {
-                whipping = false;
                 head.transform.position = transform.position;
-                target = null;
+
+                canWhip = true;
             }
+        } 
+        
+        if(tethered)
+        {
+            head.transform.position = tetherPoint.position;
+            canTether = false;
         }
 
         if (lr.enabled == true)
@@ -114,7 +135,7 @@ public class CoilShieldController : MonoBehaviour
 
         dist = Vector3.Distance(head.transform.position, whipDir * range);
 
-        if (dist >= 1 && extending)
+        if (dist >= 1 && whipping)
         {
             head.transform.position = Vector3.Lerp(head.transform.position, whipDir * range, whipSpeed * Time.deltaTime);
         }
@@ -124,9 +145,20 @@ public class CoilShieldController : MonoBehaviour
     {
         dist = Vector3.Distance(head.transform.position, target.transform.position);
 
-        if (dist >= 1 && extending)
+        if (dist >= 1 && whipping)
         {
             head.transform.position = Vector3.Lerp(head.transform.position, target.transform.position, whipSpeed + 5 * Time.deltaTime);
+        }
+
+        if(dist <= 0.9f)
+        {
+            foreach (GameObject target in ts.visibleTargets)
+            {
+                ts.markerCheck = target.GetComponent<MarkerCheck>();
+                ts.markerCheck.RemoveMarker();
+            }
+
+            ts.visibleTargets.Remove(target);
         }
     }
 
@@ -138,13 +170,13 @@ public class CoilShieldController : MonoBehaviour
 
     IEnumerator ScaleCoil()
     {
-        while(minScale < coil.transform.localScale.x && extending)
+        while(minScale < coil.transform.localScale.x && whipping)
         {
             coil.transform.localScale -= startScale * Time.deltaTime * dist/whipSpeed;
             yield return null;
         }
         
-        while(coil.transform.localScale.x < startScale.x && !extending)
+        while(coil.transform.localScale.x < startScale.x && !whipping)
         {
             coil.transform.localScale += startScale * Time.deltaTime * dist/(whipSpeed * 2);
             yield return null;
