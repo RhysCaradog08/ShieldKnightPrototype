@@ -7,6 +7,7 @@ public class CoilShieldController : MonoBehaviour
     Transform player;
     Camera cam;
     TargetingSystem ts;
+    HeadCollider hc;
 
     public GameObject coil, head;
     LineRenderer lr;
@@ -16,7 +17,7 @@ public class CoilShieldController : MonoBehaviour
     public float dist;
     public GameObject target;
     public Transform tetherPoint;
-    public bool canWhip, whipping, hasTarget, enableTether, canTether, tethered;
+    public bool canWhip, whipping, hasTarget, enableTether, canTether, tethered, grappling;
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
@@ -29,6 +30,7 @@ public class CoilShieldController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         cam = Camera.main;
         ts = FindObjectOfType<TargetingSystem>();
+        hc = FindObjectOfType<HeadCollider>();
 
         lr = GetComponent<LineRenderer>();
 
@@ -136,6 +138,12 @@ public class CoilShieldController : MonoBehaviour
         {
             head.transform.position = tetherPoint.position;
             canTether = false;
+            grappling = true;
+        }
+
+        if(grappling)
+        {
+            Grapple();
         }
 
         if (lr.enabled == true)
@@ -197,6 +205,18 @@ public class CoilShieldController : MonoBehaviour
         {
             coil.transform.localScale += startScale * Time.deltaTime * dist/(whipSpeed * 2);
             yield return null;
+        }
+    }
+
+    void Grapple()
+    {
+        if(hc.grappleFixed)
+        {
+
+        }
+        else if(hc.grappleLoose)
+        {
+
         }
     }
 }
