@@ -6,7 +6,7 @@ using Basics.ObjectPool;
 
 public class PlayerController : MonoBehaviour
 {
-    CharacterController cc;
+    public CharacterController cc;
     Animator anim;
     Transform cam;
 
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public Transform pivot;
     public GameObject model;
-    float speed;
+    public float speed;
     public float moveSpeed, rotateSpeed;
     Vector3 move, moveDir;
     public float turnSmoothTime = 0.1f;

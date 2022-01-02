@@ -102,7 +102,6 @@ public class TargetingSystem : MonoBehaviour
             {
                 if(!lockedOn)
                 {
-                    closest = null;
 
                     foreach (GameObject target in visibleTargets)
                     {
@@ -110,6 +109,7 @@ public class TargetingSystem : MonoBehaviour
                         markerCheck.RemoveMarker();
                     }
                 }
+                    closest = null;
             }
         }
 

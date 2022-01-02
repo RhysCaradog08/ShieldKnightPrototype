@@ -23,17 +23,19 @@ public class HeadCollider : MonoBehaviour
             {
                 coil.tethered = true;
                 coil.tetherPoint = other.gameObject.transform;
+
+                if (other.gameObject.layer == 11)//GrappleFixed
+                {
+                    grappleFixed = true;
+                }
+
+                if (other.gameObject.layer == 12)//GrappleLoose
+                {
+                    grappleLoose = true;
+                    coil.tetheredObject = other.gameObject;
+                }
             }
 
-            if(other.gameObject.layer == 11)//GrappleFixed
-            {
-                grappleFixed = true;
-            }
-
-            if(other.gameObject.layer == 12)//GrappleLoose
-            {
-                grappleLoose = true;
-            }
         }
     }
 }

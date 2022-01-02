@@ -6,6 +6,7 @@ public class CoilShieldController : MonoBehaviour
 {
     Transform player;
     Camera cam;
+    [SerializeField] CharacterController cc;
     TargetingSystem ts;
     HeadCollider hc;
 
@@ -16,12 +17,19 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float whipSpeed, range;
     public float dist;
     public GameObject target;
-    public Transform tetherPoint;
-    public bool canWhip, whipping, hasTarget, enableTether, canTether, tethered, grappling;
+    Vector3 dir;
+    public bool canWhip, whipping, hasTarget;
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
     [SerializeField] float minScale;
+
+    [Header("Grapple")]
+    [SerializeField] float grappleSpeed, throwForce;
+    public Transform tetherPoint, holdPos;
+    public GameObject tetheredObject;
+    Rigidbody tetheredRB;
+    public bool enableTether, canTether, tethered, grappling, hasObject;
 
 
     // Start is called before the first frame update
@@ -36,16 +44,22 @@ public class CoilShieldController : MonoBehaviour
 
         canWhip = true;
         whipping = false;
+
+        startScale = coil.transform.localScale;
+
+        tetheredObject = null;
         enableTether = false;
         canTether = false;
         tethered = false;
-
-        startScale = coil.transform.localScale;
+        grappling = false;
+        hasObject = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        Debug.DrawLine(holdPos.position, dir, Color.green);
+
         if (target != null)
         {
             hasTarget = true;
@@ -55,6 +69,7 @@ public class CoilShieldController : MonoBehaviour
         if (Input.GetButtonUp("Throw") && canWhip)
         {
             whipping = true;
+
         }
         else if (Input.GetButtonDown("Throw"))
         {
@@ -67,14 +82,17 @@ public class CoilShieldController : MonoBehaviour
             whipping = false;
         }
 
+        if(Input.GetButtonUp("Throw") && hasObject )
+        {
+            tethered = false;
+            tetherPoint = null;
+
+            ThrowTetheredObject();
+        }
+
         if(Input.GetButtonDown("Barge"))
         {
             enableTether = true;
-        }
-
-        if(canTether)
-        {
-            Debug.Log("Can Tether");
         }
 
         if (Input.GetButtonUp("Barge"))
@@ -109,7 +127,7 @@ public class CoilShieldController : MonoBehaviour
 
         if(whipping && dist < 1 && !tethered)
         {
-            Debug.Log("Coil Over Extended");
+            //Debug.Log("Coil Over Extended");
             whipping = false;
         }
 
@@ -136,6 +154,9 @@ public class CoilShieldController : MonoBehaviour
         
         if(tethered)
         {
+            canWhip = false;
+            whipping = false;
+
             head.transform.position = tetherPoint.position;
             canTether = false;
             grappling = true;
@@ -143,7 +164,37 @@ public class CoilShieldController : MonoBehaviour
 
         if(grappling)
         {
-            Grapple();
+            if(hc.grappleFixed)
+            {
+                Grapple();
+            }
+
+            if(hc.grappleLoose)
+            {
+                if (tetheredObject != null)
+                {
+                    GetTetheredObject();
+                }
+            }
+        }
+
+        if (hasObject)
+        {
+            canWhip = false;
+
+            tetheredObject.transform.parent = holdPos;
+            tetheredObject.transform.position = holdPos.position;
+            tetheredRB = tetheredObject.GetComponent<Rigidbody>();
+            tetheredRB.isKinematic = true;
+        }
+
+        if(tetheredObject != null)
+        {
+            Debug.Log("Is tethered to: " + tetheredObject.name);
+        }
+        else if(tetheredObject == null)
+        {
+            Debug.Log("Is not tethered to anything");
         }
 
         if (lr.enabled == true)
@@ -154,15 +205,15 @@ public class CoilShieldController : MonoBehaviour
 
     void NonTargetWhip()
     {
-        Vector3 whipDir = player.position + player.forward * 10;
-        Debug.DrawLine(player.position, whipDir * range, Color.green);
+        dir = player.position + player.forward * 10;
+        Debug.DrawLine(player.position, dir * range, Color.green);
         //Debug.Log("Whip Range: " + whipDir.z * range);
 
-        dist = Vector3.Distance(head.transform.position, whipDir * range);
+        dist = Vector3.Distance(head.transform.position, dir * range);
 
         if (dist >= 1 && whipping)
         {
-            head.transform.position = Vector3.Lerp(head.transform.position, whipDir * range, whipSpeed * Time.deltaTime);
+            head.transform.position = Vector3.Lerp(head.transform.position, dir * range, whipSpeed * Time.deltaTime);
         }
     }
 
@@ -210,13 +261,60 @@ public class CoilShieldController : MonoBehaviour
 
     void Grapple()
     {
-        if(hc.grappleFixed)
-        {
+        Debug.Log("Grappling");
 
-        }
-        else if(hc.grappleLoose)
-        {
+        dir = (head.transform.position - player.position).normalized;
+        dist = Vector3.Distance(player.position, head.transform.position);
 
+        PlayerController pc = player.GetComponent<PlayerController>();
+        pc.enabled = false;
+
+        cc = player.GetComponent<CharacterController>();
+        cc.Move(dir * grappleSpeed * Time.deltaTime);
+
+        if (dist < 2)
+        {
+            grappling = false;
+            tethered = false;
+            tetherPoint = null;
+            whipping = false;
+
+            hc.grappleFixed = false;
+            pc.enabled = true;
+            pc.speed = pc.moveSpeed;
         }
+    }
+
+    void GetTetheredObject()
+    {
+        //Debug.Log("Get Tethered Object");
+        dist = Vector3.Distance(tetheredObject.transform.position, holdPos.position);
+
+        tetheredObject.transform.position = Vector3.Lerp(tetheredObject.transform.position, holdPos.position, grappleSpeed * Time.deltaTime);
+
+        if(dist < 1.5f)
+        {
+            Debug.Log("Has Tethered Object");
+
+            grappling = false;
+            hc.grappleLoose = false;
+            hasObject = true;
+            tethered = false;
+        }
+    }
+
+    void ThrowTetheredObject()
+    {
+        //Debug.Log("Throw Tethered Object");
+        tetheredObject.transform.parent = null;
+        tetheredObject = null;
+        tetheredRB.isKinematic = false;
+
+        dir = player.position + player.forward * 10;
+
+        tetheredRB.AddForce(dir * throwForce, ForceMode.Impulse);
+
+        tetheredRB = null;
+        hasObject = false;
     }
 }
