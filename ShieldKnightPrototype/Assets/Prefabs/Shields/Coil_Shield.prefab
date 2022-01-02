@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4746290965528559125}
   - component: {fileID: 1842228713417503132}
   m_Layer: 0
-  m_Name: Coil
+  m_Name: Coil_Chain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 7142100308237365411}
   - component: {fileID: 830418420927791829}
   m_Layer: 0
-  m_Name: Head
+  m_Name: Head_Coil
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -328,10 +328,12 @@ MonoBehaviour:
   whipSpeed: 25
   range: 10
   dist: 0
-  whipping: 0
-  extending: 0
   target: {fileID: 0}
+  tetherPoint: {fileID: 0}
+  canWhip: 0
+  whipping: 0
   hasTarget: 0
-  hitObject: 0
+  canTether: 0
+  tethered: 0
   startScale: {x: 0, y: 0, z: 0}
   minScale: 0.25

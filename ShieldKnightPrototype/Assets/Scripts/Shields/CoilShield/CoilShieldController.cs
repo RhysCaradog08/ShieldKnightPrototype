@@ -12,10 +12,11 @@ public class CoilShieldController : MonoBehaviour
     LineRenderer lr;
 
     [Header("Whip")]
-    [SerializeField] float whipSpeed, range, dist;
+    [SerializeField] float whipSpeed, range;
+    public float dist;
     public GameObject target;
     public Transform tetherPoint;
-    public bool canWhip, whipping, hasTarget, canTether, tethered;
+    public bool canWhip, whipping, hasTarget, enableTether, canTether, tethered;
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
@@ -33,6 +34,7 @@ public class CoilShieldController : MonoBehaviour
 
         canWhip = true;
         whipping = false;
+        enableTether = false;
         canTether = false;
         tethered = false;
 
@@ -52,27 +54,40 @@ public class CoilShieldController : MonoBehaviour
         {
             whipping = true;
         }
-        else if (Input.GetButtonDown("Throw") && whipping)
+        else if (Input.GetButtonDown("Throw"))
         {
-            whipping = false;
-
             if(tethered)
             {
                 tethered = false;
                 tetherPoint = null;
             }
 
-            head.transform.position = transform.position;
+            whipping = false;
+        }
+
+        if(Input.GetButtonDown("Barge"))
+        {
+            enableTether = true;
+        }
+
+        if(canTether)
+        {
+            Debug.Log("Can Tether");
         }
 
         if (Input.GetButtonUp("Barge"))
         {
-            canTether = true;
             whipping = true;
         }
 
         if (whipping)
         {
+            if(enableTether)
+            {
+                canTether = true;
+                enableTether = false;
+            }
+
             canWhip = false;
             lr.enabled = true;
 
@@ -98,20 +113,22 @@ public class CoilShieldController : MonoBehaviour
 
         if (!whipping)
         {
+            target = null;
+
             dist = Vector3.Distance(head.transform.position, transform.position);
 
             head.transform.position = Vector3.Lerp(head.transform.position, transform.position, whipSpeed * Time.deltaTime);
-
-            if (canTether)
-            {
-                canTether = false;
-            }
 
             if (dist < 0.1f)
             {
                 head.transform.position = transform.position;
 
                 canWhip = true;
+
+                if(canTether)
+                {
+                    canTether = false;
+                }
             }
         } 
         
@@ -147,7 +164,7 @@ public class CoilShieldController : MonoBehaviour
 
         if (dist >= 1 && whipping)
         {
-            head.transform.position = Vector3.Lerp(head.transform.position, target.transform.position, whipSpeed + 5 * Time.deltaTime);
+            head.transform.position = Vector3.Lerp(head.transform.position, target.transform.position, whipSpeed * Time.deltaTime);
         }
 
         if(dist <= 0.9f)

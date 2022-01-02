@@ -26,7 +26,7 @@ public class TargetingSystem : MonoBehaviour
     public GameObject targetMarker, lockOnMarker;
 
     [Header("Booleans")]
-    bool canLockOn;
+    [SerializeField] bool canLockOn, canTarget, isVisible;
     public bool lockedOn;
 
     private void Awake()
@@ -37,6 +37,9 @@ public class TargetingSystem : MonoBehaviour
         shield = FindObjectOfType<ShieldController>();
         projectile = FindObjectOfType<ProjectileShieldController>();
         coil = FindObjectOfType<CoilShieldController>();
+
+        canLockOn = true;
+        canTarget = true;
     }
 
     private void Update()
@@ -72,9 +75,12 @@ public class TargetingSystem : MonoBehaviour
         {
             if (Input.GetButtonDown("Barge")) //&& player.hasCoil)
             {
-                if (!lockedOn)
+                if(coil.canWhip)
                 {
-                    GetTargets();
+                    if (!lockedOn)
+                    {
+                        GetTargets();
+                    }
                 }
             }
 
@@ -91,10 +97,26 @@ public class TargetingSystem : MonoBehaviour
             {
                 targetLocations.Clear();
             }
+
+            if(!coil.whipping && !coil.canWhip)
+            {
+                if(!lockedOn)
+                {
+                    closest = null;
+
+                    foreach (GameObject target in visibleTargets)
+                    {
+                        markerCheck = target.GetComponent<MarkerCheck>();
+                        markerCheck.RemoveMarker();
+                    }
+                }
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.Z))
         {
+            canTarget = false;
+
             if (!lockedOn)
             {
                 if (player.hasProjectile)
@@ -136,6 +158,7 @@ public class TargetingSystem : MonoBehaviour
         if (Input.GetKeyUp(KeyCode.Z))
         {
             targetLocations.Clear();
+            canTarget = true;
         }
 
         if (lockedOn && Vector3.Distance(transform.position, closest.transform.position) > range)
@@ -191,9 +214,12 @@ public class TargetingSystem : MonoBehaviour
 
             markerCheck = target.GetComponent<MarkerCheck>();
 
-            if (markerCheck.canAddMarker == true)
+            if(canTarget)
             {
-                markerCheck.AddMarker();
+                if (markerCheck.canAddMarker == true)
+                {
+                    markerCheck.AddMarker();
+                }
             }
 
             //Distance
@@ -238,7 +264,7 @@ public class TargetingSystem : MonoBehaviour
             Vector3 targetPos = Camera.main.WorldToViewportPoint(targetLocations[i].transform.position);
             Vector3 playerPos = Camera.main.WorldToViewportPoint(transform.position);
 
-            bool isVisible = (targetPos.z > playerPos.z && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
+            isVisible = (targetPos.z > playerPos.z && targetPos.x > 0 && targetPos.x < 1 && targetPos.y > 0 && targetPos.y < 1) ? true : false;
 
             if (isVisible && !visibleTargets.Contains(targetLocations[i]))
             {
@@ -269,10 +295,13 @@ public class TargetingSystem : MonoBehaviour
                     foreach (GameObject target in visibleTargets)
                     {
                         markerCheck = target.GetComponent<MarkerCheck>();
-
-                        if (markerCheck.canAddMarker == true)
+                        
+                        if(canTarget)
                         {
-                            markerCheck.AddMarker();
+                            if (markerCheck.canAddMarker == true)
+                            {
+                                markerCheck.AddMarker();
+                            }
                         }
                     }
                 }
