@@ -77,6 +77,16 @@ public class EnemyHealth : MonoBehaviour
             ts.visibleTargets.Clear();
         }
 
+        MarkerCheck mc = transform.GetComponent<MarkerCheck>();
+
+        if(mc != null)
+        {
+            if(!mc.canAddMarker)
+            {
+                mc.RemoveMarker();
+            }
+        }
+
         cloud = ObjectPoolManager.instance.CallObject("Cloud", null, transform.position, Quaternion.identity, 1);
 
         Destroy(this.gameObject);

@@ -5,17 +5,13 @@ using UnityEngine;
 public class ShieldSelect : MonoBehaviour
 {
     public int selectedShield = 0;
-    //public int SelectedWeaponUI = 0;
-
-    //public GameObject[] weaponIcon;
-
-    
+    public bool canChange;
 
     // Start is called before the first frame update
     void Start()
     {
         SelectShield();
-        //SelectWeaponUI();       
+        canChange = true;     
     }
 
     // Update is called once per frame
@@ -26,17 +22,19 @@ public class ShieldSelect : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
-            if (selectedShield >= transform.childCount - 1)
+            if (canChange)
             {
-                selectedShield = 0;
-                //SelectedWeaponUI = 0;
+                if (selectedShield >= transform.childCount - 1)
+                {
+                    selectedShield = 0;
+                    //SelectedWeaponUI = 0;
+                }
+                else
+                {
+                    selectedShield++;
+                    //SelectedWeaponUI++;
+                }
             }
-            else
-            {
-                selectedShield++;
-                //SelectedWeaponUI++;
-            }
-
         }
 
         if (previousWeapon != selectedShield)

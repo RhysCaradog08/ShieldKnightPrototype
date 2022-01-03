@@ -5,11 +5,12 @@ using Basics.ObjectPool;
 
 public class ShieldController : MonoBehaviour
 {
+    PlayerController player;
     TargetingSystem ts;
+    ShieldSelect select;
 
     Rigidbody shieldRB;
     Transform shieldHoldPos;
-    PlayerController player;
 
     [Header("Throw")]
     public float throwForce;
@@ -39,11 +40,14 @@ public class ShieldController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        player = FindObjectOfType<PlayerController>();
+        ts = transform.root.GetComponent<TargetingSystem>();
+        select = FindObjectOfType<ShieldSelect>();
+
+
         shieldRB = GetComponent<Rigidbody>();
         shieldHoldPos = transform.parent.transform;
-        player = FindObjectOfType<PlayerController>();
 
-        ts = transform.root.GetComponent<TargetingSystem>();
         trail = GetComponent<TrailRenderer>();
 
         thrown = false;
@@ -85,8 +89,13 @@ public class ShieldController : MonoBehaviour
         {
             trail.enabled = true;
             canThrow = false;
+            select.canChange = false;
         }
-        else trail.enabled = false;
+        else
+        {
+            trail.enabled = false;
+            select.canChange = true;
+        }
 
         if (isSlamming)
         {

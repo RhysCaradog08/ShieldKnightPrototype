@@ -225,6 +225,7 @@ public class ProjectileShieldController : MonoBehaviour
         }
 
         currentProjectile = null;
+        ts.visibleTargets.Clear();
     }
 
     void ShootAtTargets()
@@ -268,10 +269,11 @@ public class ProjectileShieldController : MonoBehaviour
 
                 currentProjectile = null;
             }
+        Debug.Log("Clear Visible Targets");
+        ts.visibleTargets.Clear();
+        ts.closest = null;
         }
 
-        ts.visibleTargets.Clear();
-        Debug.Log("Clear Visible Targets");
     }
 
     void LockOnShoot()
@@ -323,7 +325,9 @@ public class ProjectileShieldController : MonoBehaviour
 
         if(target != null)
         {
-
+            Vector3 lockOnDir = (target.transform.position - rb.transform.position).normalized;
+            sa.shot = true;
+            rb.AddForce(lockOnDir * shootForce, ForceMode.Impulse);
         }
         else
         {

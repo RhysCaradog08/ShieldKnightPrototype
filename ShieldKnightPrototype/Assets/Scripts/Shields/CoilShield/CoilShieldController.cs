@@ -8,6 +8,7 @@ public class CoilShieldController : MonoBehaviour
     Camera cam;
     [SerializeField] CharacterController cc;
     TargetingSystem ts;
+    ShieldSelect select;
     HeadCollider hc;
 
     public GameObject coil, head;
@@ -38,6 +39,7 @@ public class CoilShieldController : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         cam = Camera.main;
         ts = FindObjectOfType<TargetingSystem>();
+        select = FindObjectOfType<ShieldSelect>();
         hc = FindObjectOfType<HeadCollider>();
 
         lr = GetComponent<LineRenderer>();
@@ -69,7 +71,6 @@ public class CoilShieldController : MonoBehaviour
         if (Input.GetButtonUp("Throw") && canWhip)
         {
             whipping = true;
-
         }
         else if (Input.GetButtonDown("Throw"))
         {
@@ -102,6 +103,8 @@ public class CoilShieldController : MonoBehaviour
 
         if (whipping)
         {
+            select.canChange = false;
+
             if(enableTether)
             {
                 canTether = true;
@@ -180,6 +183,8 @@ public class CoilShieldController : MonoBehaviour
 
         if (hasObject)
         {
+            select.canChange = false;
+
             canWhip = false;
 
             tetheredObject.transform.parent = holdPos;
@@ -187,15 +192,8 @@ public class CoilShieldController : MonoBehaviour
             tetheredRB = tetheredObject.GetComponent<Rigidbody>();
             tetheredRB.isKinematic = true;
         }
+        else select.canChange = true;
 
-        if(tetheredObject != null)
-        {
-            Debug.Log("Is tethered to: " + tetheredObject.name);
-        }
-        else if(tetheredObject == null)
-        {
-            Debug.Log("Is not tethered to anything");
-        }
 
         if (lr.enabled == true)
         {

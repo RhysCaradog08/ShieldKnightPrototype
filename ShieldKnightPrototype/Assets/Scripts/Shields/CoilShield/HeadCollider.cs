@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class HeadCollider : MonoBehaviour
 {
     CoilShieldController coil;
     public bool grappleFixed, grappleLoose;
+
+    GameObject hitStars;
 
     // Start is called before the first frame update
     void Start()
@@ -35,7 +38,18 @@ public class HeadCollider : MonoBehaviour
                     coil.tetheredObject = other.gameObject;
                 }
             }
+        }
 
+        if (coil.whipping && !coil.canTether)
+        {
+            if (other.gameObject.GetComponent<EnemyHealth>())
+            {
+                EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);
+            }
+
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, other.transform.position, Quaternion.identity, 1);
         }
     }
 }

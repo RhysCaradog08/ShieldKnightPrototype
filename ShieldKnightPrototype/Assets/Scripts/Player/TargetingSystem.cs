@@ -71,9 +71,34 @@ public class TargetingSystem : MonoBehaviour
             targetLocations.Clear();
         }
 
+        if(player.hasProjectile)
+        {
+            if (Input.GetButtonDown("Barge"))
+            {
+                if (!lockedOn)
+                {
+                    GetTargets();
+                }
+            }
+
+            if (Input.GetButton("Barge"))
+            {
+                if (!lockedOn)
+                {
+                    TargetsInView();
+                    FindClosestTarget();
+                }
+            }
+
+            if (Input.GetButtonUp("Barge"))
+            {
+                targetLocations.Clear();
+            }
+        }
+
         if(player.hasCoil)
         {
-            if (Input.GetButtonDown("Barge")) //&& player.hasCoil)
+            if (Input.GetButtonDown("Barge"))
             {
                 if(coil.canWhip)
                 {
@@ -84,7 +109,7 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButton("Barge")) //&& player.hasCoil)
+            if (Input.GetButton("Barge"))
             {
                 if (!lockedOn)
                 {
@@ -93,7 +118,7 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonUp("Throw") || Input.GetButtonUp("Barge")) //Clears targetLocations for the next instance.
+            if (Input.GetButtonUp("Barge"))
             {
                 targetLocations.Clear();
             }
@@ -102,14 +127,20 @@ public class TargetingSystem : MonoBehaviour
             {
                 if(!lockedOn)
                 {
-
-                    foreach (GameObject target in visibleTargets)
+                    if (visibleTargets.Count > 0)
                     {
-                        markerCheck = target.GetComponent<MarkerCheck>();
-                        markerCheck.RemoveMarker();
+                        foreach (GameObject target in visibleTargets)
+                        {
+                            markerCheck = target.GetComponent<MarkerCheck>();
+
+                            if (markerCheck != null)
+                            {
+                                markerCheck.RemoveMarker();
+                            }
+                        }
                     }
                 }
-                    closest = null;
+                closest = null;
             }
         }
 
@@ -199,7 +230,7 @@ public class TargetingSystem : MonoBehaviour
     {
         visibleTargets.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
         {
-            return Vector3.Distance(transform.position, a.transform.position)
+            return Vector3.Distance(transform.position, a.transform.position)///////
             .CompareTo(
               Vector3.Distance(transform.position, b.transform.position));
         });
@@ -216,9 +247,12 @@ public class TargetingSystem : MonoBehaviour
 
             if(canTarget)
             {
-                if (markerCheck.canAddMarker == true)
+                if (markerCheck != null)
                 {
-                    markerCheck.AddMarker();
+                    if (markerCheck.canAddMarker == true)
+                    {
+                        markerCheck.AddMarker();
+                    }
                 }
             }
 
@@ -236,6 +270,11 @@ public class TargetingSystem : MonoBehaviour
 
     void GetTargets()
     {
+        if (visibleTargets.Count > 0)
+        {
+            visibleTargets.Clear();
+        }
+
         hitColliders = Physics.OverlapSphere(transform.position, 100);
 
         foreach (Collider col in hitColliders)
@@ -294,7 +333,7 @@ public class TargetingSystem : MonoBehaviour
 
                     foreach (GameObject target in visibleTargets)
                     {
-                        markerCheck = target.GetComponent<MarkerCheck>();
+                        markerCheck = target.GetComponent<MarkerCheck>();//////
                         
                         if(canTarget)
                         {
@@ -312,7 +351,7 @@ public class TargetingSystem : MonoBehaviour
                 {
                     foreach (GameObject target in visibleTargets)
                     {
-                        markerCheck = target.GetComponent<MarkerCheck>();
+                        markerCheck = target.GetComponent<MarkerCheck>();///////
                         markerCheck.RemoveMarker();
                     }
 

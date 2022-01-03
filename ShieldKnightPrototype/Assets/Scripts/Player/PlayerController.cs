@@ -79,9 +79,6 @@ public class PlayerController : MonoBehaviour
 
         ts = GetComponent<TargetingSystem>();
 
-        jumpSpeed = 5;
-        fallMultiplier = 2;
-        lowJumpMultiplier = 2.5f;
         buttonHeldTime = 0;
     }
 
