@@ -93,18 +93,23 @@ public class CoilShieldController : MonoBehaviour
 
         if(Input.GetButtonDown("Barge"))
         {
-            enableTether = true;
+            if(hasObject)
+            {
+                DropTetheredObject();
+
+                target = null;
+                ts.visibleTargets.Clear();
+            }           
+            else enableTether = true;
         }
 
-        if (Input.GetButtonUp("Barge"))
+        if (Input.GetButtonUp("Barge") && enableTether)
         {
             whipping = true;
         }
 
         if (whipping)
         {
-            select.canChange = false;
-
             if(enableTether)
             {
                 canTether = true;
@@ -165,14 +170,14 @@ public class CoilShieldController : MonoBehaviour
             grappling = true;
         }
 
-        if(grappling)
+        if (grappling)
         {
-            if(hc.grappleFixed)
+            if (hc.grappleFixed)
             {
                 Grapple();
             }
 
-            if(hc.grappleLoose)
+            if (hc.grappleLoose)
             {
                 if (tetheredObject != null)
                 {
@@ -314,5 +319,22 @@ public class CoilShieldController : MonoBehaviour
 
         tetheredRB = null;
         hasObject = false;
+    }
+
+    void DropTetheredObject()
+    {
+        tetheredObject.transform.parent = null;
+        tetheredObject = null;
+        tetheredRB.isKinematic = false;
+        tetheredRB = null;
+        tetherPoint = null;
+        hasObject = false;
+    }
+
+    void SpringJump()
+    {
+        //GetButton("Guard") player freezes in place.
+
+        //GetButtonUp("Guard") coil extends from head positioned in floor up to extent of springHeight where player regains control for a higher jump.
     }
 }

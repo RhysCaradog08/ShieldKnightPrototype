@@ -100,7 +100,7 @@ public class TargetingSystem : MonoBehaviour
         {
             if (Input.GetButtonDown("Barge"))
             {
-                if(coil.canWhip)
+                if(coil.canWhip && !coil.hasObject)
                 {
                     if (!lockedOn)
                     {
