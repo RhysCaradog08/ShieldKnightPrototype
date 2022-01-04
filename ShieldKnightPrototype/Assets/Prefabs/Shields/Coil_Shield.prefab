@@ -207,7 +207,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 2.5
-  m_Center: {x: 0, y: 2, z: 0}
+  m_Center: {x: 2, y: 0, z: 0}
 --- !u!1 &5716383769330657359
 GameObject:
   m_ObjectHideFlags: 0
@@ -354,20 +354,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf1740c74e83b3499818c2fd657986b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cc: {fileID: 0}
   coil: {fileID: 849340775734509260}
   head: {fileID: 3070269114508886830}
   whipSpeed: 25
   range: 10
   dist: 0
   target: {fileID: 0}
-  canWhip: 0
-  whipping: 0
+  canExtend: 0
+  extending: 0
   hasTarget: 0
   startScale: {x: 0, y: 0, z: 0}
   minScale: 0.25
   grappleSpeed: 0
   throwForce: 0
+  stopTime: 0
   tetherPoint: {fileID: 0}
   holdPos: {fileID: 5144681350697885504}
   tetheredObject: {fileID: 0}
@@ -376,3 +376,7 @@ MonoBehaviour:
   tethered: 0
   grappling: 0
   hasObject: 0
+  springForce: 0
+  hitObject: {fileID: 0}
+  springPoint: {x: 0, y: 0, z: 0}
+  springing: 0

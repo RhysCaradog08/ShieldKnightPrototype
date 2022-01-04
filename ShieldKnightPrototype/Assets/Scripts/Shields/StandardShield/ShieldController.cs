@@ -291,9 +291,6 @@ public class ShieldController : MonoBehaviour
         {
             hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, other.transform.position, Quaternion.identity, 1);
 
-            Vector3 knockbackDir = other.transform.position - player.transform.position;
-            knockbackDir = knockbackDir.normalized;
-
             if (other.gameObject.GetComponent<EnemyHealth>())
             {
                 EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();

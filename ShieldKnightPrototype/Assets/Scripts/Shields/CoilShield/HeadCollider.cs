@@ -25,9 +25,9 @@ public class HeadCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.tag == "Target")
+        if (other.tag == "Target")
         {
-            if(coil.canTether)
+            if (coil.canTether)
             {
                 coil.tethered = true;
                 coil.tetherPoint = other.gameObject.transform;
@@ -57,5 +57,6 @@ public class HeadCollider : MonoBehaviour
 
             hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, other.transform.position, Quaternion.identity, 1);
         }
+
     }
 }

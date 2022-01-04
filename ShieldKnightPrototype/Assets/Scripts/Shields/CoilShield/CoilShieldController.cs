@@ -27,7 +27,7 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float minScale;
 
     [Header("Grapple")]
-    [SerializeField] float grappleSpeed, throwForce;
+    [SerializeField] float grappleSpeed, throwForce, stopTime;
     public Transform tetherPoint, holdPos;
     public GameObject tetheredObject;
     Rigidbody tetheredRB;
@@ -84,7 +84,7 @@ public class CoilShieldController : MonoBehaviour
         {
             extending = true;
         }
-        else if (Input.GetButtonDown("Throw"))
+        else if (Input.GetButtonDown("Throw") && !springing)
         {
             if(tethered)
             {
@@ -95,7 +95,7 @@ public class CoilShieldController : MonoBehaviour
             extending = false;
         }
 
-        if(Input.GetButtonUp("Throw") && hasObject )
+        if(Input.GetButtonUp("Throw") && hasObject)
         {
             tethered = false;
             tetherPoint = null;
@@ -164,6 +164,8 @@ public class CoilShieldController : MonoBehaviour
 
             if (!springing)
             {
+                stopTime = 0.1f;
+
                 StartCoroutine(ScaleCoil());
                 if (hasTarget)
                 {
@@ -178,6 +180,18 @@ public class CoilShieldController : MonoBehaviour
 
             coil.transform.localScale = startScale;
         }
+
+        if(stopTime > 0)
+        {
+            stopTime -= Time.deltaTime;
+            pc.enabled = false;
+        }
+        else if(stopTime <= 0)
+        {
+            stopTime = 0;
+            pc.enabled = true;
+        }
+        
 
         if(extending && dist < 1 && !tethered)
         {
