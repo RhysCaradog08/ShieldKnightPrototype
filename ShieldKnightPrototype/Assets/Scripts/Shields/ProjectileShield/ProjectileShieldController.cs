@@ -33,16 +33,17 @@ public class ProjectileShieldController : MonoBehaviour
     public bool hasTarget;
     bool canShoot;
 
-    private void Start()
+    void Awake()
     {
         ts = transform.root.GetComponent<TargetingSystem>();
-        player = transform.root;
-
-        Invoke("CallProjectiles", 0.25f);
-
+        player = transform.root;       
         rotateSpeed = idleRotSpeed;
-        guardTrigger.SetActive(false);
+    }
 
+    private void Start()
+    {
+        Invoke("CallProjectiles", 0.25f);
+        guardTrigger.SetActive(false);
         canShoot = true;
     }
 

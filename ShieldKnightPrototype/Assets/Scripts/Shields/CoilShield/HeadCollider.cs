@@ -10,12 +10,18 @@ public class HeadCollider : MonoBehaviour
 
     GameObject hitStars;
 
+    void Awake()
+    {
+        coil = FindObjectOfType<CoilShieldController>();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        coil = FindObjectOfType<CoilShieldController>();
         grappleFixed = false;
         grappleLoose = false;
+
+        Physics.IgnoreLayerCollision(13, 3);
     }
 
     void Update()
@@ -27,6 +33,8 @@ public class HeadCollider : MonoBehaviour
     {
         if (other.tag == "Target")
         {
+            Debug.Log("Target: " + other.name);
+
             if (coil.canTether)
             {
                 coil.tethered = true;

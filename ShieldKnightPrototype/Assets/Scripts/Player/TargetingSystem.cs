@@ -37,9 +37,12 @@ public class TargetingSystem : MonoBehaviour
         shield = FindObjectOfType<ShieldController>();
         projectile = FindObjectOfType<ProjectileShieldController>();
         coil = FindObjectOfType<CoilShieldController>();
+    }
 
+    void Start()
+    {
         canLockOn = true;
-        canTarget = true;
+        canTarget = true;        
     }
 
     private void Update()

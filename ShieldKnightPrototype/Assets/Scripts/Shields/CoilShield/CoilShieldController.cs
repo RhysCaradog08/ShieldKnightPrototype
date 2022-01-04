@@ -40,9 +40,7 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] Vector3 springPoint;
     public bool springing;
 
-
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         cam = Camera.main;
@@ -53,11 +51,15 @@ public class CoilShieldController : MonoBehaviour
         hc = FindObjectOfType<HeadCollider>();
 
         lr = GetComponent<LineRenderer>();
+        
+        startScale = coil.transform.localScale;
+    }
 
+    // Start is called before the first frame update
+    void Start()
+    {
         canExtend = true;
         extending = false;
-
-        startScale = coil.transform.localScale;
 
         tetheredObject = null;
         enableTether = false;
@@ -153,7 +155,9 @@ public class CoilShieldController : MonoBehaviour
 
         if (extending)
         {
-            if(enableTether)
+            select.canChange = false;
+
+            if (enableTether)
             {
                 canTether = true;
                 enableTether = false;
@@ -219,6 +223,11 @@ public class CoilShieldController : MonoBehaviour
                     {
                         canTether = false;
                     }
+
+                    if(!hasObject)
+                    {
+                        select.canChange = true;
+                    }
                 }
             }
         } 
@@ -260,7 +269,6 @@ public class CoilShieldController : MonoBehaviour
             tetheredRB = tetheredObject.GetComponent<Rigidbody>();
             tetheredRB.isKinematic = true;
         }
-        else select.canChange = true;
 
 
         if (lr.enabled == true)
@@ -380,6 +388,7 @@ public class CoilShieldController : MonoBehaviour
 
         tetheredRB = null;
         hasObject = false;
+        select.canChange = true;
     }
 
     void DropTetheredObject()
@@ -390,6 +399,7 @@ public class CoilShieldController : MonoBehaviour
         tetheredRB = null;
         tetherPoint = null;
         hasObject = false;
+        select.canChange = true;
     }
 
     void SpringJump()

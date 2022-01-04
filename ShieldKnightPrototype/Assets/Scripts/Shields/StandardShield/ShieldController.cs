@@ -44,15 +44,18 @@ public class ShieldController : MonoBehaviour
         ts = transform.root.GetComponent<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
 
-
         shieldRB = GetComponent<Rigidbody>();
         shieldHoldPos = transform.parent.transform;
 
         trail = GetComponent<TrailRenderer>();
 
-        thrown = false;
-
         meshCol = GetComponentInChildren<MeshCollider>();
+    }
+
+    void Start()
+    {
+        thrown = false;
+        
         damageDelay = 0.5f;
     }
 

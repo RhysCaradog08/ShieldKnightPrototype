@@ -17,6 +17,7 @@ public class ShieldProjectile : MonoBehaviour
 
     private void Awake()
     {
+        shieldP = this.gameObject;
         scale = transform.localScale;
         shot = false;
         hit = false;
@@ -25,7 +26,6 @@ public class ShieldProjectile : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        shieldP = this.gameObject;
         Physics.IgnoreLayerCollision(10, 3);
         Physics.IgnoreLayerCollision(10, 10);
     }
