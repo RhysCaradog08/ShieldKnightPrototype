@@ -18,6 +18,11 @@ public class HeadCollider : MonoBehaviour
         grappleLoose = false;
     }
 
+    void Update()
+    {
+        Debug.DrawLine(transform.position, transform.forward * 10, Color.blue);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Target")
@@ -29,6 +34,7 @@ public class HeadCollider : MonoBehaviour
 
                 if (other.gameObject.layer == 11)//GrappleFixed
                 {
+                    Debug.Log("Grapple to Target");
                     grappleFixed = true;
                 }
 
@@ -40,7 +46,7 @@ public class HeadCollider : MonoBehaviour
             }
         }
 
-        if (coil.whipping && !coil.canTether)
+        if (coil.extending && !coil.springing && !coil.canTether)
         {
             if (other.gameObject.GetComponent<EnemyHealth>())
             {

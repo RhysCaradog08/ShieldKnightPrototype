@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Jumping")]
     [SerializeField] float gravity = -9.81F;
-    [SerializeField] Vector3 velocity;
+    public Vector3 velocity;
     public float jumpSpeed, fallMultiplier, lowJumpMultiplier;
     bool hasJumped;
     [SerializeField] bool canPressSpace = true;

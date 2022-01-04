@@ -6,7 +6,8 @@ public class CoilShieldController : MonoBehaviour
 {
     Transform player;
     Camera cam;
-    [SerializeField] CharacterController cc;
+    PlayerController pc;
+    CharacterController cc;
     TargetingSystem ts;
     ShieldSelect select;
     HeadCollider hc;
@@ -19,7 +20,7 @@ public class CoilShieldController : MonoBehaviour
     public float dist;
     public GameObject target;
     Vector3 dir;
-    public bool canWhip, whipping, hasTarget;
+    public bool canExtend, extending, hasTarget;
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
@@ -32,20 +33,29 @@ public class CoilShieldController : MonoBehaviour
     Rigidbody tetheredRB;
     public bool enableTether, canTether, tethered, grappling, hasObject;
 
+    [Header("Spring Jump")]
+    [SerializeField] float springForce;
+    RaycastHit hit;
+    public GameObject hitObject;
+    [SerializeField] Vector3 springPoint;
+    public bool springing;
+
 
     // Start is called before the first frame update
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").transform;
         cam = Camera.main;
+        pc = player.gameObject.GetComponent<PlayerController>();
+        cc = player.gameObject.GetComponent<CharacterController>();
         ts = FindObjectOfType<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
         hc = FindObjectOfType<HeadCollider>();
 
         lr = GetComponent<LineRenderer>();
 
-        canWhip = true;
-        whipping = false;
+        canExtend = true;
+        extending = false;
 
         startScale = coil.transform.localScale;
 
@@ -55,6 +65,8 @@ public class CoilShieldController : MonoBehaviour
         tethered = false;
         grappling = false;
         hasObject = false;
+
+        springing = false;
     }
 
     // Update is called once per frame
@@ -68,9 +80,9 @@ public class CoilShieldController : MonoBehaviour
         }
         else hasTarget = false;
 
-        if (Input.GetButtonUp("Throw") && canWhip)
+        if (Input.GetButtonUp("Throw") && canExtend)
         {
-            whipping = true;
+            extending = true;
         }
         else if (Input.GetButtonDown("Throw"))
         {
@@ -80,7 +92,7 @@ public class CoilShieldController : MonoBehaviour
                 tetherPoint = null;
             }
 
-            whipping = false;
+            extending = false;
         }
 
         if(Input.GetButtonUp("Throw") && hasObject )
@@ -105,10 +117,41 @@ public class CoilShieldController : MonoBehaviour
 
         if (Input.GetButtonUp("Barge") && enableTether)
         {
-            whipping = true;
+            extending = true;
         }
 
-        if (whipping)
+        if (!springing && canExtend && cc.isGrounded)
+        {
+            if (Input.GetButton("Guard"))
+            {
+                pc.speed = 0;
+                pc.enabled = false;
+            }
+            else
+            {
+                pc.speed = pc.moveSpeed;
+                pc.enabled = true;
+            }
+
+            if (Input.GetButtonUp("Guard"))
+            {
+                springing = true;
+                pc.velocity.y = springForce;
+
+                if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
+                {
+                    springPoint = hit.point;
+                }
+            }
+        }
+
+        if (springing)
+        { 
+            SpringJump();
+        }
+ 
+
+        if (extending)
         {
             if(enableTether)
             {
@@ -116,15 +159,18 @@ public class CoilShieldController : MonoBehaviour
                 enableTether = false;
             }
 
-            canWhip = false;
+            canExtend = false;
             lr.enabled = true;
 
-            StartCoroutine(ScaleCoil());
-            if(hasTarget)
+            if (!springing)
             {
-                TargetedWhip();
+                StartCoroutine(ScaleCoil());
+                if (hasTarget)
+                {
+                    TargetedWhip();
+                }
+                else NonTargetWhip();
             }
-            else NonTargetWhip();
         }
         else
         {
@@ -133,37 +179,40 @@ public class CoilShieldController : MonoBehaviour
             coil.transform.localScale = startScale;
         }
 
-        if(whipping && dist < 1 && !tethered)
+        if(extending && dist < 1 && !tethered)
         {
             //Debug.Log("Coil Over Extended");
-            whipping = false;
+            extending = false;
         }
 
-        if (!whipping)
+        if (!extending)
         {
             target = null;
 
-            dist = Vector3.Distance(head.transform.position, transform.position);
-
-            head.transform.position = Vector3.Lerp(head.transform.position, transform.position, whipSpeed * Time.deltaTime);
-
-            if (dist < 0.1f)
+            if (!springing)
             {
-                head.transform.position = transform.position;
+                dist = Vector3.Distance(head.transform.position, transform.position);
 
-                canWhip = true;
+                head.transform.position = Vector3.Lerp(head.transform.position, transform.position, whipSpeed * Time.deltaTime);
 
-                if(canTether)
+                if (dist < 0.1f)
                 {
-                    canTether = false;
+                    head.transform.position = transform.position;
+
+                    canExtend = true;
+
+                    if (canTether)
+                    {
+                        canTether = false;
+                    }
                 }
             }
         } 
         
         if(tethered)
         {
-            canWhip = false;
-            whipping = false;
+            canExtend = false;
+            extending = false;
 
             head.transform.position = tetherPoint.position;
             canTether = false;
@@ -190,7 +239,7 @@ public class CoilShieldController : MonoBehaviour
         {
             select.canChange = false;
 
-            canWhip = false;
+            canExtend = false;
 
             tetheredObject.transform.parent = holdPos;
             tetheredObject.transform.position = holdPos.position;
@@ -214,7 +263,7 @@ public class CoilShieldController : MonoBehaviour
 
         dist = Vector3.Distance(head.transform.position, dir * range);
 
-        if (dist >= 1 && whipping)
+        if (dist >= 1 && extending)
         {
             head.transform.position = Vector3.Lerp(head.transform.position, dir * range, whipSpeed * Time.deltaTime);
         }
@@ -224,7 +273,7 @@ public class CoilShieldController : MonoBehaviour
     {
         dist = Vector3.Distance(head.transform.position, target.transform.position);
 
-        if (dist >= 1 && whipping)
+        if (dist >= 1 && extending)
         {
             head.transform.position = Vector3.Lerp(head.transform.position, target.transform.position, whipSpeed * Time.deltaTime);
         }
@@ -249,13 +298,13 @@ public class CoilShieldController : MonoBehaviour
 
     IEnumerator ScaleCoil()
     {
-        while(minScale < coil.transform.localScale.x && whipping)
+        while(minScale < coil.transform.localScale.x && extending)
         {
             coil.transform.localScale -= startScale * Time.deltaTime * dist/whipSpeed;
             yield return null;
         }
         
-        while(coil.transform.localScale.x < startScale.x && !whipping)
+        while(coil.transform.localScale.x < startScale.x && !extending)
         {
             coil.transform.localScale += startScale * Time.deltaTime * dist/(whipSpeed * 2);
             yield return null;
@@ -269,10 +318,8 @@ public class CoilShieldController : MonoBehaviour
         dir = (head.transform.position - player.position).normalized;
         dist = Vector3.Distance(player.position, head.transform.position);
 
-        PlayerController pc = player.GetComponent<PlayerController>();
         pc.enabled = false;
 
-        cc = player.GetComponent<CharacterController>();
         cc.Move(dir * grappleSpeed * Time.deltaTime);
 
         if (dist < 2)
@@ -280,7 +327,7 @@ public class CoilShieldController : MonoBehaviour
             grappling = false;
             tethered = false;
             tetherPoint = null;
-            whipping = false;
+            extending = false;
 
             hc.grappleFixed = false;
             pc.enabled = true;
@@ -333,8 +380,16 @@ public class CoilShieldController : MonoBehaviour
 
     void SpringJump()
     {
-        //GetButton("Guard") player freezes in place.
+        extending = true;
 
-        //GetButtonUp("Guard") coil extends from head positioned in floor up to extent of springHeight where player regains control for a higher jump.
+        head.transform.position = springPoint;
+
+        dist = Vector3.Distance(head.transform.position, transform.position);
+
+        if (dist >= 10)
+        {
+            springing = false;
+            extending = false;
+        }
     }
 }

@@ -100,7 +100,7 @@ public class TargetingSystem : MonoBehaviour
         {
             if (Input.GetButtonDown("Barge"))
             {
-                if(coil.canWhip && !coil.hasObject)
+                if(coil.canExtend && !coil.hasObject)
                 {
                     if (!lockedOn)
                     {
@@ -123,7 +123,7 @@ public class TargetingSystem : MonoBehaviour
                 targetLocations.Clear();
             }
 
-            if(!coil.whipping && !coil.canWhip)
+            if(!coil.extending && !coil.canExtend)
             {
                 if(!lockedOn)
                 {
