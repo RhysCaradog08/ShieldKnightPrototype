@@ -26,7 +26,7 @@ public class ShieldController : MonoBehaviour
     [SerializeField] MeshCollider meshCol;
 
     [Header("Barge")]
-    [SerializeField] float bargeDist, bargeDelay;
+    [SerializeField] float bargeDelay;
     public float bargeTime, bargeSpeed;
     public GameObject closest;
     GameObject marker;
@@ -38,10 +38,11 @@ public class ShieldController : MonoBehaviour
     float dodgeDelay;
 
     [Header("Slam")]
-    [SerializeField] float slamForce, slamRadius, slamLift, damageDelay;
+    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay;
+    [SerializeField] float waitTime;
     GameObject slamStars;
     public bool isSlamming;
-    bool showSlamVFX = false;
+    bool showSlamVFX;
 
     [Header("UI")]
     private GameObject targetMarker;
@@ -75,6 +76,10 @@ public class ShieldController : MonoBehaviour
         //Dodge
         isDodging = false;
 
+        //Slam
+        isSlamming = false;
+        showSlamVFX = false;
+
         damageDelay = 0.5f;
     }
 
@@ -88,6 +93,22 @@ public class ShieldController : MonoBehaviour
             hasTarget = true;
         }
         else hasTarget = false;
+
+        if(cc.isGrounded)
+        {
+            if (waitTime <= 0)  //Resets player being immobile once grounded after Slam action is performed.
+            {
+                waitTime = 0;
+                //stopped = false;
+                isSlamming = false;
+            }
+            else //Whilst waitTime > 0 player is immobile.
+            {
+                //stopped = true;
+                isSlamming = true;
+            }
+        }
+
 
         if (canThrow)  //Perform Throw action if Player has possession of Shield. 
         {
@@ -143,6 +164,12 @@ public class ShieldController : MonoBehaviour
             }
         }
 
+        if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
+        {
+            waitTime = 0.5f;
+            isSlamming = true;
+        }
+
         if (isBarging)
         {
             player.barging = true;
@@ -159,10 +186,15 @@ public class ShieldController : MonoBehaviour
         isBarging = false;
 
         canDodge = true;
-        isDodging = false;
+        isDodging = false;        
 
         if (isSlamming)
         {
+            player.stopped = true;
+            player.slamming = true;
+
+            StartCoroutine(SlamDown());
+
             RaycastHit hit;
 
             if (Physics.Raycast(transform.position, -transform.up * 10, out hit))
@@ -174,7 +206,7 @@ public class ShieldController : MonoBehaviour
                 {
                     Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
 
-                    Slam();
+                    SlamImpact();
 
                     if (!showSlamVFX)
                     {
@@ -186,8 +218,16 @@ public class ShieldController : MonoBehaviour
         }
         else
         {
+            player.stopped = false;
+            player.slamming = false;
             showSlamVFX = false;
         }
+
+        if (cc.isGrounded && isSlamming)
+        {
+            waitTime -= Time.deltaTime;
+        }
+
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
@@ -351,7 +391,13 @@ public class ShieldController : MonoBehaviour
         }
     }
 
-    void Slam()
+    IEnumerator SlamDown() //Player movement is frozen then directed down by slamForce.
+    {
+        yield return new WaitForSeconds(slamDelay);
+        player.velocity.y = slamForce;
+    }
+
+    void SlamImpact()
     {
         Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
 
@@ -361,7 +407,7 @@ public class ShieldController : MonoBehaviour
 
             if (slamRB != null)
             {
-                slamRB.AddExplosionForce(slamForce, transform.position, slamRadius, slamLift, ForceMode.Impulse);
+                slamRB.AddExplosionForce(slamPushBack, transform.position, slamRadius, slamLift, ForceMode.Impulse);
             }
 
             EnemyHealth enemy = col.GetComponent<EnemyHealth>();
@@ -431,15 +477,6 @@ public class ShieldController : MonoBehaviour
             }
         }
     }
-
-  
-
-    /*private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
-        Gizmos.DrawWireSphere(transform.position, slamRadius);
-    }*/
 }
 
 

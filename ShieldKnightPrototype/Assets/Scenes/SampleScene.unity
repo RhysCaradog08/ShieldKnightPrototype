@@ -845,6 +845,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
+      propertyPath: parryBox
+      value: 
+      objectReference: {fileID: 1022895857}
+    - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
       propertyPath: bargeDist
       value: 100
       objectReference: {fileID: 0}
@@ -860,6 +865,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
+      propertyPath: slamDelay
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: slamForce
+      value: -25
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
       propertyPath: bargeSpeed
       value: 50
       objectReference: {fileID: 0}
@@ -867,6 +882,11 @@ PrefabInstance:
         type: 3}
       propertyPath: dodgeSpeed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: slamPushBack
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3269704654004686917, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
@@ -2187,6 +2207,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3295129495889972761, guid: fd72e6a96884d8043be4918443e59039,
     type: 3}
   m_PrefabInstance: {fileID: 8669621523315227791}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1022895857 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7185753917962501697, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+    type: 3}
+  m_PrefabInstance: {fileID: 201656873}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1137484797 stripped
 GameObject:

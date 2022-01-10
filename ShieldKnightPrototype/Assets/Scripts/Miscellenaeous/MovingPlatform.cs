@@ -16,10 +16,13 @@ public class MovingPlatform : MonoBehaviour
         }
     }
 
-    void OnTriggerExit(Collider col)
+    void OnTriggerExit(Collider other)
     {
-        player.transform.parent = null;
+        if (other.gameObject.CompareTag("Player"))
+        {
+            player.transform.parent = null;
 
-        player = null;
+            player = null;
+        }
     }
 }

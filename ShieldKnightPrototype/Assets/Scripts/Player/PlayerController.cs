@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 move, moveDir;
     public float turnSmoothTime;
     float turnSmoothVelocity;
-    [SerializeField] bool stopped;
+    public bool stopped;
 
     [Header("Jumping")]
     [SerializeField] float gravity;
@@ -39,16 +39,11 @@ public class PlayerController : MonoBehaviour
     bool buttonHeld;
     public GameObject parryBox;
 
-    [Header("Slam")]
-    public bool slamming;
-    public float slamDelay, slamForce;
-    [SerializeField] float waitTime;
-
     [Header("Shield Booleans")]
     public bool hasShield, hasProjectile, hasCoil;
 
-    [Header("Animation Bools")]
-    public bool barging, dodging;
+    [Header("Animation Booleans")]
+    public bool barging, dodging, slamming;
 
 
     private void Awake()
@@ -80,27 +75,14 @@ public class PlayerController : MonoBehaviour
         buttonHeldTime = 0;
         buttonHeld = false;
 
-        //Slam
-        slamming = false;
-
+        //Animation Booleans
         barging = false;
         dodging = false;
+        slamming = false;
     }
 
     private void Update()
     {
-        if (shield.isBarging)
-        {
-            Debug.Log("Shield Barging");
-        }
-        else Debug.Log("Shield not Barging");
-
-        if(shield.isDodging)
-        {
-            Debug.Log("Shield Dodging");
-        }
-        else Debug.Log("Shield not Dodging");
-
         //Debug.Log("Is  Grounded " + cc.isGrounded);
         Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.red);
 
@@ -143,18 +125,6 @@ public class PlayerController : MonoBehaviour
                 hasJumped = false;
             }
             else anim.SetBool("Jumping", false);
-
-            if (waitTime <= 0)  //Resets player being immobile once grounded after Slam action is performed.
-            {
-                waitTime = 0;
-                stopped = false;
-                slamming = false;
-            }
-            else //Whilst waitTime > 0 player is immobile.
-            {
-                stopped = true;
-                slamming = true;
-            }
         }
 
         if (velocity.y < 0)  //Allows for greater height to be achieved if Jump input is held.
@@ -164,15 +134,6 @@ public class PlayerController : MonoBehaviour
         else if (velocity.y > 0 && !Input.GetKey(KeyCode.Space))  //Allows for a brief Jump action to be performed.
         {
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
-        }
-
-        if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
-        {
-            if (hasShield)
-            {
-                waitTime = 0.5f;
-                slamming = true;
-            }
         }
 
         if (!cc.isGrounded && Input.GetButton("Guard"))
@@ -258,6 +219,40 @@ public class PlayerController : MonoBehaviour
             {
                 anim.ResetTrigger("Dodge");
             }
+
+            if (!shield.thrown)
+            {
+                if (Input.GetButtonDown("Guard") && cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
+                {
+                    buttonHeldTime = Time.timeSinceLevelLoad;
+                    buttonHeld = false;
+                }
+                else if (Input.GetButtonUp("Guard") && cc.isGrounded)
+                {
+                    if (!buttonHeld && hasShield)//If button is released without being held.
+                    {
+                        anim.SetTrigger("Parry");
+                    }
+                    buttonHeld = false;
+                }
+
+                if (Input.GetButton("Guard") && cc.isGrounded)
+                {
+                    if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
+                    {
+                        buttonHeld = true;
+                    }
+                }
+
+                if (slamming)
+                {
+                    anim.SetBool("Slamming", true);
+                }
+                else
+                {
+                    anim.SetBool("Slamming", false);
+                }
+            }
         }
 
         if(hasProjectile)
@@ -299,53 +294,6 @@ public class PlayerController : MonoBehaviour
         cc.Move(velocity * Time.deltaTime);
 
         speed = moveSpeed;
-
-        if (slamming)
-        {
-            stopped = true;
-
-            StartCoroutine(Slam());
-
-            anim.SetBool("Slamming", true);
-            shield.isSlamming = true;
-        }
-        else
-        {
-            anim.SetBool("Slamming", false);
-            shield.isSlamming = false;
-
-            stopped = false;
-        } 
-
-        if (cc.isGrounded && slamming)
-        {
-            waitTime -= Time.deltaTime;
-        }
-
-        if (!shield.thrown)
-        {
-            if (Input.GetButtonDown("Guard") &&  cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
-            {
-                buttonHeldTime = Time.timeSinceLevelLoad;
-                buttonHeld = false;
-            }
-            else if (Input.GetButtonUp("Guard") && cc.isGrounded)
-            {
-                if (!buttonHeld && hasShield)//If button is released without being held.
-                {                  
-                    anim.SetTrigger("Parry");
-                }
-                buttonHeld = false;
-            }
-
-            if (Input.GetButton("Guard") && cc.isGrounded)
-            {
-                if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
-                {
-                    buttonHeld = true;
-                }
-            }
-        }
     }
 
     public void EnableParry()  ///Sets ParryBox.
@@ -361,12 +309,6 @@ public class PlayerController : MonoBehaviour
     public void EnableThrow()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
     {
         shield.canThrow = true;
-    }
-
-    IEnumerator Slam() //Player movement is frozen then directed down by slamForce.
-    {
-        yield return new WaitForSeconds(slamDelay);
-        velocity.y = slamForce;
     }
 
     /*void OnDrawGizmosSelected()

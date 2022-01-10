@@ -17,11 +17,15 @@ public class EnemyHealth : MonoBehaviour
 
     public bool squashed = false;
 
-    private void Start()
+    private void Awake()
     {
         ts = FindObjectOfType<TargetingSystem>();
+        rb = GetComponent<Rigidbody>();        
+    }
+
+    private void Start()
+    {
         fullSize = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -46,7 +50,10 @@ public class EnemyHealth : MonoBehaviour
     {
         squashed = true;
 
-        rb.isKinematic = true;
+        if(rb != null)
+        {
+            rb.isKinematic = true;
+        }
 
         transform.localScale = new Vector3(fullSize.x, 0.1f, fullSize.z);
 
@@ -64,7 +71,11 @@ public class EnemyHealth : MonoBehaviour
     void UnSquash()
     {
         transform.localScale = new Vector3(fullSize.x, fullSize.y, fullSize.z);
-        rb.isKinematic = false;
+
+        if(rb != null)
+        {
+            rb.isKinematic = false;
+        }
 
         squashed = false;
     }
