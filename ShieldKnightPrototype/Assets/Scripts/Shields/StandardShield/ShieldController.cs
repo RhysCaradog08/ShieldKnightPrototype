@@ -6,6 +6,7 @@ using Basics.ObjectPool;
 public class ShieldController : MonoBehaviour
 {
     PlayerController player;
+    CharacterController cc;
     TargetingSystem ts;
     ShieldSelect select;
 
@@ -19,14 +20,22 @@ public class ShieldController : MonoBehaviour
     GameObject hitStars;
     public bool thrown, hasTarget, canThrow;
 
-
     [Header("Recall")]
     public Transform curvePoint;
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
     [Header("Barge")]
-    public bool isBarging;
+    [SerializeField] float bargeDist, bargeDelay;
+    public float bargeTime, bargeSpeed;
+    public GameObject closest;
+    GameObject marker;
+    public bool canBarge, isBarging;
+
+    [Header("Dodge")]
+    public bool canDodge, isDodging;
+    public float dodgeTime, dodgeSpeed;
+    float dodgeDelay;
 
     [Header("Slam")]
     [SerializeField] float slamForce, slamRadius, slamLift, damageDelay;
@@ -41,6 +50,7 @@ public class ShieldController : MonoBehaviour
     void Awake()
     {
         player = FindObjectOfType<PlayerController>();
+        cc = player.gameObject.GetComponent<CharacterController>();
         ts = transform.root.GetComponent<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
 
@@ -54,13 +64,25 @@ public class ShieldController : MonoBehaviour
 
     void Start()
     {
+        //Throw
         thrown = false;
-        
+
+        //Barge
+        canBarge = true;
+        isBarging = false;
+        closest = null;
+
+        //Dodge
+        isDodging = false;
+
         damageDelay = 0.5f;
     }
 
     private void Update()
     {
+        //Debug.Log("Shield Barging: " + isBarging);
+        //Debug.Log("Shield Dodging: " + isDodging);
+
         if (target != null)
         {
             hasTarget = true;
@@ -99,6 +121,45 @@ public class ShieldController : MonoBehaviour
             trail.enabled = false;
             select.canChange = true;
         }
+
+        bargeDelay -= Time.deltaTime;
+        dodgeDelay -= Time.deltaTime;
+
+        if (Input.GetButtonDown("Barge")) //Input to perform Barge/Dodge action.
+        {
+            if (!thrown)
+            {
+                if (canBarge && bargeDelay <= 0)
+                {
+                    StartCoroutine(Barge());
+                }
+            }
+            else if (thrown)
+            {
+                if (canDodge && dodgeDelay <= 0)
+                {
+                    StartCoroutine(Dodge());
+                }
+            }
+        }
+
+        if (isBarging)
+        {
+            player.barging = true;
+        }
+        else player.barging = false;
+
+        if (isDodging)
+        {
+            player.dodging = true;
+        }
+        else player.dodging = false;
+
+        canBarge = true;
+        isBarging = false;
+
+        canDodge = true;
+        isDodging = false;
 
         if (isSlamming)
         {
@@ -233,6 +294,61 @@ public class ShieldController : MonoBehaviour
         }
 
         StartCoroutine(RecallShield());
+    }
+
+    IEnumerator Barge()
+    {
+        float startTime = Time.time;
+
+        new WaitForSeconds(1); //Prevents player from stacking Barges.
+
+        while (Time.time < startTime + bargeTime)  //Player movement speed is disabled then moved by bargeSpeed over bargeTime;
+        {
+            isBarging = true;
+            //trailEffect.SetActive(true);
+            player.speed = 0;
+
+            canBarge = false;
+
+            if (ts.lockedOn)
+            {
+                Vector3 closestDir = (ts.closest.transform.position - transform.position).normalized;
+                Vector3 closestRot = Vector3.RotateTowards(transform.forward, closestDir, 10, 0);
+                transform.rotation = Quaternion.LookRotation(closestRot);
+
+                cc.Move(closestDir * bargeSpeed * Time.deltaTime);
+            }
+            else cc.Move(player.moveDir * bargeSpeed * Time.deltaTime);
+
+            bargeDelay = 0.5f;
+
+            yield return null;
+        }
+
+        if (marker != null)
+        {
+            ObjectPoolManager.instance.RecallObject(marker);
+        }
+    }
+
+    IEnumerator Dodge()
+    {
+        float startTime = Time.time;
+
+        new WaitForSeconds(1); //Prevents player from stacking Dodges.
+
+        while (Time.time < startTime + bargeTime)  //Player movement speed is disabled then moved by dodgeSpeed over dodgeTime;
+        {
+            isDodging = true;
+            canDodge = false;
+            player.speed = 0;
+
+            cc.Move(player.moveDir * dodgeSpeed * Time.deltaTime);
+
+            dodgeDelay = 0.5f;
+
+            yield return null;
+        }
     }
 
     void Slam()

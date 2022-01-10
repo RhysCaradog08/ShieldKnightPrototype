@@ -137,7 +137,7 @@ public class ProjectileShieldController : MonoBehaviour
 
     void CallProjectiles()
     {
-        Debug.Log("Get Projectiles");
+        //Debug.Log("Get Projectiles");
         shootDelay = 0.5f;
 
         if (shieldProjectile1 == null)
@@ -197,7 +197,7 @@ public class ProjectileShieldController : MonoBehaviour
 
     void ShootProjectile()
     {
-        Debug.Log("Shoot Projectile");
+        //Debug.Log("Shoot Projectile");
 
         currentProjectile = projectiles[0];
         currentProjectile.transform.parent = null;
@@ -232,7 +232,7 @@ public class ProjectileShieldController : MonoBehaviour
     void ShootAtTargets()
     {
         //Shoot each projectile at each assigned targets.
-        Debug.Log("Shoot at Targets");
+        //Debug.Log("Shoot at Targets");
 
         for (int i = 0; i < ts.visibleTargets.Count; i++)
         {
@@ -279,7 +279,7 @@ public class ProjectileShieldController : MonoBehaviour
 
     void LockOnShoot()
     {
-        Debug.Log("Lock On Shoot");
+        //Debug.Log("Lock On Shoot");
 
         currentProjectile = projectiles[0];
         currentProjectile.transform.parent = null;
