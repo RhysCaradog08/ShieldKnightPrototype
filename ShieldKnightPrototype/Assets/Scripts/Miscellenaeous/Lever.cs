@@ -16,10 +16,15 @@ public class Lever : MonoBehaviour
     public bool isOn = false;
     public bool canChange = true;
 
+    private void Awake()
+    {
+        anim = GetComponent<Animator>();        
+    }
+
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponent<Animator>();
+        offDest = obj.transform.localPosition;
     }
 
     // Update is called once per frame

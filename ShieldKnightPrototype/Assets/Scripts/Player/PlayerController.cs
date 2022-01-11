@@ -19,9 +19,8 @@ public class PlayerController : MonoBehaviour
     [Header("Movement")]
     public Transform pivot;
     public GameObject model;
-    public float speed;
-    public float moveSpeed, rotateSpeed;
-    public Vector3 move, moveDir;
+    public float speed, moveSpeed, rotateSpeed;
+    public Vector3 move, moveDir; //velocityMomentum;
     public float turnSmoothTime;
     float turnSmoothVelocity;
     public bool stopped;
@@ -174,10 +173,24 @@ public class PlayerController : MonoBehaviour
         }
 
         velocity.y += gravity * Time.deltaTime;
+
         if(cc.isGrounded && velocity.y < 0)
         {
             velocity.y = -2;
         }
+
+        /*velocity += velocityMomentum; // Applying momentum to current velocity;
+
+        if (velocityMomentum.magnitude >= 0f) //Dampen velocity momentum.
+        {
+            float momentumDrag = 2.5f;
+
+            velocityMomentum -= velocityMomentum * momentumDrag * Time.deltaTime;
+        }
+        if (velocityMomentum.magnitude < 0.0f)
+        {
+            velocityMomentum = Vector3.zero;
+        }*/
 
         if (hasShield)
         {

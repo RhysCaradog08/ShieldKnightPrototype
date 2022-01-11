@@ -27,7 +27,7 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float minScale;
 
     [Header("Grapple")]
-    [SerializeField] float grappleSpeed, throwForce, stopTime;
+    [SerializeField] float grappleSpeed, throwForce, stopTime, momentumExtra;
     public Transform tetherPoint, holdPos;
     public GameObject tetheredObject;
     Rigidbody tetheredRB;
@@ -342,19 +342,23 @@ public class CoilShieldController : MonoBehaviour
 
         pc.enabled = false;
 
-        cc.Move(dir * grappleSpeed * Time.deltaTime);
-
-        if (dist < 2)
+        if (dist < 1.5f)
         {
+
             grappling = false;
             tethered = false;
             tetherPoint = null;
             extending = false;
 
+            /*pc.velocityMomentum = dir * grappleSpeed * momentumExtra;
+            pc.velocity.y = 0;*/
+
             hc.grappleFixed = false;
             pc.enabled = true;
             pc.speed = pc.moveSpeed;
+
         }
+        else cc.Move(dir * grappleSpeed * Time.deltaTime);
     }
 
     void GetTetheredObject()
