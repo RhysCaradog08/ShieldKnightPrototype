@@ -820,8 +820,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
+      propertyPath: slamLift
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
       propertyPath: hitObject
       value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: slamDelay
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: slamForce
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
@@ -830,8 +845,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
+      propertyPath: slamRadius
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
       propertyPath: throwForce
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: damageDelay
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
@@ -842,6 +867,11 @@ PrefabInstance:
         type: 3}
       propertyPath: grappleSpeed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: slamPushBack
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}

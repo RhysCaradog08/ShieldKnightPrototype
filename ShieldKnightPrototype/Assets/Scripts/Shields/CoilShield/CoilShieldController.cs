@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class CoilShieldController : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class CoilShieldController : MonoBehaviour
     public float dist;
     public GameObject target;
     Vector3 dir;
-    public bool canExtend, extending, hasTarget;
+    public bool canExtend, isExtending, hasTarget;
 
     [Header("Coil Scale")]
     [SerializeField] Vector3 startScale;
@@ -31,14 +32,21 @@ public class CoilShieldController : MonoBehaviour
     public Transform tetherPoint, holdPos;
     public GameObject tetheredObject;
     Rigidbody tetheredRB;
-    public bool enableTether, canTether, tethered, grappling, hasObject;
+    public bool enableTether, canTether, isTethered, isGrappling, hasObject;
 
     [Header("Spring Jump")]
     [SerializeField] float springHeight;
     RaycastHit hit;
     public GameObject hitObject;
     [SerializeField] Vector3 springPoint;
-    public bool springing;
+    public bool isSpringing;
+
+    [Header("Slam")]
+    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay;
+    [SerializeField] float waitTime;
+    GameObject slamStars;
+    public bool isSlamming;
+    bool showSlamVFX;
 
     private void Awake()
     {
@@ -59,16 +67,16 @@ public class CoilShieldController : MonoBehaviour
     void Start()
     {
         canExtend = true;
-        extending = false;
+        isExtending = false;
 
         tetheredObject = null;
         enableTether = false;
         canTether = false;
-        tethered = false;
-        grappling = false;
+        isTethered = false;
+        isGrappling = false;
         hasObject = false;
 
-        springing = false;
+        isSpringing = false;
     }
 
     // Update is called once per frame
@@ -82,24 +90,37 @@ public class CoilShieldController : MonoBehaviour
         }
         else hasTarget = false;
 
+        if (cc.isGrounded)
+        {
+            if (waitTime <= 0)  //Resets player being immobile once grounded after Slam action is performed.
+            {
+                waitTime = 0;
+                isSlamming = false;
+            }
+            else //Whilst waitTime > 0 player is immobile.
+            {
+                isSlamming = true;
+            }
+        }
+
         if (Input.GetButtonUp("Throw") && canExtend)
         {
-            extending = true;
+            isExtending = true;
         }
-        else if (Input.GetButtonDown("Throw") && !springing)
+        else if (Input.GetButtonDown("Throw") && !isSpringing)
         {
-            if(tethered)
+            if(isTethered)
             {
-                tethered = false;
+                isTethered = false;
                 tetherPoint = null;
             }
 
-            extending = false;
+            isExtending = false;
         }
 
         if(Input.GetButtonUp("Throw") && hasObject)
         {
-            tethered = false;
+            isTethered = false;
             tetherPoint = null;
 
             ThrowTetheredObject();
@@ -119,10 +140,10 @@ public class CoilShieldController : MonoBehaviour
 
         if (Input.GetButtonUp("Barge") && enableTether)
         {
-            extending = true;
+            isExtending = true;
         }
 
-        if (!springing && canExtend && cc.isGrounded)
+        if (!isSpringing && canExtend && cc.isGrounded)
         {
             if (Input.GetButton("Guard"))
             {
@@ -137,7 +158,7 @@ public class CoilShieldController : MonoBehaviour
 
             if (Input.GetButtonUp("Guard"))
             {
-                springing = true;
+                isSpringing = true;
                 pc.velocity.y = pc.jumpHeight * springHeight;
 
                 if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
@@ -147,13 +168,18 @@ public class CoilShieldController : MonoBehaviour
             }
         }
 
-        if (springing)
+        if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
+        {
+            CoilSlam();
+        }
+
+        if (isSpringing)
         { 
             SpringJump();
         }
  
 
-        if (extending)
+        if (isExtending)
         {
             select.canChange = false;
 
@@ -166,7 +192,7 @@ public class CoilShieldController : MonoBehaviour
             canExtend = false;
             lr.enabled = true;
 
-            if (!springing)
+            if (!isSpringing || !isSlamming)
             {
                 stopTime = 0.1f;
 
@@ -176,6 +202,16 @@ public class CoilShieldController : MonoBehaviour
                     TargetedWhip();
                 }
                 else NonTargetWhip();
+            }
+
+            if(isSlamming)
+            {
+                stopTime = 0;
+
+                if(dist >= 0.5f)
+                {
+                    head.transform.position = springPoint;
+                }
             }
         }
         else
@@ -197,17 +233,17 @@ public class CoilShieldController : MonoBehaviour
         }
         
 
-        if(extending && dist < 1 && !tethered)
+        if(isExtending && dist < 1 && !isTethered)
         {
             //Debug.Log("Coil Over Extended");
-            extending = false;
+            isExtending = false;
         }
 
-        if (!extending)
+        if (!isExtending)
         {
             target = null;
 
-            if (!springing)
+            if (!isSpringing || !isSlamming)
             {
                 dist = Vector3.Distance(head.transform.position, transform.position);
 
@@ -232,17 +268,17 @@ public class CoilShieldController : MonoBehaviour
             }
         } 
         
-        if(tethered)
+        if(isTethered)
         {
             canExtend = false;
-            extending = false;
+            isExtending = false;
 
             head.transform.position = tetherPoint.position;
             canTether = false;
-            grappling = true;
+            isGrappling = true;
         }
 
-        if (grappling)
+        if (isGrappling)
         {
             if (hc.grappleFixed)
             {
@@ -270,10 +306,49 @@ public class CoilShieldController : MonoBehaviour
             tetheredRB.isKinematic = true;
         }
 
+        if (isSlamming)
+        {
+            pc.stopped = true;
+            pc.slamming = true;
+
+            StartCoroutine(SlamDown());
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, -transform.up * 10, out hit))
+            {
+                //Debug.DrawLine(transform.position, transform.right, Color.red);
+                float distToGround = hit.distance;
+
+                if (distToGround < 1)
+                {
+                    Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
+
+                    SlamImpact();
+
+                    if (!showSlamVFX)
+                    {
+                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, transform.position, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                        showSlamVFX = true;
+                    }
+                }
+            }
+        }
+        else
+        {
+            pc.stopped = false;
+            pc.slamming = false;
+            showSlamVFX = false;
+        }
 
         if (lr.enabled == true)
         {
             ShowLineRenderer();
+        }
+
+        if (cc.isGrounded && isSlamming)
+        {
+            waitTime -= Time.deltaTime;
         }
     }
 
@@ -285,7 +360,7 @@ public class CoilShieldController : MonoBehaviour
 
         dist = Vector3.Distance(head.transform.position, dir * range);
 
-        if (dist >= 1 && extending)
+        if (dist >= 1 && isExtending)
         {
             head.transform.position = Vector3.Lerp(head.transform.position, dir * range, whipSpeed * Time.deltaTime);
         }
@@ -295,7 +370,7 @@ public class CoilShieldController : MonoBehaviour
     {
         dist = Vector3.Distance(head.transform.position, target.transform.position);
 
-        if (dist >= 1 && extending)
+        if (dist >= 1 && isExtending)
         {
             head.transform.position = Vector3.Lerp(head.transform.position, target.transform.position, whipSpeed * Time.deltaTime);
         }
@@ -320,13 +395,13 @@ public class CoilShieldController : MonoBehaviour
 
     IEnumerator ScaleCoil()
     {
-        while(minScale < coil.transform.localScale.x && extending)
+        while(minScale < coil.transform.localScale.x && isExtending)
         {
             coil.transform.localScale -= startScale * Time.deltaTime * dist/whipSpeed;
             yield return null;
         }
         
-        while(coil.transform.localScale.x < startScale.x && !extending)
+        while(coil.transform.localScale.x < startScale.x && !isExtending)
         {
             coil.transform.localScale += startScale * Time.deltaTime * dist/(whipSpeed * 2);
             yield return null;
@@ -345,10 +420,10 @@ public class CoilShieldController : MonoBehaviour
         if (dist < 1.5f)
         {
 
-            grappling = false;
-            tethered = false;
+            isGrappling = false;
+            isTethered = false;
             tetherPoint = null;
-            extending = false;
+            isExtending = false;
 
             /*pc.velocityMomentum = dir * grappleSpeed * momentumExtra;
             pc.velocity.y = 0;*/
@@ -372,10 +447,10 @@ public class CoilShieldController : MonoBehaviour
         {
             Debug.Log("Has Tethered Object");
 
-            grappling = false;
+            isGrappling = false;
             hc.grappleLoose = false;
             hasObject = true;
-            tethered = false;
+            isTethered = false;
         }
     }
 
@@ -408,7 +483,7 @@ public class CoilShieldController : MonoBehaviour
 
     void SpringJump()
     {
-        extending = true;
+        isExtending = true;
 
         head.transform.position = springPoint;
 
@@ -416,8 +491,54 @@ public class CoilShieldController : MonoBehaviour
 
         if (dist >= 10)
         {
-            springing = false;
-            extending = false;
+            isSpringing = false;
+            isExtending = false;
+        }
+    }
+
+    void CoilSlam()
+    {
+        if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
+        {
+            springPoint = hit.point;
+        }
+
+        isExtending = true;
+
+        head.transform.position = springPoint;
+
+        waitTime = 0.5f;
+        isSlamming = true;
+    }
+
+    IEnumerator SlamDown() //Player movement is frozen then directed down by slamForce.
+    {
+        yield return new WaitForSeconds(slamDelay);
+        pc.velocity.y = slamForce;
+    }
+
+    void SlamImpact()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
+
+        foreach (Collider col in colliders)
+        {
+            Rigidbody slamRB = col.GetComponent<Rigidbody>();
+
+            if (slamRB != null)
+            {
+                slamRB.AddExplosionForce(slamPushBack, transform.position, slamRadius, slamLift, ForceMode.Impulse);
+            }
+
+            EnemyHealth enemy = col.GetComponent<EnemyHealth>();
+
+            if (enemy != null)
+            {
+                if (damageDelay <= 0)
+                {
+                    enemy.TakeDamage(10);
+                }
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using Basics.ObjectPool;
 
 public class ShieldController : MonoBehaviour
 {
-    PlayerController player;
+    PlayerController pc;
     CharacterController cc;
     TargetingSystem ts;
     ShieldSelect select;
@@ -50,8 +50,8 @@ public class ShieldController : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        player = FindObjectOfType<PlayerController>();
-        cc = player.gameObject.GetComponent<CharacterController>();
+        pc = FindObjectOfType<PlayerController>();
+        cc = pc.gameObject.GetComponent<CharacterController>();
         ts = transform.root.GetComponent<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
 
@@ -99,12 +99,10 @@ public class ShieldController : MonoBehaviour
             if (waitTime <= 0)  //Resets player being immobile once grounded after Slam action is performed.
             {
                 waitTime = 0;
-                //stopped = false;
                 isSlamming = false;
             }
             else //Whilst waitTime > 0 player is immobile.
             {
-                //stopped = true;
                 isSlamming = true;
             }
         }
@@ -172,15 +170,15 @@ public class ShieldController : MonoBehaviour
 
         if (isBarging)
         {
-            player.barging = true;
+            pc.barging = true;
         }
-        else player.barging = false;
+        else pc.barging = false;
 
         if (isDodging)
         {
-            player.dodging = true;
+            pc.dodging = true;
         }
-        else player.dodging = false;
+        else pc.dodging = false;
 
         canBarge = true;
         isBarging = false;
@@ -190,8 +188,8 @@ public class ShieldController : MonoBehaviour
 
         if (isSlamming)
         {
-            player.stopped = true;
-            player.slamming = true;
+            pc.stopped = true;
+            pc.slamming = true;
 
             StartCoroutine(SlamDown());
 
@@ -218,8 +216,8 @@ public class ShieldController : MonoBehaviour
         }
         else
         {
-            player.stopped = false;
-            player.slamming = false;
+            pc.stopped = false;
+            pc.slamming = false;
             showSlamVFX = false;
         }
 
@@ -346,7 +344,7 @@ public class ShieldController : MonoBehaviour
         {
             isBarging = true;
             //trailEffect.SetActive(true);
-            player.speed = 0;
+            pc.speed = 0;
 
             canBarge = false;
 
@@ -358,7 +356,7 @@ public class ShieldController : MonoBehaviour
 
                 cc.Move(closestDir * bargeSpeed * Time.deltaTime);
             }
-            else cc.Move(player.moveDir * bargeSpeed * Time.deltaTime);
+            else cc.Move(pc.moveDir * bargeSpeed * Time.deltaTime);
 
             bargeDelay = 0.5f;
 
@@ -381,9 +379,9 @@ public class ShieldController : MonoBehaviour
         {
             isDodging = true;
             canDodge = false;
-            player.speed = 0;
+            pc.speed = 0;
 
-            cc.Move(player.moveDir * dodgeSpeed * Time.deltaTime);
+            cc.Move(pc.moveDir * dodgeSpeed * Time.deltaTime);
 
             dodgeDelay = 0.5f;
 
@@ -394,7 +392,7 @@ public class ShieldController : MonoBehaviour
     IEnumerator SlamDown() //Player movement is frozen then directed down by slamForce.
     {
         yield return new WaitForSeconds(slamDelay);
-        player.velocity.y = slamForce;
+        pc.velocity.y = slamForce;
     }
 
     void SlamImpact()

@@ -37,7 +37,7 @@ public class HeadCollider : MonoBehaviour
 
             if (coil.canTether)
             {
-                coil.tethered = true;
+                coil.isTethered = true;
                 coil.tetherPoint = other.gameObject.transform;
 
                 if (other.gameObject.layer == 11)//GrappleFixed
@@ -54,7 +54,7 @@ public class HeadCollider : MonoBehaviour
             }
         }
 
-        if (coil.extending && !coil.springing && !coil.canTether)
+        if (coil.isExtending && !coil.isSpringing && !coil.canTether)
         {
             if (other.gameObject.GetComponent<EnemyHealth>())
             {

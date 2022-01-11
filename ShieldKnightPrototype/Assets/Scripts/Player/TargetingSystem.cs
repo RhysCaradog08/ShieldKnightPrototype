@@ -126,7 +126,7 @@ public class TargetingSystem : MonoBehaviour
                 targetLocations.Clear();
             }
 
-            if(!coil.extending && !coil.canExtend)
+            if(!coil.isExtending && !coil.canExtend)
             {
                 if(!lockedOn)
                 {
