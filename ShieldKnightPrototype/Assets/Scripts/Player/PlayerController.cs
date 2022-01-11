@@ -27,9 +27,9 @@ public class PlayerController : MonoBehaviour
     public bool stopped;
 
     [Header("Jumping")]
-    [SerializeField] float gravity;
+    [SerializeField] float gravity, jumpSpeed;
     public Vector3 velocity;
-    public float jumpSpeed, fallMultiplier, lowJumpMultiplier;
+    public float jumpHeight, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
     bool hasJumped;
     [SerializeField] bool canPressSpace;
 
@@ -68,7 +68,8 @@ public class PlayerController : MonoBehaviour
         stopped = false;
 
         //Jumping
-        gravity = -9.81F;
+        gravity = -(2* jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpSpeed = Mathf.Abs(gravity) * timeToJumpApex;
         canPressSpace = true;
 
         //Guard/Parry
