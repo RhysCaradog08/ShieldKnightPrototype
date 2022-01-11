@@ -836,12 +836,17 @@ PrefabInstance:
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: springForce
-      value: 50
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: grappleSpeed
       value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 2733617391184930830, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: springHeight
+      value: 25
       objectReference: {fileID: 0}
     - target: {fileID: 3017615805836502921, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}

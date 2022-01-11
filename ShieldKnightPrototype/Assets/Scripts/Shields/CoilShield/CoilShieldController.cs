@@ -34,7 +34,7 @@ public class CoilShieldController : MonoBehaviour
     public bool enableTether, canTether, tethered, grappling, hasObject;
 
     [Header("Spring Jump")]
-    [SerializeField] float springForce;
+    [SerializeField] float springHeight;
     RaycastHit hit;
     public GameObject hitObject;
     [SerializeField] Vector3 springPoint;
@@ -138,7 +138,7 @@ public class CoilShieldController : MonoBehaviour
             if (Input.GetButtonUp("Guard"))
             {
                 springing = true;
-                pc.velocity.y = springForce;
+                pc.velocity.y = pc.jumpHeight * springHeight;
 
                 if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
                 {
