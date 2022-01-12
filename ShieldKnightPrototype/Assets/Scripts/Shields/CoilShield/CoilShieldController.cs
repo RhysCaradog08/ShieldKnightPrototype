@@ -20,7 +20,7 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float whipSpeed, range, stopTime;
     public float dist;
     public GameObject target;
-    Vector3 dir;
+    [SerializeField] Vector3 dir;
     public bool canExtend, isExtending, hasTarget;
 
     [Header("Coil Scale")]
@@ -323,6 +323,8 @@ public class CoilShieldController : MonoBehaviour
 
         if (hasObject)
         {
+            Debug.DrawLine(transform.position, player.forward, Color.green);
+
             select.canChange = false;
 
             canExtend = false;
@@ -488,9 +490,9 @@ public class CoilShieldController : MonoBehaviour
         tetheredObject = null;
         tetheredRB.isKinematic = false;
 
-        dir = player.position + player.forward * 10;
+        //dir = player.forward * 10;
 
-        tetheredRB.AddForce(dir * throwForce, ForceMode.Impulse);
+        tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);
 
         tetheredRB = null;
         hasObject = false;

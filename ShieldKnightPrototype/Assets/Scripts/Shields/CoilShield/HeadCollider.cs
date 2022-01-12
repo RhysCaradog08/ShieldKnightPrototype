@@ -33,15 +33,6 @@ public class HeadCollider : MonoBehaviour
     {
         Debug.Log(other.name);
 
-        if (other.transform.gameObject.GetComponent<Lever>())
-        {
-            Lever lever = other.transform.gameObject.GetComponent<Lever>();
-
-            if (lever.canChange)
-            {
-                lever.ChangeLever();
-            }
-        }
 
         if (other.tag == "Target")
         {
@@ -49,8 +40,20 @@ public class HeadCollider : MonoBehaviour
 
             if (coil.canTether)
             {
-                coil.isTethered = true;
-                coil.tetherPoint = other.gameObject.transform;
+                if (other.transform.gameObject.GetComponent<Lever>())
+                {
+                    Lever lever = other.transform.gameObject.GetComponent<Lever>();
+
+                    if (lever.canChange)
+                    {
+                        lever.ChangeLever();
+                    }
+                }
+                else
+                {
+                    coil.isTethered = true;
+                    coil.tetherPoint = other.gameObject.transform;
+                }
 
                 if (other.gameObject.layer == 11)//GrappleFixed
                 {

@@ -15,6 +15,7 @@ public class ShieldController : MonoBehaviour
 
     [Header("Throw")]
     public float throwForce;
+    [SerializeField] float stopTime;
     public GameObject target;
     TrailRenderer trail;
     GameObject hitStars;
