@@ -199,7 +199,7 @@ public class ShieldController : MonoBehaviour
             pc.stopped = true;
             pc.slamming = true;
 
-            StartCoroutine(SlamDown());
+            pc.velocity.y = slamForce;
 
             RaycastHit hit;
 
@@ -394,12 +394,6 @@ public class ShieldController : MonoBehaviour
 
             yield return null;
         }
-    }
-
-    IEnumerator SlamDown() //Player movement is frozen then directed down by slamForce.
-    {
-        yield return new WaitForSeconds(slamDelay);
-        pc.velocity.y = slamForce;
     }
 
     void SlamImpact()
