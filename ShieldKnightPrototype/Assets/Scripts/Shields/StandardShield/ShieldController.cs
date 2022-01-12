@@ -35,11 +35,10 @@ public class ShieldController : MonoBehaviour
     [Header("Dodge")]
     public bool canDodge, isDodging;
     public float dodgeTime, dodgeSpeed;
-    float dodgeDelay;
+    [SerializeField] float dodgeDelay;
 
     [Header("Slam")]
-    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay;
-    [SerializeField] float waitTime;
+    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay, slamWait;
     GameObject slamStars;
     public bool isSlamming;
     bool showSlamVFX;
@@ -94,11 +93,21 @@ public class ShieldController : MonoBehaviour
         }
         else hasTarget = false;
 
+        if (bargeDelay <= 0)
+        {
+            bargeDelay = 0;
+        }
+
+        if(dodgeDelay <= 0)
+        {
+            dodgeDelay = 0;
+        }
+
         if(cc.isGrounded)
         {
-            if (waitTime <= 0)  //Resets player being immobile once grounded after Slam action is performed.
+            if (slamWait <= 0)  //Resets player being immobile once grounded after Slam action is performed.
             {
-                waitTime = 0;
+                slamWait = 0;
                 isSlamming = false;
             }
             else //Whilst waitTime > 0 player is immobile.
@@ -106,7 +115,6 @@ public class ShieldController : MonoBehaviour
                 isSlamming = true;
             }
         }
-
 
         if (canThrow)  //Perform Throw action if Player has possession of Shield. 
         {
@@ -164,7 +172,7 @@ public class ShieldController : MonoBehaviour
 
         if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
         {
-            waitTime = 0.5f;
+            slamWait = 0.5f;
             isSlamming = true;
         }
 
@@ -197,7 +205,6 @@ public class ShieldController : MonoBehaviour
 
             if (Physics.Raycast(transform.position, -transform.up * 10, out hit))
             {
-                //Debug.DrawLine(transform.position, transform.right, Color.red);
                 float distToGround = hit.distance;
 
                 if (distToGround < 1)
@@ -223,7 +230,7 @@ public class ShieldController : MonoBehaviour
 
         if (cc.isGrounded && isSlamming)
         {
-            waitTime -= Time.deltaTime;
+            slamWait -= Time.deltaTime;
         }
 
     }

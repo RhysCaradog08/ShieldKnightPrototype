@@ -97,6 +97,5 @@ public class ShieldProjectile : MonoBehaviour
             }
 
         }
-            //ObjectPoolManager.instance.RecallObject(shieldP);
     }
 }

@@ -41,9 +41,14 @@ public class PlayerController : MonoBehaviour
     [Header("Shield Booleans")]
     public bool hasShield, hasProjectile, hasCoil;
 
-    [Header("Animation Booleans")]
+    [Header("Shield Animation Booleans")]
     public bool barging, dodging, slamming;
 
+    [Header("Projectile Animation Booleans")]
+    public bool aiming;
+
+    [Header("Coil Animation Booleans")]
+    public bool grappling;
 
     private void Awake()
     {
@@ -291,6 +296,19 @@ public class PlayerController : MonoBehaviour
             {
                 stopped = false;
                 anim.SetBool("Guarding", false);
+            }
+        }
+
+        if(hasCoil)
+        {
+            if (slamming)
+            {
+                Debug.Log("Coil Slamming");
+                anim.SetBool("Slamming", true);
+            }
+            else
+            {
+                anim.SetBool("Slamming", false);
             }
         }
 

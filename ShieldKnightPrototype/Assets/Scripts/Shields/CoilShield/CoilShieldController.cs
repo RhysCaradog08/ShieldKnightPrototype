@@ -17,7 +17,7 @@ public class CoilShieldController : MonoBehaviour
     LineRenderer lr;
 
     [Header("Whip")]
-    [SerializeField] float whipSpeed, range;
+    [SerializeField] float whipSpeed, range, stopTime;
     public float dist;
     public GameObject target;
     Vector3 dir;
@@ -28,7 +28,7 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float minScale;
 
     [Header("Grapple")]
-    [SerializeField] float grappleSpeed, throwForce, stopTime, momentumExtra;
+    [SerializeField] float grappleSpeed, throwForce, momentumExtra;
     public Transform tetherPoint, holdPos;
     public GameObject tetheredObject;
     Rigidbody tetheredRB;
@@ -37,13 +37,11 @@ public class CoilShieldController : MonoBehaviour
     [Header("Spring Jump")]
     [SerializeField] float springHeight;
     RaycastHit hit;
-    public GameObject hitObject;
     [SerializeField] Vector3 springPoint;
     public bool isSpringing;
 
     [Header("Slam")]
-    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay;
-    [SerializeField] float waitTime;
+    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay, slamWait;
     GameObject slamStars;
     public bool isSlamming;
     bool showSlamVFX;
@@ -92,9 +90,9 @@ public class CoilShieldController : MonoBehaviour
 
         if (cc.isGrounded)
         {
-            if (waitTime <= 0)  //Resets player being immobile once grounded after Slam action is performed.
+            if (slamWait <= 0)  //Resets player being immobile once grounded after Slam action is performed.
             {
-                waitTime = 0;
+                slamWait = 0;
                 isSlamming = false;
             }
             else //Whilst waitTime > 0 player is immobile.
@@ -158,13 +156,13 @@ public class CoilShieldController : MonoBehaviour
 
             if (Input.GetButtonUp("Guard"))
             {
-                isSpringing = true;
                 pc.velocity.y = pc.jumpHeight * springHeight;
 
                 if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
                 {
                     springPoint = hit.point;
                 }
+                isSpringing = true;
             }
         }
 
@@ -177,7 +175,7 @@ public class CoilShieldController : MonoBehaviour
         { 
             SpringJump();
         }
- 
+
 
         if (isExtending)
         {
@@ -192,16 +190,22 @@ public class CoilShieldController : MonoBehaviour
             canExtend = false;
             lr.enabled = true;
 
+            stopTime = 0.1f;
+
+            StartCoroutine(ScaleCoil());
+
             if (!isSpringing || !isSlamming)
             {
-                stopTime = 0.1f;
-
-                StartCoroutine(ScaleCoil());
                 if (hasTarget)
                 {
                     TargetedWhip();
                 }
                 else NonTargetWhip();
+            }
+
+            if(isSpringing)
+            {
+                stopTime = 0;
             }
 
             if(isSlamming)
@@ -243,7 +247,7 @@ public class CoilShieldController : MonoBehaviour
         {
             target = null;
 
-            if (!isSpringing || !isSlamming)
+            if (!isSpringing)
             {
                 dist = Vector3.Distance(head.transform.position, transform.position);
 
@@ -308,7 +312,7 @@ public class CoilShieldController : MonoBehaviour
 
         if (isSlamming)
         {
-            pc.stopped = true;
+            pc.speed = 0;
             pc.slamming = true;
 
             StartCoroutine(SlamDown());
@@ -322,7 +326,8 @@ public class CoilShieldController : MonoBehaviour
 
                 if (distToGround < 1)
                 {
-                    Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
+                    //Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
+                    isExtending = false;
 
                     SlamImpact();
 
@@ -348,7 +353,7 @@ public class CoilShieldController : MonoBehaviour
 
         if (cc.isGrounded && isSlamming)
         {
-            waitTime -= Time.deltaTime;
+            slamWait -= Time.deltaTime;
         }
     }
 
@@ -498,6 +503,8 @@ public class CoilShieldController : MonoBehaviour
 
     void CoilSlam()
     {
+        stopTime = 0.1f;
+
         if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
         {
             springPoint = hit.point;
@@ -507,7 +514,7 @@ public class CoilShieldController : MonoBehaviour
 
         head.transform.position = springPoint;
 
-        waitTime = 0.5f;
+        //waitTime = 0.5f;
         isSlamming = true;
     }
 

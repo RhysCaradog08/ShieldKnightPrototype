@@ -31,6 +31,18 @@ public class HeadCollider : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log(other.name);
+
+        if (other.transform.gameObject.GetComponent<Lever>())
+        {
+            Lever lever = other.transform.gameObject.GetComponent<Lever>();
+
+            if (lever.canChange)
+            {
+                lever.ChangeLever();
+            }
+        }
+
         if (other.tag == "Target")
         {
             Debug.Log("Target: " + other.name);
@@ -56,6 +68,7 @@ public class HeadCollider : MonoBehaviour
 
         if (coil.isExtending && !coil.isSpringing && !coil.canTether)
         {
+
             if (other.gameObject.GetComponent<EnemyHealth>())
             {
                 EnemyHealth enemy = other.gameObject.GetComponent<EnemyHealth>();
