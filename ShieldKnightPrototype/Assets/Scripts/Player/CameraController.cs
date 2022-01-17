@@ -8,8 +8,6 @@ public class CameraController : MonoBehaviour {
 
     public Vector3 offset;
 
-    public bool useOffsetValues;
-
     public float rotateSpeed;
 
     public Transform pivot;
@@ -22,10 +20,7 @@ public class CameraController : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-        if (!useOffsetValues)
-        {
-            offset = target.position - transform.position;
-        }
+        transform.position = transform.position - offset;
 
         pivot.transform.position = target.transform.position;
         //pivot.transform.parent = target.transform;

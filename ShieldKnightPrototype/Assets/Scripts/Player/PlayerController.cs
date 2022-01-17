@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Guard/Parry")]
     const float minButtonHold = 0.25f;
-    float buttonHeldTime;
+    float buttonHeldTime, stopTime;
     bool buttonHeld;
     public GameObject parryBox;
 
@@ -108,6 +108,17 @@ public class PlayerController : MonoBehaviour
             hasCoil = true;
         }
         else hasCoil = false;
+
+        if (stopTime > 0)
+        {
+            stopTime -= Time.deltaTime;
+            stopped = true;
+        }
+        else if(stopTime <= 0)
+        {
+            stopTime = 0;
+            stopped = false;
+        }
 
 
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
@@ -251,6 +262,7 @@ public class PlayerController : MonoBehaviour
                     if (!buttonHeld && hasShield)//If button is released without being held.
                     {
                         anim.SetTrigger("Parry");
+                        stopTime = 0.5f;
                     }
                     buttonHeld = false;
                 }

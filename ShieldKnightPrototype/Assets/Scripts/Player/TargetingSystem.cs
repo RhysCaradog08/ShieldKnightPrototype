@@ -6,9 +6,9 @@ using System;
 
 public class TargetingSystem : MonoBehaviour
 {
-    PlayerController player;
     Camera cam;
 
+    PlayerController player;
     public MarkerCheck markerCheck;
     ShieldController shield;
     ProjectileShieldController projectile;
@@ -31,9 +31,9 @@ public class TargetingSystem : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindObjectOfType<PlayerController>();
         cam = Camera.main;
 
+        player = GameObject.FindObjectOfType<PlayerController>();
         shield = FindObjectOfType<ShieldController>();
         projectile = FindObjectOfType<ProjectileShieldController>();
         coil = FindObjectOfType<CoilShieldController>();
@@ -42,9 +42,10 @@ public class TargetingSystem : MonoBehaviour
     void Start()
     {
         canLockOn = true;
-        canTarget = true;        
+        canTarget = true;
     }
 
+   
     private void Update()
     {
         if (closest != null && lockedOn)
@@ -52,26 +53,29 @@ public class TargetingSystem : MonoBehaviour
             transform.LookAt(new Vector3(closest.transform.position.x, transform.position.y, closest.transform.position.z));
         }
 
-        if (Input.GetButtonDown("Throw") && !shield.thrown)
+        if (player.hasShield)
         {
-            if (!lockedOn)
+            if (Input.GetButtonDown("Throw") && !shield.thrown)
             {
-                GetTargets();
+                if (!lockedOn)
+                {
+                    GetTargets();
+                }
             }
-        }
 
-        if (Input.GetButton("Throw") && !shield.thrown) //Determine which targets fall within range and which is closest.
-        {
-            if (!lockedOn)
+            if (Input.GetButton("Throw") && !shield.thrown) //Determine which targets fall within range and which is closest.
             {
-                TargetsInView();
-                FindClosestTarget();
+                if (!lockedOn)
+                {
+                    TargetsInView();
+                    FindClosestTarget();
+                }
             }
-        }
 
-        if (Input.GetButtonUp("Throw")) //Clears targetLocations for the next instance.
-        {
-            targetLocations.Clear();
+            if (Input.GetButtonUp("Throw")) //Clears targetLocations for the next instance.
+            {
+                targetLocations.Clear();
+            }
         }
 
         if(player.hasProjectile)
