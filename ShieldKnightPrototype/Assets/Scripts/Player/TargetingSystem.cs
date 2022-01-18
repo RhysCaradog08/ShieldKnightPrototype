@@ -80,7 +80,7 @@ public class TargetingSystem : MonoBehaviour
 
         if(player.hasProjectile)
         {
-            if (Input.GetButtonDown("Barge"))
+            if (Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge"))
             {
                 if (!lockedOn)
                 {
@@ -88,7 +88,7 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButton("Barge"))
+            if (Input.GetButton("Throw") || Input.GetButton("Barge"))
             {
                 if (!lockedOn)
                 {
@@ -97,7 +97,7 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonUp("Barge"))
+            if (Input.GetButtonUp("Throw") || Input.GetButtonUp("Barge"))
             {
                 targetLocations.Clear();
             }
@@ -105,7 +105,7 @@ public class TargetingSystem : MonoBehaviour
 
         if(player.hasCoil)
         {
-            if (Input.GetButtonDown("Barge"))
+            if (Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge"))
             {
                 if(coil.canExtend && !coil.hasObject)
                 {
@@ -116,7 +116,7 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButton("Barge"))
+            if (Input.GetButton("Throw") || Input.GetButton("Barge"))
             {
                 if (!lockedOn)
                 {
@@ -125,7 +125,7 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonUp("Barge"))
+            if (Input.GetButtonUp("Throw") || Input.GetButtonUp("Barge"))
             {
                 targetLocations.Clear();
             }

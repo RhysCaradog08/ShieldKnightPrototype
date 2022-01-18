@@ -197,16 +197,6 @@ public class CoilShieldController : MonoBehaviour
         {
             stopTime = 0.15f;
             canSlam = true;
-
-            /*if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
-            {
-                springPoint = hit.point;
-                Debug.DrawLine(head.transform.position, springPoint, Color.green);
-            }
-
-            isExtending = true;
-
-            head.transform.position = springPoint;*/
         }
 
         if (isSpringing)
@@ -228,8 +218,6 @@ public class CoilShieldController : MonoBehaviour
 
             if (!isSpringing || !canSlam || !isSlamming)
             {
-                //stopTime = 0.1f;
-
                 if (hasTarget)
                 {
                     TargetedWhip();
@@ -490,9 +478,13 @@ public class CoilShieldController : MonoBehaviour
         tetheredObject = null;
         tetheredRB.isKinematic = false;
 
-        //dir = player.forward * 10;
+        if(hasTarget)
+        {
+            Vector3 dir = target.transform.position - tetheredRB.position;
 
-        tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);
+            tetheredRB.AddForce(dir * throwForce, ForceMode.Impulse);
+        }
+        else tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);
 
         tetheredRB = null;
         hasObject = false;
