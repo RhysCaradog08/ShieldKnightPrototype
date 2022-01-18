@@ -105,9 +105,19 @@ public class TargetingSystem : MonoBehaviour
 
         if(player.hasCoil)
         {
-            if (Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge"))
+            if (Input.GetButtonDown("Throw"))
             {
-                if(coil.canExtend && !coil.hasObject)
+                if(coil.canExtend || coil.hasObject)
+                {
+                    if (!lockedOn)
+                    {
+                        GetTargets();
+                    }
+                }
+            }
+            else if(Input.GetButtonDown("Barge"))
+            {
+                if (coil.canExtend || coil.hasObject)
                 {
                     if (!lockedOn)
                     {
@@ -117,6 +127,22 @@ public class TargetingSystem : MonoBehaviour
             }
 
             if (Input.GetButton("Throw") || Input.GetButton("Barge"))
+            {
+                if (coil.hasObject)
+                {
+                    if (!lockedOn)
+                    {
+                        TargetsInView();
+                        FindClosestTarget();
+                    }
+                }
+                else if(!lockedOn)
+                {
+                    TargetsInView();
+                    FindClosestTarget();
+                }
+            }
+            else if (Input.GetButton("Barge"))
             {
                 if (!lockedOn)
                 {
@@ -130,7 +156,7 @@ public class TargetingSystem : MonoBehaviour
                 targetLocations.Clear();
             }
 
-            if(!coil.isExtending && !coil.canExtend)
+            if (!coil.isExtending && !coil.canExtend)
             {
                 if(!lockedOn)
                 {
@@ -286,11 +312,16 @@ public class TargetingSystem : MonoBehaviour
 
         foreach (Collider col in hitColliders)
         {
+            ObjectIsHeld heldObj = col.gameObject.GetComponent<ObjectIsHeld>();
+
             if (col.tag == "Target")
             {
                 if (!targetLocations.Contains(col.gameObject))
                 {
-                    targetLocations.Add(col.gameObject);
+                    if(heldObj == null || !heldObj.isHeld)
+                    {
+                        targetLocations.Add(col.gameObject);
+                    }
 
                     if (col.gameObject.GetComponent<MarkerCheck>() == null)
                     {

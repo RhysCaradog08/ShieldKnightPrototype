@@ -26,17 +26,14 @@ public class HeadCollider : MonoBehaviour
 
     void Update()
     {
-        Debug.DrawLine(transform.position, transform.forward * 10, Color.blue);
+        //Debug.DrawLine(transform.position, transform.forward * 10, Color.blue);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
-
-
         if (other.tag == "Target")
         {
-            Debug.Log("Target: " + other.name);
+            //Debug.Log("Target: " + other.name);
 
             if (coil.canTether)
             {
@@ -57,7 +54,7 @@ public class HeadCollider : MonoBehaviour
 
                 if (other.gameObject.layer == 11)//GrappleFixed
                 {
-                    Debug.Log("Grapple to Target");
+                    //Debug.Log("Grapple to Target");
                     grappleFixed = true;
                 }
 

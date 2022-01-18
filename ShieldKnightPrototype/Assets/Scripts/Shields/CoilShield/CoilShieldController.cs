@@ -32,6 +32,7 @@ public class CoilShieldController : MonoBehaviour
     public Transform tetherPoint, holdPos;
     public GameObject tetheredObject;
     Rigidbody tetheredRB;
+    ObjectIsHeld heldObj;
     public bool enableTether, canTether, isTethered, isGrappling, hasObject;
 
     [Header("Spring Jump")]
@@ -89,7 +90,7 @@ public class CoilShieldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawLine(holdPos.position, dir, Color.green);
+        //Debug.DrawLine(holdPos.position, dir, Color.green);
 
         if (target != null)
         {
@@ -321,6 +322,14 @@ public class CoilShieldController : MonoBehaviour
             tetheredObject.transform.position = holdPos.position;
             tetheredRB = tetheredObject.GetComponent<Rigidbody>();
             tetheredRB.isKinematic = true;
+
+            if (!tetheredObject.GetComponent<ObjectIsHeld>())
+            {
+                tetheredObject.AddComponent<ObjectIsHeld>();
+            }
+
+            heldObj = tetheredObject.GetComponent<ObjectIsHeld>();
+            heldObj.isHeld = true;
         }
 
         if (isSlamming)
@@ -373,8 +382,7 @@ public class CoilShieldController : MonoBehaviour
     void NonTargetWhip()
     {
         dir = player.position + player.forward * 10;
-        Debug.DrawLine(player.position, dir * range, Color.green);
-        //Debug.Log("Whip Range: " + whipDir.z * range);
+        //Debug.DrawLine(player.position, dir * range, Color.green);
 
         dist = Vector3.Distance(head.transform.position, dir * range);
 
@@ -486,6 +494,8 @@ public class CoilShieldController : MonoBehaviour
         }
         else tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);
 
+        heldObj.isHeld = false;
+
         tetheredRB = null;
         hasObject = false;
         select.canChange = true;
@@ -524,7 +534,7 @@ public class CoilShieldController : MonoBehaviour
         if (Physics.Raycast(head.transform.position, head.transform.forward, out hit, Mathf.Infinity))
         {
             springPoint = hit.point;
-            Debug.DrawLine(head.transform.position, springPoint, Color.green);
+            //Debug.DrawLine(head.transform.position, springPoint, Color.green);
         }
 
         isExtending = true;

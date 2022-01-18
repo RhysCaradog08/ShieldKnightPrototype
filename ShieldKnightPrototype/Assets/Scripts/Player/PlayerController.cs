@@ -232,7 +232,7 @@ public class PlayerController : MonoBehaviour
 
             if (barging) //Sets Barge animation.
             {
-                Debug.Log("Is Barging");
+                //Debug.Log("Is Barging");
                 anim.SetBool("Barging", true);
             }
             else
@@ -242,7 +242,7 @@ public class PlayerController : MonoBehaviour
 
             if (dodging)
             {
-                Debug.Log("Shield Dodging");
+                //Debug.Log("Shield Dodging");
                 anim.SetTrigger("Dodge");
             }
             else
