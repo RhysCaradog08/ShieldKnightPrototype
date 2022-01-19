@@ -28,12 +28,18 @@ public class CoilShieldController : MonoBehaviour
     [SerializeField] float minScale;
 
     [Header("Grapple")]
-    [SerializeField] float grappleSpeed, throwForce, momentumExtra;
-    public Transform tetherPoint, holdPos;
+    [SerializeField] float grappleSpeed;
+    public Transform tetherPoint;
     public GameObject tetheredObject;
+    public bool enableTether, canTether, isTethered, isGrappling;
+
+    [Header("Throw")]
+    [SerializeField] float throwForce, height, gravity, time;
+    public Transform holdPos;
     Rigidbody tetheredRB;
     ObjectIsHeld heldObj;
-    public bool enableTether, canTether, isTethered, isGrappling, hasObject;
+    Vector3 throwDestination;
+    public bool hasObject;
 
     [Header("Spring Jump")]
     [SerializeField] float springHeight;
@@ -76,6 +82,10 @@ public class CoilShieldController : MonoBehaviour
         canTether = false;
         isTethered = false;
         isGrappling = false;
+
+        //Throw
+        height = 0.25f;
+        gravity = -9.81f;
         hasObject = false;
 
         //Spring Jump
@@ -486,15 +496,23 @@ public class CoilShieldController : MonoBehaviour
         tetheredObject = null;
         tetheredRB.isKinematic = false;
 
-        if(hasTarget)
+        /*if (hasTarget)
         {
             Vector3 dir = target.transform.position - tetheredRB.position;
 
-            tetheredRB.AddForce(dir * throwForce, ForceMode.Impulse);
+            tetheredRB.AddForce(dir * (throwForce / 10), ForceMode.Impulse);
         }
-        else tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);
+        else tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);*/
+        if (hasTarget)
+        {
+            throwDestination = target.transform.position;
+        }
+        else throwDestination = player.position + player.forward * 10;
+
+        tetheredRB.velocity = CalculateThrowVelocity() * throwForce;
 
         heldObj.isHeld = false;
+        heldObj.isThrown = true;
 
         tetheredRB = null;
         hasObject = false;
@@ -509,6 +527,9 @@ public class CoilShieldController : MonoBehaviour
         tetheredRB = null;
         tetherPoint = null;
         hasObject = false;
+
+        heldObj.isHeld = false;
+
         select.canChange = true;
     }
 
@@ -567,5 +588,18 @@ public class CoilShieldController : MonoBehaviour
                 }
             }
         }
+    }
+
+    Vector3 CalculateThrowVelocity()
+    {
+        float displacementY = throwDestination.y - tetheredRB.position.y;
+        Vector3 displacementXZ = new Vector3(throwDestination.x - tetheredRB.position.x, 0, throwDestination.z - tetheredRB.position.z);
+
+        //time = (Mathf.Sqrt(-2 * gravity * height) + Mathf.Sqrt(2 * (displacementY - height) / gravity));
+
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * height);
+        Vector3 velocityXZ = displacementXZ / time;
+
+        return velocityXZ + velocityY * -Mathf.Sign(gravity);
     }
 }
