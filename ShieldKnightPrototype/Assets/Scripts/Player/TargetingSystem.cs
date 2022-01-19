@@ -107,7 +107,14 @@ public class TargetingSystem : MonoBehaviour
         {
             if (Input.GetButtonDown("Throw"))
             {
-                if(coil.canExtend || coil.hasObject)
+                if(coil.canExtend && !coil.hasObject)
+                {
+                    if (!lockedOn)
+                    {
+                        GetTargets();
+                    }
+                }
+                else if(coil.hasObject && !coil.canExtend)
                 {
                     if (!lockedOn)
                     {
@@ -117,7 +124,7 @@ public class TargetingSystem : MonoBehaviour
             }
             else if(Input.GetButtonDown("Barge"))
             {
-                if (coil.canExtend || coil.hasObject)
+                if (coil.canExtend && !coil.hasObject)
                 {
                     if (!lockedOn)
                     {
@@ -126,9 +133,9 @@ public class TargetingSystem : MonoBehaviour
                 }
             }
 
-            if (Input.GetButton("Throw") || Input.GetButton("Barge"))
+            if (Input.GetButton("Throw"))
             {
-                if (coil.hasObject)
+                if (coil.canExtend && !coil.hasObject)
                 {
                     if (!lockedOn)
                     {
@@ -136,18 +143,24 @@ public class TargetingSystem : MonoBehaviour
                         FindClosestTarget();
                     }
                 }
-                else if(!lockedOn)
+                else if (!coil.canExtend && coil.hasObject)
                 {
-                    TargetsInView();
-                    FindClosestTarget();
+                    if (!lockedOn)
+                    {
+                        TargetsInView();
+                        FindClosestTarget();
+                    }
                 }
             }
             else if (Input.GetButton("Barge"))
             {
-                if (!lockedOn)
+                if (coil.canExtend && !coil.hasObject)
                 {
-                    TargetsInView();
-                    FindClosestTarget();
+                    if (!lockedOn)
+                    {
+                        TargetsInView();
+                        FindClosestTarget();
+                    }
                 }
             }
 
@@ -156,7 +169,7 @@ public class TargetingSystem : MonoBehaviour
                 targetLocations.Clear();
             }
 
-            if (!coil.isExtending && !coil.canExtend)
+            if (!coil.hasObject && !coil.isExtending && !coil.canExtend)
             {
                 if(!lockedOn)
                 {
@@ -164,11 +177,14 @@ public class TargetingSystem : MonoBehaviour
                     {
                         foreach (GameObject target in visibleTargets)
                         {
-                            markerCheck = target.GetComponent<MarkerCheck>();
-
-                            if (markerCheck != null)
+                            if (target != null)
                             {
-                                markerCheck.RemoveMarker();
+                                markerCheck = target.GetComponent<MarkerCheck>();
+
+                                if (markerCheck != null)
+                                {
+                                    markerCheck.RemoveMarker();
+                                }
                             }
                         }
                     }
@@ -371,12 +387,13 @@ public class TargetingSystem : MonoBehaviour
 
                     foreach (GameObject target in visibleTargets)
                     {
-                        markerCheck = target.GetComponent<MarkerCheck>();//////
+                        markerCheck = target.GetComponent<MarkerCheck>();
                         
                         if(canTarget)
                         {
                             if (markerCheck.canAddMarker == true)
                             {
+                                //Debug.Log("Add Marker to object: " + target.name);
                                 markerCheck.AddMarker();
                             }
                         }
