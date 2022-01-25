@@ -188,8 +188,16 @@ public class TargetingSystem : MonoBehaviour
                             }
                         }
                     }
+                    closest = null;
                 }
                 closest = null;
+            }
+
+            if(coil.hasObject && lockedOn)
+            {
+                closest = null;
+                RemoveLockOnMarker();
+                lockedOn = false;
             }
         }
 
@@ -250,7 +258,7 @@ public class TargetingSystem : MonoBehaviour
         }
 
 
-        if (visibleTargets.Count > 0) //If there are targets in list, shield.target will be the closest.
+        if (visibleTargets.Count > 0) //If there are targets in list, target will be the closest.
         {
             if(player.hasShield)
             {

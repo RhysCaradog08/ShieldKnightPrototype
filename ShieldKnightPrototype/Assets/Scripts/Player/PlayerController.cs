@@ -120,7 +120,6 @@ public class PlayerController : MonoBehaviour
             stopped = false;
         }
 
-
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
         {
             canPressSpace = true;

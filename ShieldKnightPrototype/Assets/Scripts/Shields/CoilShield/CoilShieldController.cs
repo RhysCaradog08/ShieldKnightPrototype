@@ -267,7 +267,11 @@ public class CoilShieldController : MonoBehaviour
 
         if (!isExtending)
         {
-            target = null;
+            if(!ts.lockedOn)
+            {
+                Debug.Log("Not Locked on to Target");
+                target = null;
+            }
 
             if (!isSpringing)
             {
@@ -415,11 +419,15 @@ public class CoilShieldController : MonoBehaviour
         {
             foreach (GameObject target in ts.visibleTargets)
             {
-                ts.markerCheck = target.GetComponent<MarkerCheck>();
-                ts.markerCheck.RemoveMarker();
+                MarkerCheck markerCheck = target.GetComponent<MarkerCheck>();
+                markerCheck.RemoveMarker();
             }
-
-            ts.visibleTargets.Remove(target);
+            
+            if(!ts.lockedOn)
+            { 
+                Debug.Log("Not Locked on to Target");
+                ts.visibleTargets.Remove(target);
+            }
         }
     }
 
@@ -474,6 +482,7 @@ public class CoilShieldController : MonoBehaviour
     void GetTetheredObject()
     {
         //Debug.Log("Get Tethered Object");
+
         dist = Vector3.Distance(tetheredObject.transform.position, holdPos.position);
 
         tetheredObject.transform.position = Vector3.Lerp(tetheredObject.transform.position, holdPos.position, grappleSpeed * Time.deltaTime);
@@ -487,6 +496,17 @@ public class CoilShieldController : MonoBehaviour
             hasObject = true;
             isTethered = false;
         }
+
+        if(tetheredObject.GetComponent<MarkerCheck>() != null)
+        {
+            MarkerCheck markerCheck = tetheredObject.GetComponent<MarkerCheck>();
+
+            if(!markerCheck.canAddMarker)
+            {
+                markerCheck.RemoveMarker();
+            }
+        }
+  
     }
 
     void ThrowTetheredObject()
@@ -496,13 +516,6 @@ public class CoilShieldController : MonoBehaviour
         tetheredObject = null;
         tetheredRB.isKinematic = false;
 
-        /*if (hasTarget)
-        {
-            Vector3 dir = target.transform.position - tetheredRB.position;
-
-            tetheredRB.AddForce(dir * (throwForce / 10), ForceMode.Impulse);
-        }
-        else tetheredRB.AddForce(player.forward * throwForce, ForceMode.Impulse);*/
         if (hasTarget)
         {
             throwDestination = target.transform.position;

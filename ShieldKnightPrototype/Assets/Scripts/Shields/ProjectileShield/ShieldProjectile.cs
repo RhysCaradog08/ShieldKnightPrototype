@@ -76,7 +76,10 @@ public class ShieldProjectile : MonoBehaviour
             {
                 MarkerCheck markerCheck = other.gameObject.GetComponent<MarkerCheck>();
 
-                markerCheck.RemoveMarker();
+                if(!markerCheck.canAddMarker)
+                {
+                    markerCheck.RemoveMarker();
+                }
             }
 
             if (other.gameObject.GetComponent<EnemyHealth>() != null)

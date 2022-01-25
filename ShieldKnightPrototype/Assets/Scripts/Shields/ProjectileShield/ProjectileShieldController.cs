@@ -82,16 +82,21 @@ public class ProjectileShieldController : MonoBehaviour
             {
                 if (shootDelay <= 0)
                 {
-                    if (hasTarget)
+                    if (ts.lockedOn)
                     {
-                        if (ts.lockedOn)
-                        {
-                            LockOnShoot();
-                        }
-                        else ShootAtTargets();
+                        LockOnShoot();
                     }
-                    else ShootProjectile();
+                    else
+                    {
+                        ShootProjectile();
+                        ts.visibleTargets.Clear();
+                    }
                 }
+            }
+
+            if(currentProjectile != null)
+            {
+                ClearCurrentProjectile();
             }
         }
 
@@ -170,6 +175,24 @@ public class ProjectileShieldController : MonoBehaviour
         PositionInCircle();
     }
 
+    void ClearCurrentProjectile()
+    {
+        if (currentProjectile == shieldProjectile1)
+        {
+            shieldProjectile1 = null;
+        }
+        else if (currentProjectile == shieldProjectile2)
+        {
+            shieldProjectile2 = null;
+        }
+        else if (currentProjectile == shieldProjectile3)
+        {
+            shieldProjectile3 = null;
+        }
+
+        currentProjectile = null;
+    }
+
     public void PositionInCircle()
     {
         for (int i = 0; i < projectiles.Count; i++)
@@ -208,11 +231,16 @@ public class ProjectileShieldController : MonoBehaviour
 
         projRb.isKinematic = false;
 
-        projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
+        if(hasTarget)
+        {
+            Vector3 shootDir = (target.transform.position - currentProjectile.transform.position).normalized;
+            projRb.AddForce(shootDir * shootForce, ForceMode.Impulse);
+        }
+        else projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
+
         SP.shot = true;
 
-
-        if(currentProjectile == shieldProjectile1)
+        /*if(currentProjectile == shieldProjectile1)
         {
             shieldProjectile1 = null;
         }
@@ -226,7 +254,7 @@ public class ProjectileShieldController : MonoBehaviour
         }
 
         currentProjectile = null;
-        ts.visibleTargets.Clear();
+        ts.visibleTargets.Clear();*/
     }
 
     void ShootAtTargets()
@@ -234,47 +262,55 @@ public class ProjectileShieldController : MonoBehaviour
         //Shoot each projectile at each assigned targets.
         //Debug.Log("Shoot at Targets");
 
-        for (int i = 0; i < ts.visibleTargets.Count; i++)
+        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
         {
-            foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
+            target = nextTarget;
+            Vector3 nextTargetPos = nextTarget.transform.position;
+
+            currentProjectile = projectiles[0];
+            currentProjectile.transform.parent = null;
+            projectiles.Remove(currentProjectile);
+
+            ShieldProjectile SP = currentProjectile.GetComponent<ShieldProjectile>();
+            Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
+
+            projRb.isKinematic = false;
+
+            Vector3 shootDir = (nextTargetPos - currentProjectile.transform.position).normalized;
+
+            projRb.AddForce(shootDir * shootForce, ForceMode.Impulse);
+            SP.shot = true;
+
+            if (currentProjectile == shieldProjectile1)
             {
-                target = nextTarget;
-                Vector3 nextTargetPos = nextTarget.transform.position;
-
-                currentProjectile = projectiles[0];
-                currentProjectile.transform.parent = null;
-                projectiles.Remove(currentProjectile);
-
-                ShieldProjectile SP = currentProjectile.GetComponent<ShieldProjectile>();
-                Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
-
-                projRb.isKinematic = false;
-
-                Vector3 shootDir = (nextTargetPos - currentProjectile.transform.position).normalized;
-
-                projRb.AddForce(shootDir * shootForce, ForceMode.Impulse);
-                SP.shot = true;
-
-                if (currentProjectile == shieldProjectile1)
-                {
-                    shieldProjectile1 = null;
-                }
-                else if (currentProjectile == shieldProjectile2)
-                {
-                    shieldProjectile2 = null;
-                }
-                else if (currentProjectile == shieldProjectile3)
-                {
-                    shieldProjectile3 = null;
-                }
-
-                currentProjectile = null;
+                shieldProjectile1 = null;
             }
+            else if (currentProjectile == shieldProjectile2)
+            {
+                shieldProjectile2 = null;
+            }
+            else if (currentProjectile == shieldProjectile3)
+            {
+                shieldProjectile3 = null;
+            }
+
+            currentProjectile = null;
+        }
+
+        for (int i = 0; i < projectiles.Count; i++)
+        {
+            currentProjectile = projectiles[0];
+
+            if (projectiles[i] == currentProjectile)
+            {
+                projectiles.RemoveAt(i);
+                i--;
+            }
+        }
+
         Debug.Log("Clear Visible Targets");
         ts.visibleTargets.Clear();
         ts.closest = null;
-        }
-
     }
 
     void LockOnShoot()
@@ -294,21 +330,6 @@ public class ProjectileShieldController : MonoBehaviour
 
         projRb.AddForce(lockOnDir * shootForce, ForceMode.Impulse);
         SP.shot = true;
-
-        if (currentProjectile == shieldProjectile1)
-        {
-            shieldProjectile1 = null;
-        }
-        else if (currentProjectile == shieldProjectile2)
-        {
-            shieldProjectile2 = null;
-        }
-        else if (currentProjectile == shieldProjectile3)
-        {
-            shieldProjectile3 = null;
-        }
-
-        currentProjectile = null;
     }
 
     void SpiralAttack()
