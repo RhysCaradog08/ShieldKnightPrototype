@@ -88,8 +88,15 @@ public class ProjectileShieldController : MonoBehaviour
                     }
                     else
                     {
-                        ShootProjectile();
-                        ts.visibleTargets.Clear();
+                        if (ts.visibleTargets.Count > 1)
+                        {
+                            StartCoroutine(ShootAtConsecutiveTargets());
+                        }
+                        else
+                        {
+                            ShootProjectile();
+                            ts.visibleTargets.Clear();
+                        }
                     }
                 }
             }
@@ -98,6 +105,11 @@ public class ProjectileShieldController : MonoBehaviour
             {
                 ClearCurrentProjectile();
             }
+        }
+
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            StartCoroutine(ConsecutiveShots());
         }
 
         if(Input.GetButtonUp("Barge"))
@@ -239,78 +251,35 @@ public class ProjectileShieldController : MonoBehaviour
         else projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
 
         SP.shot = true;
-
-        /*if(currentProjectile == shieldProjectile1)
-        {
-            shieldProjectile1 = null;
-        }
-        else if (currentProjectile == shieldProjectile2)
-        {
-            shieldProjectile2 = null;
-        }
-        else if (currentProjectile == shieldProjectile3)
-        {
-            shieldProjectile3 = null;
-        }
-
-        currentProjectile = null;
-        ts.visibleTargets.Clear();*/
     }
 
-    void ShootAtTargets()
+    IEnumerator ShootAtConsecutiveTargets()
     {
         //Shoot each projectile at each assigned targets.
         //Debug.Log("Shoot at Targets");
-
-        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
+        while (projectiles.Count > 0)
         {
-            target = nextTarget;
-            Vector3 nextTargetPos = nextTarget.transform.position;
-
-            currentProjectile = projectiles[0];
-            currentProjectile.transform.parent = null;
-            projectiles.Remove(currentProjectile);
-
-            ShieldProjectile SP = currentProjectile.GetComponent<ShieldProjectile>();
-            Rigidbody projRb = currentProjectile.GetComponent<Rigidbody>();
-
-            projRb.isKinematic = false;
-
-            Vector3 shootDir = (nextTargetPos - currentProjectile.transform.position).normalized;
-
-            projRb.AddForce(shootDir * shootForce, ForceMode.Impulse);
-            SP.shot = true;
-
-            if (currentProjectile == shieldProjectile1)
+            for (int i = ts.visibleTargets.Count - 1; i >= 0; i--) 
             {
-                shieldProjectile1 = null;
-            }
-            else if (currentProjectile == shieldProjectile2)
-            {
-                shieldProjectile2 = null;
-            }
-            else if (currentProjectile == shieldProjectile3)
-            {
-                shieldProjectile3 = null;
+                target = ts.visibleTargets[i];
+
+                ShootProjectile();
+
+                if (currentProjectile != null)
+                {
+                    ClearCurrentProjectile();
+                }
+
+                ts.visibleTargets.RemoveAt(i);
+
+                yield return new WaitForSeconds(0.25f);
             }
 
-            currentProjectile = null;
-        }
-
-        for (int i = 0; i < projectiles.Count; i++)
-        {
-            currentProjectile = projectiles[0];
-
-            if (projectiles[i] == currentProjectile)
-            {
-                projectiles.RemoveAt(i);
-                i--;
-            }
         }
 
         Debug.Log("Clear Visible Targets");
-        ts.visibleTargets.Clear();
-        ts.closest = null;
+        /*ts.visibleTargets.Clear();
+        ts.closest = null;*/
     }
 
     void LockOnShoot()
@@ -355,6 +324,27 @@ public class ProjectileShieldController : MonoBehaviour
         {
             sa.shot = true;
             rb.AddForce(transform.forward * shootForce, ForceMode.Impulse);
+        }
+    }
+
+    IEnumerator ConsecutiveShots()
+    {
+        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
+        {
+            target = nextTarget;
+            Vector3 nextTargetPos = nextTarget.transform.position;
+        }
+
+        while (projectiles.Count > 0)
+        {
+            ShootProjectile();
+
+            if (currentProjectile != null)
+            {
+                ClearCurrentProjectile();
+            }
+
+            yield return new WaitForSeconds(0.25f);
         }
     }
 }
