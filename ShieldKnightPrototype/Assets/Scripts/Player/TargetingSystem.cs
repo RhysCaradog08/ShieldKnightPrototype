@@ -231,6 +231,16 @@ public class TargetingSystem : MonoBehaviour
                 {
                     AddLockOnMarker();
                     lockedOn = !lockedOn;
+
+                    if(closest.GetComponent<MarkerCheck>() != null)
+                    {
+                        markerCheck = closest.GetComponent<MarkerCheck>();
+
+                        if(!markerCheck.canAddMarker)
+                        {
+                            markerCheck.RemoveMarker();
+                        }
+                    }
                 }
 
             }
