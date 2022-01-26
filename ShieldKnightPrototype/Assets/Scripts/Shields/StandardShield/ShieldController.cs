@@ -254,7 +254,7 @@ public class ShieldController : MonoBehaviour
         {
             target = nextTarget;
             Vector3 nextTargetPos = nextTarget.transform.position;
-            while (Vector3.Distance(transform.position, nextTargetPos) > 0.1f)
+            while (Vector3.Distance(nextTargetPos, transform.position) > 0.1f)
             {
                 transform.parent = null;
 
@@ -263,23 +263,24 @@ public class ShieldController : MonoBehaviour
                 yield return null;
             }
 
-            if (Vector3.Distance(transform.position, nextTargetPos) < 0.1f)
+            if (Vector3.Distance(nextTargetPos, transform.position) < 0.1f)
             {
                 hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTargetPos, Quaternion.identity, 1);
-            }
-            
-            if (nextTarget.GetComponent<MarkerCheck>() != null)
-            {
-                MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
 
-                markerCheck.RemoveMarker();
-            }
 
-            if (nextTarget.GetComponent<EnemyHealth>() != null)
-            {
-                EnemyHealth enemy = nextTarget.GetComponent<EnemyHealth>();
+                if (nextTarget.GetComponent<MarkerCheck>() != null)
+                {
+                    MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
 
-                enemy.TakeDamage(10);
+                    markerCheck.RemoveMarker();
+                }
+
+                if (nextTarget.GetComponent<EnemyHealth>() != null)
+                {
+                    EnemyHealth enemy = nextTarget.GetComponent<EnemyHealth>();
+
+                    enemy.TakeDamage(10);
+                }
             }
         }
         target = null;  //Once all targets are reached return Shield to Player.

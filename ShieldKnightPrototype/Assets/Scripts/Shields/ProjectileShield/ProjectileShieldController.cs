@@ -20,7 +20,11 @@ public class ProjectileShieldController : MonoBehaviour
     [Header("Shooting")]
     public GameObject target;
     [SerializeField] GameObject currentProjectile;
-    [SerializeField] float shootForce, shootDelay;
+    [SerializeField] float shootDelay;
+    public float shootForce;
+    GameObject hitStars;
+    public bool hasTarget;
+    bool canShoot;
 
     [Header("Spiral Attack")]
     public GameObject spiral;
@@ -28,10 +32,6 @@ public class ProjectileShieldController : MonoBehaviour
     [Header("Guarding")]
     [SerializeField] float rotateSpeed, idleRotSpeed, guardRotSpeed;
     public GameObject guardTrigger;
-
-    [Header("Booleans")]
-    public bool hasTarget;
-    bool canShoot;
 
     void Awake()
     {
@@ -105,11 +105,6 @@ public class ProjectileShieldController : MonoBehaviour
             {
                 ClearCurrentProjectile();
             }
-        }
-
-        if(Input.GetKeyDown(KeyCode.K))
-        {
-            StartCoroutine(ConsecutiveShots());
         }
 
         if(Input.GetButtonUp("Barge"))
@@ -243,12 +238,42 @@ public class ProjectileShieldController : MonoBehaviour
 
         projRb.isKinematic = false;
 
-        if(hasTarget)
+        if (hasTarget)
         {
             Vector3 shootDir = (target.transform.position - currentProjectile.transform.position).normalized;
             projRb.AddForce(shootDir * shootForce, ForceMode.Impulse);
+
+            /*while (Vector3.Distance(target.transform.position, currentProjectile.transform.position) > 0.1f)
+            {
+                currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, target.transform.position, shootForce * Time.deltaTime);
+            }
+
+            if (Vector3.Distance(target.transform.position, currentProjectile.transform.position) < 0.1f)
+            {
+                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, target.transform.position, Quaternion.identity, 1);
+
+                if (target.GetComponent<MarkerCheck>() != null)
+                {
+                    MarkerCheck markerCheck = target.GetComponent<MarkerCheck>();
+
+                    markerCheck.RemoveMarker();
+                }
+
+                if (target.GetComponent<EnemyHealth>() != null)
+                {
+                    EnemyHealth enemy = target.GetComponent<EnemyHealth>();
+
+                    enemy.TakeDamage(10);
+                }
+
+                ObjectPoolManager.instance.RecallObject(currentProjectile);
+            }*/
         }
-        else projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
+        else
+        {
+            //projRb.isKinematic = false;
+            projRb.AddForce(player.forward * shootForce, ForceMode.Impulse);
+        }
 
         SP.shot = true;
     }
@@ -275,11 +300,43 @@ public class ProjectileShieldController : MonoBehaviour
                 yield return new WaitForSeconds(0.25f);
             }
 
+            if(projectiles.Count != ts.visibleTargets.Count)
+            {
+                projectiles.Clear();
+            }
         }
 
         Debug.Log("Clear Visible Targets");
-        /*ts.visibleTargets.Clear();
-        ts.closest = null;*/
+        ts.visibleTargets.Clear();
+        ts.closest = null;
+    }
+
+    IEnumerator MoveTowardsTarget()
+    {
+        while (Vector3.Distance(target.transform.position, currentProjectile.transform.position) > 0.1f)
+        {
+            currentProjectile.transform.position = Vector3.MoveTowards(currentProjectile.transform.position, target.transform.position, shootForce * Time.deltaTime);
+            yield return null;
+        }
+
+        if (Vector3.Distance(target.transform.position, currentProjectile.transform.position) < 0.1f)
+        {
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, target.transform.position, Quaternion.identity, 1);
+
+            if (target.GetComponent<MarkerCheck>() != null)
+            {
+                MarkerCheck markerCheck = target.GetComponent<MarkerCheck>();
+
+                markerCheck.RemoveMarker();
+            }
+
+            if (target.GetComponent<EnemyHealth>() != null)
+            {
+                EnemyHealth enemy = target.GetComponent<EnemyHealth>();
+
+                enemy.TakeDamage(10);
+            }
+        }
     }
 
     void LockOnShoot()
@@ -324,27 +381,6 @@ public class ProjectileShieldController : MonoBehaviour
         {
             sa.shot = true;
             rb.AddForce(transform.forward * shootForce, ForceMode.Impulse);
-        }
-    }
-
-    IEnumerator ConsecutiveShots()
-    {
-        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
-        {
-            target = nextTarget;
-            Vector3 nextTargetPos = nextTarget.transform.position;
-        }
-
-        while (projectiles.Count > 0)
-        {
-            ShootProjectile();
-
-            if (currentProjectile != null)
-            {
-                ClearCurrentProjectile();
-            }
-
-            yield return new WaitForSeconds(0.25f);
         }
     }
 }
