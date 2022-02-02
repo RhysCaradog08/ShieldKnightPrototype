@@ -232,15 +232,28 @@ public class TargetingSystem : MonoBehaviour
                     AddLockOnMarker();
                     lockedOn = !lockedOn;
 
-                    if(closest.GetComponent<MarkerCheck>() != null)
+                    foreach (GameObject vt in visibleTargets)
                     {
-                        markerCheck = closest.GetComponent<MarkerCheck>();
-
-                        if(!markerCheck.canAddMarker)
+                        if(vt.GetComponent<MarkerCheck>() != null)
                         {
-                            markerCheck.RemoveMarker();
+                            markerCheck = vt.GetComponent<MarkerCheck>();
+
+                            if (!markerCheck.canAddMarker)
+                            {
+                                markerCheck.RemoveMarker();
+                            }
                         }
+
                     }
+                        if (closest.GetComponent<MarkerCheck>() != null)
+                        {
+                            markerCheck = closest.GetComponent<MarkerCheck>();
+
+                            if (!markerCheck.canAddMarker)
+                            {
+                                markerCheck.RemoveMarker();
+                            }
+                        }
                 }
 
             }
