@@ -127,5 +127,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12cebc8814a68f4fb04ab2d7181ed50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  target: {fileID: 0}
+  shotForce: 25
   interactDelay: 0
   shot: 0

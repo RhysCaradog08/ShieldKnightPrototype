@@ -5,22 +5,23 @@ using Basics.ObjectPool;
 
 public class ShieldProjectile : MonoBehaviour
 {
-    GameObject shieldP;
+    ProjectileShieldController psc;
+
+    Transform player;
+    public GameObject target;
+    GameObject shieldP, hitStars;
     Vector3 scale;
     Rigidbody rb;
 
-    GameObject hitStars;
+    public float shotForce, interactDelay;
 
-    public float interactDelay;
-
-    public bool shot, hit;
+    public bool shot;
 
     private void Awake()
     {
+        player = FindObjectOfType<PlayerController>().transform;
         shieldP = this.gameObject;
         scale = transform.localScale;
-        shot = false;
-        hit = false;
     }
 
     private void Start()
@@ -37,46 +38,66 @@ public class ShieldProjectile : MonoBehaviour
         if(shot)
         {
             interactDelay -= Time.deltaTime;
-            //Debug.Log("Interact Delay: " + interactDelay);
         }
 
         if(interactDelay <= 0)
         {
             interactDelay = 0;
         }
+    }
 
-        if (hit && interactDelay <= 0)
+    private void FixedUpdate()
+    {
+        if(shot)
         {
-            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);
+            rb.isKinematic = false;
 
-            rb.isKinematic = true;
-            shot = false;
-            hit = false;
+            if (target != null)
+            {
+                Vector3 shootDir = (target.transform.position - transform.position).normalized;
 
-            ObjectPoolManager.instance.RecallObject(shieldP);
+                rb.MovePosition(transform.position + shootDir * (shotForce * 3) * Time.deltaTime);
+            }
+            else rb.AddForce(player.forward * (shotForce), ForceMode.Impulse);
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(shot)
+        if (target != null)
         {
-            hit = true;
-            //Debug.Log("Hit Something!");
+            if(shot) //&& other == target)
+            {
+                //hit = true;
+                shot = false;
+                target = null;
+
+                rb.isKinematic = true;
+
+                Debug.Log("Hit Target!");
+            }
+        }
+        else if(!target)
+        {
+            if (shot)
+            {
+                //hit = true;
+                shot = false;
+
+                rb.isKinematic = true;
+
+                Debug.Log("Hit Something!");
+            }
         }
 
-        if(interactDelay <= 0)
+
+        if (interactDelay == 0)
         {
-            /*hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);
-
-            rb.isKinematic = true;
-            shot = false;*/
-
             if (other.gameObject.GetComponent<MarkerCheck>() != null)
             {
                 MarkerCheck markerCheck = other.gameObject.GetComponent<MarkerCheck>();
 
-                if(!markerCheck.canAddMarker)
+                if (!markerCheck.canAddMarker)
                 {
                     markerCheck.RemoveMarker();
                 }
@@ -99,6 +120,8 @@ public class ShieldProjectile : MonoBehaviour
                 }
             }
 
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, transform.position, Quaternion.identity, 1);
+            ObjectPoolManager.instance.RecallObject(shieldP);
         }
     }
 }
