@@ -76,6 +76,16 @@ public class HeadCollider : MonoBehaviour
                 enemy.TakeDamage(10);
             }
 
+            if (other.transform.gameObject.GetComponent<Lever>())
+            {
+                Lever lever = other.transform.gameObject.GetComponent<Lever>();
+
+                if (lever.canChange)
+                {
+                    lever.ChangeLever();
+                }
+            }
+
             hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, other.transform.position, Quaternion.identity, 1);
         }
 

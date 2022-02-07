@@ -69,6 +69,8 @@ public class CoilShieldController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        lr.enabled = false;
+
         //Whip
         canExtend = true;
         isExtending = false;
@@ -269,7 +271,7 @@ public class CoilShieldController : MonoBehaviour
         {
             if(!ts.lockedOn)
             {
-                Debug.Log("Not Locked on to Target");
+                //Debug.Log("Not Locked on to Target");
                 target = null;
             }
 
@@ -326,7 +328,7 @@ public class CoilShieldController : MonoBehaviour
 
         if (hasObject)
         {
-            Debug.DrawLine(transform.position, player.forward, Color.green);
+            //Debug.DrawLine(transform.position, player.forward, Color.green);
 
             select.canChange = false;
 

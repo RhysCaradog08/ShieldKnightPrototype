@@ -953,6 +953,17 @@ PrefabInstance:
       propertyPath: slamPushBack
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3070269116094956917, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 3269704654004686917, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000,
+        type: 0}
     - target: {fileID: 3269704654004686917, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: m_IsActive
@@ -993,6 +1004,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5716383767679315476, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
+      propertyPath: m_Icon
+      value: 
+      objectReference: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000,
+        type: 0}
     - target: {fileID: 5716383767679315476, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: m_IsActive
@@ -4753,6 +4770,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: WaveShield
+      objectReference: {fileID: 0}
+    - target: {fileID: 6279270542741835754, guid: 380792f52c6ba26499dcd12fbc4cff65,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6660722585329980752, guid: 380792f52c6ba26499dcd12fbc4cff65,
         type: 3}
