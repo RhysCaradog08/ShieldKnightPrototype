@@ -7,7 +7,7 @@ using Basics.ObjectPool;
 public class PlayerController : MonoBehaviour
 {
     public CharacterController cc;
-    Animator anim;
+    public Animator anim;
     Transform cam;
 
     [Header("Shield")]
@@ -287,16 +287,21 @@ public class PlayerController : MonoBehaviour
 
         if(hasProjectile)
         {
-            if (Input.GetButton("Throw"))
+            if(Input.GetButton("Throw"))
+            {
+                aiming = true;
+            }
+
+            if (aiming)
             {
                 anim.SetBool("Aiming", true);
             }
             else anim.SetBool("Aiming", false);
 
-            if(Input.GetButtonUp("Throw"))
+            /*if(Input.GetButtonUp("Throw"))
             {
                 anim.SetTrigger("Shoot");
-            }
+            }*/
 
             if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
             {

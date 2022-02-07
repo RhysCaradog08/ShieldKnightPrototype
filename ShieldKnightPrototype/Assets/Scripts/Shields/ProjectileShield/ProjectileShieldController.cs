@@ -13,6 +13,7 @@ public class ProjectileShieldController : MonoBehaviour
     Vector3 upVector;
 
     [Header("Shooting")]
+    PlayerController pc;
     TargetingSystem ts;
     ShieldProjectile SP;
     Transform player;
@@ -21,7 +22,7 @@ public class ProjectileShieldController : MonoBehaviour
     [SerializeField] float shootDelay;
     public float shootForce;
     GameObject hitStars;
-    public bool hasTarget;
+    public bool hasTarget, aiming;
     bool canShoot;
 
     [Header("Spiral Attack")]
@@ -33,7 +34,8 @@ public class ProjectileShieldController : MonoBehaviour
 
     void Awake()
     {
-        ts = transform.root.GetComponent<TargetingSystem>();
+        pc = FindObjectOfType<PlayerController>();
+        ts = FindObjectOfType<TargetingSystem>();
         player = transform.root;       
         rotateSpeed = idleRotSpeed;
     }
@@ -88,6 +90,7 @@ public class ProjectileShieldController : MonoBehaviour
                     {
                         ShootProjectile();
                         ts.visibleTargets.Clear();
+                        pc.aiming = false;
                     }
                     /*if (ts.lockedOn)
                     {
@@ -156,7 +159,7 @@ public class ProjectileShieldController : MonoBehaviour
             projectiles.Add(shieldProjectile1);
 
             SP = shieldProjectile1.GetComponent<ShieldProjectile>();
-            SP.interactDelay = 0.1f;
+            SP.interactDelay = 0.05f;
         }
 
         if (shieldProjectile2 == null)
@@ -165,7 +168,7 @@ public class ProjectileShieldController : MonoBehaviour
             projectiles.Add(shieldProjectile2);
 
             SP = shieldProjectile2.GetComponent<ShieldProjectile>();
-            SP.interactDelay = 0.1f;
+            SP.interactDelay = 0.05f;
         }
 
         if (shieldProjectile3 == null)
@@ -174,7 +177,7 @@ public class ProjectileShieldController : MonoBehaviour
             projectiles.Add(shieldProjectile3);
 
             SP = shieldProjectile3.GetComponent<ShieldProjectile>();
-            SP.interactDelay = 0.1f;
+            SP.interactDelay = 0.05f;
         }
 
         PositionInCircle();
@@ -196,6 +199,38 @@ public class ProjectileShieldController : MonoBehaviour
         }
 
         currentProjectile = null;
+    }
+
+    void ClearAllProjectiles()
+    {
+        Debug.Log("Clear All Projectiles");
+
+        if(shieldProjectile1 != null)
+        {
+            SP = shieldProjectile1.GetComponent<ShieldProjectile>();
+            SP.shot = false;
+
+            ObjectPoolManager.instance.RecallObject(shieldProjectile1);
+            shieldProjectile1 = null;
+        }
+
+        if (shieldProjectile2 != null)
+        {
+            SP = shieldProjectile2.GetComponent<ShieldProjectile>();
+            SP.shot = false;
+
+            ObjectPoolManager.instance.RecallObject(shieldProjectile2);
+            shieldProjectile2 = null;
+        }
+
+        if (shieldProjectile3 != null)
+        {
+            SP = shieldProjectile3.GetComponent<ShieldProjectile>();
+            SP.shot = false;
+
+            ObjectPoolManager.instance.RecallObject(shieldProjectile3);
+            shieldProjectile3 = null;
+        }
     }
 
     public void PositionInCircle()
@@ -227,6 +262,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         //Debug.Log("Shoot Projectile");
 
+        pc.anim.SetTrigger("Shoot");
         currentProjectile = projectiles[0];
         currentProjectile.transform.parent = null;
         projectiles.Remove(currentProjectile);
@@ -247,6 +283,7 @@ public class ProjectileShieldController : MonoBehaviour
         //Debug.Log("Shoot at Targets");
         while (projectiles.Count > 0)
         {
+            //pc.aiming = true;
             for (int i = ts.visibleTargets.Count - 1; i >= 0; i--) 
             {
                 target = ts.visibleTargets[i];
@@ -266,10 +303,12 @@ public class ProjectileShieldController : MonoBehaviour
             if(projectiles.Count != ts.visibleTargets.Count)
             {
                 projectiles.Clear();
+                ClearAllProjectiles();
             }
         }
 
         Debug.Log("Clear Visible Targets");
+        pc.aiming = false;
         ts.visibleTargets.Clear();
         ts.closest = null;
     }
