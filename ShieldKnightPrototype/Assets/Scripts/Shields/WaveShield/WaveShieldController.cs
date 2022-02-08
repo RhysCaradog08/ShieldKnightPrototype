@@ -4,8 +4,15 @@ using UnityEngine;
 
 public class WaveShieldController : MonoBehaviour
 {
+    PlayerController pc;
+
     [SerializeField] int attackCount;
     [SerializeField] float attackDelay, attackReset;
+
+    private void Awake()
+    {
+        pc = FindObjectOfType<PlayerController>();
+    }
 
     private void Start()
     {
@@ -19,8 +26,28 @@ public class WaveShieldController : MonoBehaviour
             if(attackCount > 0)
             {
                 attackCount--;
-                attackDelay = 1f;
-                attackReset = 2f;
+                attackDelay = 0.5f;
+                attackReset = 1;
+            }
+
+            if(attackCount == 2) //&& attackReset > 0)
+            {
+                Debug.Log("Attack Left");
+                pc.anim.SetTrigger("WaveAttackLeft");
+            }
+
+            if(attackCount == 1) //&& attackReset > 0)
+            {
+                Debug.Log("Attack Right");
+                pc.anim.SetTrigger("WaveAttackRight");
+                pc.anim.ResetTrigger("WaveAttackLeft");
+            }
+
+            if (attackCount == 0) //&& attackReset > 0)
+            {
+                Debug.Log("Attack Overhead");
+                pc.anim.ResetTrigger("WaveAttackRight");
+                pc.anim.SetTrigger("WaveAttackOverhead");
             }
         }
 
@@ -42,12 +69,18 @@ public class WaveShieldController : MonoBehaviour
         if(attackReset > 0)
         {
             attackReset -= Time.deltaTime;
+            pc.anim.SetBool("WaveAttacking", true);
         }
 
         if(attackReset <= 0)
         {
             attackReset = 0;
             attackCount = 3;
+
+            pc.anim.SetBool("WaveAttacking", false);
+            pc.anim.ResetTrigger("WaveAttackLeft");
+            pc.anim.ResetTrigger("WaveAttackRight");
+            pc.anim.ResetTrigger("WaveAttackOverhead");
         }
     }
 }
