@@ -51,16 +51,28 @@ public class WaveShieldController : MonoBehaviour
             }
         }
 
-        if(attackDelay > 0)
+        if(Input.GetButtonDown("Barge"))
+        {
+            pc.anim.SetTrigger("BeginSurf");
+        }
+
+        if(Input.GetButton("Barge"))
+        {
+            //pc.anim.ResetTrigger("BeginSurf");
+            pc.anim.SetBool("Surfing", true);
+        }
+        else pc.anim.SetBool("Surfing", false);
+
+        if (attackDelay > 0)
         {
             attackDelay -= Time.deltaTime;
-            pc.stopped = true;
+            pc.enabled = false;
         }
 
         if(attackDelay <= 0)
         {
             attackDelay = 0;
-            pc.stopped = false;
+            pc.enabled = true;
         }
 
         if(attackReset > 0)
