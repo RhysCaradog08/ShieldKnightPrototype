@@ -18,8 +18,6 @@ public class PlayerController : MonoBehaviour
     TargetingSystem ts;
 
     [Header("Movement")]
-    public Transform pivot;
-    public GameObject model;
     public float speed, moveSpeed, rotateSpeed;
     public Vector3 move, moveDir; //velocityMomentum;
     public float turnSmoothTime;
@@ -334,6 +332,19 @@ public class PlayerController : MonoBehaviour
         if(hasWave)
         {
             //Perform Wave Shield features. 
+            if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
+            {
+                if(!wave.surfing)
+                {
+                    anim.SetBool("WaveGuard", true);
+                    stopped = true;
+                }
+            }
+            else
+            {
+                stopped = false;
+                anim.SetBool("WaveGuard", false);
+            }
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 

@@ -2627,6 +2627,7 @@ MonoBehaviour:
   attackDelay: 0
   attackReset: 0
   surfSpeed: 25
+  surfing: 0
 --- !u!1 &1137484797 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
