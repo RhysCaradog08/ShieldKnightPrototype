@@ -27,7 +27,7 @@ public class WaveShieldController : MonoBehaviour
             {
                 attackCount--;
                 attackDelay = 0.5f;
-                attackReset = 1;
+                attackReset = 0.75f;
             }
 
             if(attackCount == 2) //&& attackReset > 0)
@@ -51,19 +51,16 @@ public class WaveShieldController : MonoBehaviour
             }
         }
 
-        /*if(attackCount <= 0)
-        {
-            attackCount = 0;
-        }*/
-
         if(attackDelay > 0)
         {
             attackDelay -= Time.deltaTime;
+            pc.stopped = true;
         }
 
         if(attackDelay <= 0)
         {
             attackDelay = 0;
+            pc.stopped = false;
         }
 
         if(attackReset > 0)

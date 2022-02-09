@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ShieldController shield;
     [SerializeField] ProjectileShieldController projectile;
     [SerializeField] CoilShieldController coil;
+    [SerializeField] WaveShieldController wave;
     TargetingSystem ts;
 
     [Header("Movement")]
@@ -39,7 +40,7 @@ public class PlayerController : MonoBehaviour
     public GameObject parryBox;
 
     [Header("Shield Booleans")]
-    public bool hasShield, hasProjectile, hasCoil;
+    public bool hasShield, hasProjectile, hasCoil, hasWave;
 
     [Header("Shield Animation Booleans")]
     public bool barging, dodging, slamming;
@@ -62,6 +63,7 @@ public class PlayerController : MonoBehaviour
         shield = FindObjectOfType<ShieldController>();
         projectile = FindObjectOfType<ProjectileShieldController>();
         coil = FindObjectOfType<CoilShieldController>();
+        wave = FindObjectOfType<WaveShieldController>();
     }
 
     private void Start()
@@ -108,6 +110,12 @@ public class PlayerController : MonoBehaviour
             hasCoil = true;
         }
         else hasCoil = false;
+
+        if (wave.gameObject.activeInHierarchy)
+        {
+            hasWave = true;
+        }
+        else hasWave = false;
 
         if (stopTime > 0)
         {
@@ -298,11 +306,6 @@ public class PlayerController : MonoBehaviour
             }
             else anim.SetBool("Aiming", false);
 
-            /*if(Input.GetButtonUp("Throw"))
-            {
-                anim.SetTrigger("Shoot");
-            }*/
-
             if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
             {
                 anim.SetBool("Guarding", true);
@@ -326,6 +329,11 @@ public class PlayerController : MonoBehaviour
             {
                 anim.SetBool("Slamming", false);
             }
+        }
+
+        if(hasWave)
+        {
+            //Perform Wave Shield features. 
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 
