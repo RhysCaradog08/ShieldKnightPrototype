@@ -7,7 +7,7 @@ public class WaveShieldController : MonoBehaviour
     PlayerController pc;
 
     [SerializeField] int attackCount;
-    [SerializeField] float attackDelay, attackReset;
+    [SerializeField] float attackDelay, attackReset, surfSpeed;
 
     private void Awake()
     {
@@ -51,17 +51,16 @@ public class WaveShieldController : MonoBehaviour
             }
         }
 
-        if(Input.GetButtonDown("Barge"))
+        if (Input.GetButton("Barge") && attackDelay <= 0)
         {
-            pc.anim.SetTrigger("BeginSurf");
-        }
-
-        if(Input.GetButton("Barge"))
-        {
-            //pc.anim.ResetTrigger("BeginSurf");
             pc.anim.SetBool("Surfing", true);
+            pc.speed = surfSpeed;
         }
-        else pc.anim.SetBool("Surfing", false);
+        else
+        {
+            pc.anim.SetBool("Surfing", false);
+            pc.speed = pc.moveSpeed;
+        }
 
         if (attackDelay > 0)
         {
