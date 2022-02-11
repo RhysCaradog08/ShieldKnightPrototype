@@ -1222,6 +1222,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
+      propertyPath: rotateSpeed
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 7497695169061485916, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
+        type: 3}
       propertyPath: fallMultiplier
       value: 1
       objectReference: {fileID: 0}
@@ -2627,7 +2632,7 @@ MonoBehaviour:
   attackDelay: 0
   attackReset: 0
   surfSpeed: 25
-  surfing: 0
+  isSurfing: 0
 --- !u!1 &1137484797 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2057493293234698258, guid: cc066c995e855a3449d5c3ba6f49f4d3,
