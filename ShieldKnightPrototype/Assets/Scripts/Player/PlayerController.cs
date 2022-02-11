@@ -334,7 +334,7 @@ public class PlayerController : MonoBehaviour
             //Perform Wave Shield features. 
             if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
             {
-                if(!wave.surfing)
+                if(!wave.isSurfing)
                 {
                     anim.SetBool("WaveGuard", true);
                     stopped = true;
