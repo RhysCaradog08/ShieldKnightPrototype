@@ -70,6 +70,12 @@ public class WaveShieldController : MonoBehaviour
             //pc.speed = pc.moveSpeed;
         }
 
+        if (isSurfing)
+        {
+            pc.speed = surfSpeed;
+        }
+        else pc.speed = pc.moveSpeed;
+
         if (attackDelay > 0)
         {
             attackDelay -= Time.deltaTime;

@@ -176,7 +176,7 @@ public class PlayerController : MonoBehaviour
 
         if (!stopped)
         {
-            if (move.magnitude >= Mathf.Epsilon) //Orients the player to have forward orientation relevant to camera rotation.
+            if (move.magnitude >= Mathf.Epsilon && !wave.isSurfing) //Orients the player to have forward orientation relevant to camera rotation.
             {
                 float targetAngle = Mathf.Atan2(move.x, move.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
                 float angle = Mathf.SmoothDampAngle(transform.eulerAngles.y, targetAngle, ref turnSmoothVelocity, turnSmoothTime);
@@ -190,6 +190,13 @@ public class PlayerController : MonoBehaviour
             else
             {
                 anim.SetBool("Moving", false);
+            }
+
+            if(wave.isSurfing)
+            {
+                Vector3 surfDirection = Quaternion.Euler(0, 0, 0) * transform.forward;
+                cc.Move(surfDirection.normalized * speed * (Time.deltaTime));
+                transform.Rotate(0, move.x * rotateSpeed, 0);
             }
         }
 
