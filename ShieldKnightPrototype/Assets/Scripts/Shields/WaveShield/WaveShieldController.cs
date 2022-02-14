@@ -8,6 +8,7 @@ public class WaveShieldController : MonoBehaviour
 
     [SerializeField] int attackCount;
     [SerializeField] float attackDelay, attackReset, surfSpeed;
+    public ParticleSystem waves, wavesFlipped;
 
     public bool isSurfing;
 
@@ -72,9 +73,16 @@ public class WaveShieldController : MonoBehaviour
 
         if (isSurfing)
         {
+            waves.Play();
+            wavesFlipped.Play();
             pc.speed = surfSpeed;
         }
-        else pc.speed = pc.moveSpeed;
+        else
+        {
+            waves.Stop();
+            wavesFlipped.Stop();
+            pc.speed = pc.moveSpeed;
+        }
 
         if (attackDelay > 0)
         {

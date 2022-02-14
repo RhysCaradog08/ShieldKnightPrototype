@@ -194,8 +194,7 @@ public class PlayerController : MonoBehaviour
 
             if(wave.isSurfing)
             {
-                Vector3 surfDirection = Quaternion.Euler(0, 0, 0) * transform.forward;
-                cc.Move(surfDirection.normalized * speed * (Time.deltaTime));
+                cc.Move(transform.forward.normalized * speed * (Time.deltaTime));
                 transform.Rotate(0, move.x * rotateSpeed, 0);
             }
         }
