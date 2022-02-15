@@ -331,6 +331,7 @@ MonoBehaviour:
   waves: {fileID: 635464012558620004}
   wavesFlipped: {fileID: 207116069298754255}
   isSurfing: 0
+  isAttacking: 0
 --- !u!1 &7089696694126150503
 GameObject:
   m_ObjectHideFlags: 0
@@ -539,7 +540,7 @@ PrefabInstance:
     - target: {fileID: 717064299773558207, guid: f8630e16728407b4280979d2a0ef565c,
         type: 3}
       propertyPath: VelocityModule.x.scalar
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6131311647594430679, guid: f8630e16728407b4280979d2a0ef565c,
         type: 3}
@@ -554,7 +555,7 @@ PrefabInstance:
     - target: {fileID: 9083122550918985059, guid: f8630e16728407b4280979d2a0ef565c,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.7
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 9083122550918985059, guid: f8630e16728407b4280979d2a0ef565c,
         type: 3}
@@ -564,7 +565,7 @@ PrefabInstance:
     - target: {fileID: 9083122550918985059, guid: f8630e16728407b4280979d2a0ef565c,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.2
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 9083122550918985059, guid: f8630e16728407b4280979d2a0ef565c,
         type: 3}
@@ -630,7 +631,7 @@ PrefabInstance:
     - target: {fileID: 196285098452006836, guid: a9f16023f0b535c4391185ad692d6f23,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.7
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 196285098452006836, guid: a9f16023f0b535c4391185ad692d6f23,
         type: 3}
@@ -640,7 +641,7 @@ PrefabInstance:
     - target: {fileID: 196285098452006836, guid: a9f16023f0b535c4391185ad692d6f23,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1.2
+      value: 1.7
       objectReference: {fileID: 0}
     - target: {fileID: 196285098452006836, guid: a9f16023f0b535c4391185ad692d6f23,
         type: 3}

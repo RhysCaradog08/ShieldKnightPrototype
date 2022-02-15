@@ -37,6 +37,11 @@ public class PlayerController : MonoBehaviour
     bool buttonHeld;
     public GameObject parryBox;
 
+    [Header("Wave Shield Actions")]
+    [SerializeField] int attackCount;
+    [SerializeField] float attackReset, surfSpeed;
+    public float attackDelay;
+
     [Header("Shield Booleans")]
     public bool hasShield, hasProjectile, hasCoil, hasWave;
 
@@ -80,6 +85,10 @@ public class PlayerController : MonoBehaviour
         buttonHeldTime = 0;
         buttonHeld = false;
 
+        //Wave Shield Actions
+        attackCount = 3;
+        surfSpeed = 25;
+
         //Animation Booleans
         barging = false;
         dodging = false;
@@ -91,36 +100,36 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("Is  Grounded " + cc.isGrounded);
         Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.red);
 
-        if (shield.gameObject.activeInHierarchy)
+        if (shield.gameObject.activeInHierarchy) //Player is using Standard Shield.
         {
             hasShield = true;
         }
         else hasShield = false;
 
-        if (projectile.gameObject.activeInHierarchy)
+        if (projectile.gameObject.activeInHierarchy) //Player is using Projectile Shield.
         {
             hasProjectile = true;
         }
         else hasProjectile = false;
 
-        if (coil.gameObject.activeInHierarchy)
+        if (coil.gameObject.activeInHierarchy) //Player is using Coil Shield.
         {
             hasCoil = true;
         }
         else hasCoil = false;
 
-        if (wave.gameObject.activeInHierarchy)
+        if (wave.gameObject.activeInHierarchy) //Player is using Wave Shield.
         {
             hasWave = true;
         }
         else hasWave = false;
 
-        if (stopTime > 0)
+        if (stopTime > 0) //Decrease stopTime whilst stopping player in place.
         {
             stopTime -= Time.deltaTime;
             stopped = true;
         }
-        else if(stopTime <= 0)
+        else if(stopTime <= 0) //Resume players ability to move.
         {
             stopTime = 0;
             stopped = false;
@@ -192,9 +201,9 @@ public class PlayerController : MonoBehaviour
                 anim.SetBool("Moving", false);
             }
 
-            if(wave.isSurfing)
+            if(wave.isSurfing) //Add constant forward motion whilst player is surfing on Wave Shield.
             {
-                cc.Move(transform.forward.normalized * speed * (Time.deltaTime));
+                cc.Move(transform.forward.normalized * surfSpeed * Time.deltaTime);
                 transform.Rotate(0, move.x * rotateSpeed, 0);
             }
         }
@@ -299,7 +308,7 @@ public class PlayerController : MonoBehaviour
 
         if(hasProjectile)
         {
-            if(Input.GetButton("Throw"))
+            if(Input.GetButton("Throw")) //Set aim animation.
             {
                 aiming = true;
             }
@@ -337,7 +346,46 @@ public class PlayerController : MonoBehaviour
 
         if(hasWave)
         {
-            //Perform Wave Shield features. 
+            //Perform Wave Shield animations and features. 
+            if (wave.isSurfing)
+            {
+                anim.SetBool("Surfing", true);
+            }
+            else if (!wave.isSurfing)
+            {
+                anim.SetBool("Surfing", false);
+                
+                if (Input.GetButtonDown("Throw") && attackDelay <= 0)
+                {
+                    if (attackCount > 0)
+                    {
+                        attackCount--;
+                        attackDelay = 0.5f;
+                        attackReset = 0.75f;
+                    }
+
+                    if (attackCount == 2) //&& attackReset > 0)
+                    {
+                        Debug.Log("Attack Left");
+                        anim.SetTrigger("WaveAttackLeft");
+                    }
+
+                    if (attackCount == 1) //&& attackReset > 0)
+                    {
+                        Debug.Log("Attack Right");
+                        anim.SetTrigger("WaveAttackRight");
+                        anim.ResetTrigger("WaveAttackLeft");
+                    }
+
+                    if (attackCount == 0) //&& attackReset > 0)
+                    {
+                        Debug.Log("Attack Overhead");
+                        anim.ResetTrigger("WaveAttackRight");
+                        anim.SetTrigger("WaveAttackOverhead");
+                    }
+                }
+            }
+
             if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
             {
                 if(!wave.isSurfing)
@@ -350,6 +398,35 @@ public class PlayerController : MonoBehaviour
             {
                 stopped = false;
                 anim.SetBool("WaveGuard", false);
+            }
+
+            if (attackDelay > 0)
+            {
+                attackDelay -= Time.deltaTime;
+                stopped = true;
+            }
+
+            if (attackDelay <= 0)
+            {
+                attackDelay = 0;
+                stopped = false;
+            }
+
+            if (attackReset > 0)
+            {
+                attackReset -= Time.deltaTime;
+                anim.SetBool("WaveAttacking", true);
+            }
+
+            if (attackReset <= 0)
+            {
+                attackReset = 0;
+                attackCount = 3;
+
+                anim.SetBool("WaveAttacking", false);
+                anim.ResetTrigger("WaveAttackLeft");
+                anim.ResetTrigger("WaveAttackRight");
+                anim.ResetTrigger("WaveAttackOverhead");
             }
         }
 
@@ -382,6 +459,16 @@ public class PlayerController : MonoBehaviour
     public void EnableThrow()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
     {
         shield.canThrow = true;
+    }
+
+    public void WaveAttackOn() //Sets isAttacking bool in WaveShieldController to enable collision when attacking.
+    {
+        wave.isAttacking = true;
+    }
+
+    public void WaveAttackOff()
+    {
+        wave.isAttacking = false;
     }
 
     /*void OnDrawGizmosSelected()
