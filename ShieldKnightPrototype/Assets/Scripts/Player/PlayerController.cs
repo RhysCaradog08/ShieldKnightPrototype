@@ -1,7 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using System;
+using UnityEngine;
+using UnityEngine.UI;
 using Basics.ObjectPool;
 
 public class PlayerController : MonoBehaviour
@@ -118,7 +119,8 @@ public class PlayerController : MonoBehaviour
         }
         else hasCoil = false;
 
-        if (wave.gameObject.activeInHierarchy) //Player is using Wave Shield.
+
+            if (wave.gameObject.activeInHierarchy) //Player is using Wave Shield.
         {
             hasWave = true;
         }

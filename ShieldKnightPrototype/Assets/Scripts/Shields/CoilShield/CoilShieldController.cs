@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Basics.ObjectPool;
 
 public class CoilShieldController : MonoBehaviour
@@ -102,8 +103,6 @@ public class CoilShieldController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.DrawLine(holdPos.position, dir, Color.green);
-
         if (target != null)
         {
             hasTarget = true;
