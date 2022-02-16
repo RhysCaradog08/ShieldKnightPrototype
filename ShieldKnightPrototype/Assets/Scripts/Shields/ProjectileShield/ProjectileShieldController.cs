@@ -92,13 +92,6 @@ public class ProjectileShieldController : MonoBehaviour
                         ts.visibleTargets.Clear();
                         pc.aiming = false;
                     }
-                    /*if (ts.lockedOn)
-                    {
-                        LockOnShoot();
-                    }
-                    else
-                    {
-                    }*/
                 }
             }
 

@@ -813,6 +813,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 662233207, guid: 1e8b4bb11deea5142bacd5ec95da9f61, type: 3}
+      propertyPath: idleRotSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 662233207, guid: 1e8b4bb11deea5142bacd5ec95da9f61, type: 3}
+      propertyPath: guardRotSpeed
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 378420872282509564, guid: 1e8b4bb11deea5142bacd5ec95da9f61,
         type: 3}
       propertyPath: m_LocalPosition.y
