@@ -6,14 +6,13 @@ using Basics.ObjectPool;
 
 public class CoilShieldController : MonoBehaviour
 {
-    Transform player;
-    Camera cam;
     PlayerController pc;
     CharacterController cc;
     TargetingSystem ts;
     ShieldSelect select;
     HeadCollider hc;
 
+    Transform player;
     public GameObject coil, head;
     LineRenderer lr;
 
@@ -56,9 +55,8 @@ public class CoilShieldController : MonoBehaviour
 
     private void Awake()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
-        cam = Camera.main;
-        pc = player.gameObject.GetComponent<PlayerController>();
+        pc = FindObjectOfType<PlayerController>();
+        player = pc.gameObject.transform;
         cc = player.gameObject.GetComponent<CharacterController>();
         ts = FindObjectOfType<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
@@ -80,6 +78,7 @@ public class CoilShieldController : MonoBehaviour
         startScale = coil.transform.localScale;
 
         //Grapple
+        tetherPoint = null;
         tetheredObject = null;
         enableTether = false;
         canTether = false;
@@ -109,7 +108,7 @@ public class CoilShieldController : MonoBehaviour
         }
         else hasTarget = false;
 
-        if(stopTime > 0)
+        if (stopTime > 0)
         {
             stopTime -= Time.deltaTime;
             pc.enabled = false;

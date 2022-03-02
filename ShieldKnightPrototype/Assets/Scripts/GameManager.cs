@@ -25,11 +25,11 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(coil.isActiveAndEnabled)
+        /*if(coil.isActiveAndEnabled)
         {
             debugText.text = "Has Coil";
         }
-        else debugText.text = "";
+        else debugText.text = "";*/
 
         if (Input.GetButtonDown("Cancel"))
         {
