@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 3269704654489049286}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 0.2, z: 3}
+  m_LocalScale: {x: 2, y: 0.1, z: 2}
   m_Children:
   - {fileID: 4096215735944235611}
   - {fileID: 4947677818731843968}
@@ -79,21 +79,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   throwForce: 100
+  stopTime: 0
   target: {fileID: 0}
-  model: {fileID: 7417198392330692396}
-  rotateSpeed: 50
   thrown: 0
   hasTarget: 0
   canThrow: 0
-  hitStars: {fileID: 8291907526407948301, guid: 5714212a0ae4a5e409364ef54b452d4a,
-    type: 3}
+  curvePoint: {fileID: 0}
   meshCol: {fileID: 0}
+  bargeDelay: 0
+  bargeTime: 0
+  bargeSpeed: 0
+  closest: {fileID: 0}
+  canBarge: 0
   isBarging: 0
+  canDodge: 0
+  isDodging: 0
+  dodgeTime: 0
+  dodgeSpeed: 0
+  dodgeDelay: 0
   slamForce: 0
+  slamPushBack: 0
   slamRadius: 0
   slamLift: 0
-  isSlamming: 0
+  slamDelay: 0
   damageDelay: 0.5
+  slamWait: 0
+  isSlamming: 0
 --- !u!96 &7174289603672937133
 TrailRenderer:
   serializedVersion: 2

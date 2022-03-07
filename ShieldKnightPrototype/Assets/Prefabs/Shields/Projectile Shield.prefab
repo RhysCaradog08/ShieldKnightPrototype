@@ -84,7 +84,7 @@ Transform:
   m_GameObject: {fileID: 6302830511325033370}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 0.1, z: 1}
+  m_LocalScale: {x: 0.75, y: 0.05, z: 0.75}
   m_Children: []
   m_Father: {fileID: 6302830512198690458}
   m_RootOrder: 0
@@ -185,14 +185,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   projectiles: []
-  target: {fileID: 0}
-  idleRotSpeed: 0
-  guardRotSpeed: 0
-  guardTrigger: {fileID: 4147391999882565040}
   shieldProjectile1: {fileID: 0}
   shieldProjectile2: {fileID: 0}
   shieldProjectile3: {fileID: 0}
+  target: {fileID: 0}
   currentProjectile: {fileID: 0}
-  shootForce: 100
   shootDelay: 0
+  shootForce: 100
   hasTarget: 0
+  aiming: 0
+  spiral: {fileID: 0}
+  rotateSpeed: 0
+  idleRotSpeed: 0
+  guardRotSpeed: 0
+  guardTrigger: {fileID: 4147391999882565040}
