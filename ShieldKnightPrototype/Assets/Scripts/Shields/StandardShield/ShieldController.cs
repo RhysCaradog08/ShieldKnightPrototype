@@ -238,10 +238,12 @@ public class ShieldController : MonoBehaviour
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
     {
+        //Vector3 dir = pc.transform.position + pc.transform.forward * 10;
+
         thrown = true;
 
         shieldRB.isKinematic = false;
-        shieldRB.AddForce(transform.forward * throwForce, ForceMode.Impulse);
+        shieldRB.AddForce(pc.transform.forward * throwForce, ForceMode.Impulse);
 
         transform.parent = null;
     }
@@ -290,27 +292,27 @@ public class ShieldController : MonoBehaviour
 
     IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
     {
-        shieldRB.isKinematic = false;
-
         float t = 0f;
         while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
         {
+            shieldRB.isKinematic = false;
+
             t += Time.deltaTime;
             //transform.position = BezierQuadraticCurve(t/lerpTime, transform.position, curvePoint.position, shieldHoldPos.position);
             transform.position = Vector3.Lerp(transform.position, shieldHoldPos.position, t / lerpTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t/lerpTime); // lerpTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, shieldHoldPos.rotation, t/lerpTime);
 
             meshCol.enabled = false; //Prevents from unecessary collisions upon return.
 
             yield return null;
         }
+        shieldRB.isKinematic = true;
 
         transform.parent = shieldHoldPos;  //Sets Shields position and parent to stay attached to Player.
         transform.localPosition = Vector3.zero;
 
         meshCol.enabled = true;
 
-        shieldRB.isKinematic = true;
 
         thrown = false;
     }
@@ -437,10 +439,6 @@ public class ShieldController : MonoBehaviour
     {
         if (thrown)
         {
-            if (other.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
-            {
-                shieldRB.isKinematic = true;
-            }
 
             if (other.transform.gameObject.GetComponent<Lever>())
             {
@@ -475,6 +473,18 @@ public class ShieldController : MonoBehaviour
                 {
                     enemy.Squash();
                 }
+            }
+        }
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
+        if (thrown)
+        {
+            if (col.gameObject.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
+            {
+                shieldRB.isKinematic = true;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
             }
         }
     }

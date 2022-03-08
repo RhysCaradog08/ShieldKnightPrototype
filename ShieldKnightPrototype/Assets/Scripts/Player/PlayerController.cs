@@ -60,7 +60,10 @@ public class PlayerController : MonoBehaviour
         cc = GetComponent<CharacterController>();
         ts = GetComponent<TargetingSystem>();
 
-        anim = GetComponent<Animator>();
+        if(anim == null)
+        {
+            anim = GetComponent<Animator>();
+        }
 
         cam = Camera.main.transform;
 
@@ -235,10 +238,6 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButtonUp("Throw") && !shield.thrown)  //Sets Throw/Catch animation.
             {
                 anim.SetTrigger("Throw");
-            }
-            else if (Input.GetButtonDown("Throw") && shield.thrown)
-            {
-                anim.SetTrigger("Catch");
             }
 
             if (buttonHeld) //Sets Guarding animation.
