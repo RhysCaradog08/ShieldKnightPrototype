@@ -204,14 +204,14 @@ public class ShieldController : MonoBehaviour
 
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position, -transform.up * 10, out hit))
+            if (Physics.Raycast(pc.transform.position, -pc.transform.up * 10, out hit))
             {
+                //Debug.DrawLine(pc.transform.position, -pc.transform.up * 10, Color.green);
+
                 float distToGround = hit.distance;
 
                 if (distToGround < 1)
                 {
-                    Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
-
                     SlamImpact();
 
                     if (!showSlamVFX)
