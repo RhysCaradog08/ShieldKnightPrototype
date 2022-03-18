@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
         else hasCoil = false;
 
 
-            if (wave.gameObject.activeInHierarchy) //Player is using Wave Shield.
+        if (wave.gameObject.activeInHierarchy) //Player is using Wave Shield.
         {
             hasWave = true;
         }
@@ -237,7 +237,12 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetButtonUp("Throw") && !shield.thrown)  //Sets Throw/Catch animation.
             {
+                if(shield.hasTarget)
+                {
+                    transform.LookAt(shield.target.transform);
+                }
                 anim.SetTrigger("Throw");
+
             }
 
             if (buttonHeld) //Sets Guarding animation.
