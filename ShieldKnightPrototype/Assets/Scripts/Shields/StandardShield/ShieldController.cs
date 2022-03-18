@@ -292,6 +292,8 @@ public class ShieldController : MonoBehaviour
 
     IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
     {
+        pc.anim.SetTrigger("Catch");
+
         float t = 0f;
         while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
         {
@@ -306,13 +308,14 @@ public class ShieldController : MonoBehaviour
 
             yield return null;
         }
+
+
         shieldRB.isKinematic = true;
 
         transform.parent = shieldHoldPos;  //Sets Shields position and parent to stay attached to Player.
         transform.localPosition = Vector3.zero;
 
         meshCol.enabled = true;
-
 
         thrown = false;
     }
