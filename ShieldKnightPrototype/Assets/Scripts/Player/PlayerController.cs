@@ -245,6 +245,11 @@ public class PlayerController : MonoBehaviour
 
             }
 
+            if(Input.GetButtonDown("Throw") && shield.thrown)
+            {
+                anim.SetTrigger("Catch");
+            }
+
             if (buttonHeld) //Sets Guarding animation.
             {
                 anim.SetBool("Guarding", true);
