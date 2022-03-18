@@ -230,7 +230,7 @@ public class ProjectileShieldController : MonoBehaviour
     {
         for (int i = 0; i < projectiles.Count; i++)
         {
-            float radius = 1.5f;
+            float radius = 0.75f;
             float angle = i * Mathf.PI * 2f / radius;
             Vector3 newPos = Vector3.zero;
 
@@ -290,7 +290,7 @@ public class ProjectileShieldController : MonoBehaviour
 
                 ts.visibleTargets.RemoveAt(i);
 
-                yield return new WaitForSeconds(0.25f);
+                yield return new WaitForSeconds(0.35f);
             }
 
             if(projectiles.Count != ts.visibleTargets.Count)
