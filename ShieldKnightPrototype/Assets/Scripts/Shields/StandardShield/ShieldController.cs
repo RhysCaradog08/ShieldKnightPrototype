@@ -365,8 +365,6 @@ public class ShieldController : MonoBehaviour
             if (ts.lockedOn)
             {
                 Vector3 closestDir = (ts.closest.transform.position - transform.position).normalized;
-                Vector3 closestRot = Vector3.RotateTowards(transform.forward, closestDir, 10, 0);
-                transform.rotation = Quaternion.LookRotation(closestRot);
 
                 cc.Move(closestDir * bargeSpeed * Time.deltaTime);
             }
@@ -442,7 +440,6 @@ public class ShieldController : MonoBehaviour
     {
         if (thrown)
         {
-
             if (other.transform.gameObject.GetComponent<Lever>())
             {
                 Lever lever = other.transform.gameObject.GetComponent<Lever>();
