@@ -51,8 +51,8 @@ public class ShieldController : MonoBehaviour
     void Awake()
     {
         pc = FindObjectOfType<PlayerController>();
-        cc = pc.gameObject.GetComponent<CharacterController>();
-        ts = transform.root.GetComponent<TargetingSystem>();
+        cc = FindObjectOfType<CharacterController>();
+        ts = FindObjectOfType<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
 
         shieldRB = GetComponent<Rigidbody>();
@@ -87,6 +87,7 @@ public class ShieldController : MonoBehaviour
     {
         //Debug.Log("Shield Barging: " + isBarging);
         //Debug.Log("Shield Dodging: " + isDodging);
+        transform.localScale = transform.localScale;
 
         if (target != null)
         {
@@ -102,6 +103,17 @@ public class ShieldController : MonoBehaviour
         if(dodgeDelay <= 0)
         {
             dodgeDelay = 0;
+        }
+
+        if(slamDelay > 0)
+        {
+            slamDelay -= Time.deltaTime;
+        }
+
+        if(slamDelay <= 0)
+        {
+            slamDelay = 0;
+            isSlamming = false;
         }
 
         if(cc.isGrounded)
@@ -219,6 +231,8 @@ public class ShieldController : MonoBehaviour
                         slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, transform.position, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
                         showSlamVFX = true;
                     }
+
+                    slamDelay = 0.5f;
                 }
             }
         }
@@ -472,6 +486,11 @@ public class ShieldController : MonoBehaviour
                 if (!enemy.squashed)
                 {
                     enemy.Squash();
+                }
+
+                if(enemy.squashed)
+                {
+                    isSlamming = false;
                 }
             }
         }
