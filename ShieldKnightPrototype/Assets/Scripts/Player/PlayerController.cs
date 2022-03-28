@@ -339,7 +339,6 @@ public class PlayerController : MonoBehaviour
 
         if(hasWave)
         {
-            //Perform Wave Shield animations and features. 
             if (wave.isSurfing)
             {
                 anim.SetBool("Surfing", true);
@@ -377,11 +376,14 @@ public class PlayerController : MonoBehaviour
                         anim.SetTrigger("WaveAttackOverhead");
                     }
                 }
+                
             }
 
             if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
             {
-                if(!wave.isSurfing)
+                Debug.Log("Stopped: " + stopped);
+
+                if (!wave.isSurfing)
                 {
                     anim.SetBool("WaveGuard", true);
                     stopped = true;
@@ -392,6 +394,7 @@ public class PlayerController : MonoBehaviour
                 stopped = false;
                 anim.SetBool("WaveGuard", false);
             }
+
 
             if (attackDelay > 0)
             {
