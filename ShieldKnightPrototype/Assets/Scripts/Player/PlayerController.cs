@@ -220,19 +220,6 @@ public class PlayerController : MonoBehaviour
             velocity.y = -2;
         }
 
-        /*velocity += velocityMomentum; // Applying momentum to current velocity;
-
-        if (velocityMomentum.magnitude >= 0f) //Dampen velocity momentum.
-        {
-            float momentumDrag = 2.5f;
-
-            velocityMomentum -= velocityMomentum * momentumDrag * Time.deltaTime;
-        }
-        if (velocityMomentum.magnitude < 0.0f)
-        {
-            velocityMomentum = Vector3.zero;
-        }*/
-
         if (hasShield)
         {
             if (Input.GetButtonUp("Throw") && !shield.thrown)  //Sets Throw/Catch animation.
