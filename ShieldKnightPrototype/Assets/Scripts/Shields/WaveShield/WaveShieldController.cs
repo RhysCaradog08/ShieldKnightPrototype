@@ -30,7 +30,7 @@ public class WaveShieldController : MonoBehaviour
         else isSurfing = false;
 
 
-        if (isSurfing)
+        if (isSurfing || pc.waveGuarding)
         {
             waves.Play();
             wavesFlipped.Play();
