@@ -23,7 +23,7 @@ public class WaveShieldController : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetButton("Barge") && pc.attackDelay <= 0)
+        if (Input.GetButton("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding)
         {
             isSurfing = true;
         }

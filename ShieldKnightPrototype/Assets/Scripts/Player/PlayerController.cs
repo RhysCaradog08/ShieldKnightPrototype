@@ -55,6 +55,9 @@ public class PlayerController : MonoBehaviour
     [Header("Coil Animation Booleans")]
     public bool grappling;
 
+    [Header("Wave Animation Booleans")]
+    public bool waveGuarding;
+
     private void Awake()
     {
         cc = GetComponent<CharacterController>();
@@ -93,10 +96,19 @@ public class PlayerController : MonoBehaviour
         attackCount = 3;
         surfSpeed = 25;
 
-        //Animation Booleans
+        //Shield Animation Booleans
         barging = false;
         dodging = false;
         slamming = false;
+
+        //Projectile Animation Booleans
+        aiming = false;
+
+        //Coil Animation Booleans
+        grappling = false;
+
+        //Wave Animation Booleans
+        waveGuarding = false;
     }
 
     private void Update()
@@ -376,25 +388,8 @@ public class PlayerController : MonoBehaviour
                         anim.SetTrigger("WaveAttackOverhead");
                     }
                 }
-                
-            }
 
-            if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
-            {
-                Debug.Log("Stopped: " + stopped);
-
-                if (!wave.isSurfing)
-                {
-                    anim.SetBool("WaveGuard", true);
-                    stopped = true;
-                }
             }
-            else
-            {
-                stopped = false;
-                anim.SetBool("WaveGuard", false);
-            }
-
 
             if (attackDelay > 0)
             {
@@ -402,7 +397,7 @@ public class PlayerController : MonoBehaviour
                 stopped = true;
             }
 
-            if (attackDelay <= 0)
+            if (attackDelay <= 0 && !waveGuarding)
             {
                 attackDelay = 0;
                 stopped = false;
@@ -424,6 +419,23 @@ public class PlayerController : MonoBehaviour
                 anim.ResetTrigger("WaveAttackRight");
                 anim.ResetTrigger("WaveAttackOverhead");
             }
+            
+            if (Input.GetButton("Guard") && cc.isGrounded) //Sets Guarding animation.
+            {
+                if (!wave.isSurfing)
+                {
+                    waveGuarding = true;
+                    anim.SetBool("WaveGuard", true);
+                    stopped = true;
+                }
+            }
+            else
+            {
+                waveGuarding = false;
+                stopped = false;
+                anim.SetBool("WaveGuard", false);
+            }
+
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 
