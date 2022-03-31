@@ -10,6 +10,7 @@ TagManager:
   - Projectile
   - Marker
   - PShield
+  - Grind
   layers:
   - Default
   - TransparentFX
