@@ -4,8 +4,8 @@ using UnityEngine;
 using UnityEditor;
 
 public class GrindRail : MonoBehaviour
-{
-    [SerializeField] Transform[] nodes;
+{    
+    public Transform[] nodes;
 
     [ExecuteInEditMode]
     private void Start()

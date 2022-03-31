@@ -5705,6 +5705,9 @@ MonoBehaviour:
   currentSegment: 0
   transition: 0
   isCompleted: 0
+  speed: 5
+  isReversed: 1
+  isLooping: 1
 --- !u!135 &2112920811
 SphereCollider:
   m_ObjectHideFlags: 0

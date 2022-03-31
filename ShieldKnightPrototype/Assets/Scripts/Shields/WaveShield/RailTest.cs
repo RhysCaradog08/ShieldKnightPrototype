@@ -8,7 +8,11 @@ public class RailTest : MonoBehaviour
 
     [SerializeField] private int currentSegment;
     [SerializeField] private float transition;
-    [SerializeField] private bool isCompleted;
+    public bool isCompleted;
+
+    public float speed = 5;
+    [SerializeField] private bool isReversed;
+    [SerializeField] private bool isLooping;
 
     private void Update()
     {
@@ -16,22 +20,50 @@ public class RailTest : MonoBehaviour
             return;
 
         if (!isCompleted)
-            Play();
+            Play(!isReversed);
     }
 
-    void Play()
+    void Play(bool forward = true)
     {
-        transition += Time.deltaTime * 1 / 2.5f;
+        float m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
+        float s = (Time.deltaTime * 1 / m) * speed;
+        transition += (forward)? s : -s ;
 
         if(transition > 1)
         {
             transition = 0;
             currentSegment++;
+
+            if(currentSegment == rail.nodes.Length -1)
+            {
+                if(isLooping)
+                {
+                    currentSegment = 0;
+                }
+                else
+                {
+                    isCompleted = true;
+                    return;
+                }
+            }
         }
         else if(transition < 0)
         {
             transition = 1;
             currentSegment--;
+
+            if (currentSegment == -1)
+            {
+                if (isLooping)
+                {
+                    currentSegment = rail.nodes.Length - 2;
+                }
+                else
+                {
+                    isCompleted = true;
+                    return;
+                }
+            }
         }
 
         transform.position = rail.LinearPosition(currentSegment, transition);
