@@ -5707,7 +5707,7 @@ MonoBehaviour:
   isCompleted: 0
   speed: 5
   isReversed: 1
-  isLooping: 1
+  isLooping: 0
 --- !u!135 &2112920811
 SphereCollider:
   m_ObjectHideFlags: 0
