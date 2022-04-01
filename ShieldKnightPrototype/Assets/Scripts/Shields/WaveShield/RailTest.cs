@@ -1,21 +1,26 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class RailTest : MonoBehaviour
 {
     public GrindRail rail;
 
+    [SerializeField] Collider[] grindObjects;
+
     [SerializeField] private int currentSegment;
     [SerializeField] private float transition;
-    public bool isCompleted;
-
     public float speed = 5;
+
+    public bool isCompleted;
     [SerializeField] private bool isReversed;
     [SerializeField] private bool isLooping;
 
     private void Update()
     {
+        GetRail();
+
         if (!rail)
             return;
 
@@ -67,5 +72,44 @@ public class RailTest : MonoBehaviour
         }
 
         transform.position = rail.LinearPosition(currentSegment, transition);
+    }
+
+    void GetRail()
+    {
+        Debug.Log("Find Rail");
+
+        Collider[] grindObjects = Physics.OverlapSphere(transform.position, 10f);
+
+        foreach (Collider col in grindObjects)
+        {
+            Debug.DrawLine(transform.position, col.transform.position, Color.red);
+            Debug.LogFormat(col.name);
+
+            if (col.tag == "Grind")
+            {
+                Debug.DrawLine(transform.position, col.transform.position, Color.yellow);
+                float distance = Vector3.Distance(col.transform.position, transform.position);
+
+                if (distance < 2f)
+                {
+                    Debug.Log("Grind Object:  " + col.name);
+                    Debug.DrawLine(transform.position, col.transform.position, Color.green);
+
+                    rail = col.gameObject.GetComponent<GrindRail>();
+                }
+            }
+        }
+    }
+
+   void FindNearestNode()
+   {
+
+   }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.green;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        Gizmos.DrawWireSphere(transform.position, 10f);
     }
 }
