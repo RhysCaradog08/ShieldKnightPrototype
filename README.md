@@ -12,7 +12,7 @@ distances (like Wario/King Knight's Shouder Bash), slam the floor and block atta
 
 Projectile Shield - Shield comprised of three smaller circling shields that can be shot as projectiles either individually at a single target or consecutively at
 multiple targets. Can use the rotation of the shields to slow descent from jumps (Rayman's helicopter hair) and block attacks, though each landed attack removes a 
-projectileleaving the player vulnerable to damage once all are removed.
+projectile leaving the player vulnerable to damage once all are removed.
 
 Coil Shield - A whip like shield used to pull smaller objects to the player to be thrown or grapple the player to heavier objects or fixed points in the environment.
 Can be used to launch the player higher into the air with a spring jump.
