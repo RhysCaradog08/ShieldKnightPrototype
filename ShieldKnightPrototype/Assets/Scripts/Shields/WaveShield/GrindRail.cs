@@ -6,14 +6,8 @@ using UnityEditor;
 public class GrindRail : MonoBehaviour
 {    
     public Transform[] nodes;
-    RailTest rTest;
 
     public bool inRange;
-
-    private void Awake()
-    {
-        rTest = FindObjectOfType<RailTest>();
-    }
 
     [ExecuteInEditMode]
     private void Start()

@@ -16,18 +16,45 @@ public class RailTest : MonoBehaviour
     [SerializeField] int index;
     public float speed = 5;
 
+    [SerializeField] float resetDelay;
+
+    public int nodesIndex;
+    public float segMagnitude;
+
     public bool isCompleted, canGrind, isReversed;
-    //[SerializeField] private bool isReversed;
+
     [SerializeField] private bool isLooping, inRange, getDotProd;
+    private void Start()
+    {
+        resetDelay = 0;
+    }
 
     private void Update()
     {
-        if(inRange) //Get Rail information if in close enough range.
+        if(resetDelay > 0)
         {
-            GetRail();
+            resetDelay -= Time.deltaTime;
+        }
+        
+        if(resetDelay <= 0)
+        {
+            resetDelay = 0;
         }
 
-        if(inRange && !canGrind) //Condition to stop calculation of Dot Product once grind has begun.
+        if(inRange && resetDelay <= 0) //Get Rail information if in close enough range.
+        {
+            GetRail();
+
+            segMagnitude = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
+            nodesIndex = rail.nodes.Length;
+            if (segMagnitude >= 0 && segMagnitude < nodesIndex)
+            {
+                Debug.Log("Array is in bounds");
+            }
+            else Debug.Log("Array is out of bounds");
+        }
+
+        if(inRange && !canGrind && resetDelay <= 0) //Condition to stop calculation of Dot Product once grind has begun.
         {
             if (Vector3.Distance(closest.position, transform.position) < 2.5f)
             {
@@ -41,22 +68,29 @@ public class RailTest : MonoBehaviour
             CalculateDotProduct();
         }
 
+        if(!canGrind && closest != null)
+        {
+            currentSegment = index;
+        }
+
+
         if (!rail)
             return;
 
         if (!isCompleted && canGrind)
         {
+            //Debug.Log("Play");
             Play(!isReversed);
         }
     }
 
     void Play(bool forward = true)  //Moves player transform through the array of nodes.
     {
-        float m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
-        float s = (Time.deltaTime * 1 / m) * speed;
-        transition += (forward)? s : -s ;
+        float m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude; //Calculate magnitude of the current segment of rail the player is on.
+        float s = (Time.deltaTime * 1 / m) * speed; //Calculates speed of travel between nodes.
+        transition += (forward)? s : -s ; //Determines if transform moves forward or back.
 
-        if(transition > 1) //Increments forwards through nodes.
+        if(transition > 1) //If transform has reached the end of the transition increment through the nodes.
         {
             transition = 0;
             currentSegment++;
@@ -70,6 +104,8 @@ public class RailTest : MonoBehaviour
                 else
                 {
                     isCompleted = true;
+                    ClearInformation();
+                    resetDelay = 1;
                     return;
                 }
             }
@@ -88,12 +124,14 @@ public class RailTest : MonoBehaviour
                 else
                 {
                     isCompleted = true;
+                    ClearInformation();
+                    resetDelay = 1;
                     return;
                 }
             }
         }
 
-        transform.position = rail.LinearPosition(currentSegment, transition); //Monitors players current position on rail.
+       transform.position = rail.LinearPosition(currentSegment, transition); //Monitors players current position on rail.
     }
 
     void GetRail()  //Gets GrindRail component and array of nodes,finding the closest node and enabling the ability to grind.
@@ -150,14 +188,14 @@ public class RailTest : MonoBehaviour
                 closest = gPoint;
 
                 index = System.Array.IndexOf(rail.nodes, closest);
-                Debug.Log("Index: " + index);
+                //Debug.Log("Index: " + index);
             }
         }
     }
 
     void CalculateDotProduct() //Use Dot Product to determine if player is in front or behind closest node. If behind the directiopn of travel is reversed.
     {
-        Debug.Log("Calculating Dot Product");
+        //Debug.Log("Calculating Dot Product");
         Vector3 forward = closest.transform.TransformDirection(Vector3.forward);
         Vector3 toOther = transform.position - closest.transform.position;
 
@@ -191,7 +229,7 @@ public class RailTest : MonoBehaviour
     {
         if(other.tag == "Grind")
         {
-            Debug.Log("Rail in Trigger");
+            //Debug.Log("Rail in Trigger");
             inRange = true;
         }
     }
@@ -208,7 +246,7 @@ public class RailTest : MonoBehaviour
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.green;
-        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        //Use the same vars you use to draw your Overlap Sphere to draw your Wire Sphere.
         Gizmos.DrawWireSphere(transform.position, 10f);
     }
 }

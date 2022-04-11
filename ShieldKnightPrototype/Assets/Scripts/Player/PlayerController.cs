@@ -40,7 +40,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Wave Shield Actions")]
     [SerializeField] int attackCount;
-    [SerializeField] float attackReset, surfSpeed;
+    [SerializeField] float attackReset;
+    public float surfSpeed;
     public float attackDelay;
 
     [Header("Shield Booleans")]
@@ -220,8 +221,11 @@ public class PlayerController : MonoBehaviour
 
             if(wave.isSurfing) //Add constant forward motion whilst player is surfing on Wave Shield.
             {
-                cc.Move(transform.forward.normalized * surfSpeed * Time.deltaTime);
-                transform.Rotate(0, move.x * rotateSpeed, 0);
+                if (!wave.isGrinding)
+                {
+                    cc.Move(transform.forward.normalized * surfSpeed * Time.deltaTime);
+                    transform.Rotate(0, move.x * rotateSpeed, 0);
+                }
             }
         }
 
@@ -351,6 +355,17 @@ public class PlayerController : MonoBehaviour
 
         if(hasWave)
         {
+            if(wave.isGrinding)
+            {
+                surfSpeed = 0;
+                rotateSpeed = 0;
+            }
+            else
+            {
+                surfSpeed = 25;
+                rotateSpeed = 2.5f;
+            }
+
             if (wave.isSurfing)
             {
                 anim.SetBool("Surfing", true);
@@ -435,7 +450,6 @@ public class PlayerController : MonoBehaviour
                 stopped = false;
                 anim.SetBool("WaveGuard", false);
             }
-
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 
