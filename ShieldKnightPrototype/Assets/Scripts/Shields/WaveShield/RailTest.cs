@@ -145,7 +145,11 @@ public class RailTest : MonoBehaviour
             if (col.tag == "Grind")
             {
                 rail = col.gameObject.GetComponent<GrindRail>();
-                rail.inRange = true;
+
+                if(rail.isLoop)
+                {
+                    isLooping = true;
+                }
 
                 grindPoints = new List<Transform>(rail.nodes);
                 GetClosestGrindPoint();
@@ -215,6 +219,7 @@ public class RailTest : MonoBehaviour
         rail = null;
 
         getDotProd = false;
+        isLooping = false;
         isReversed = false;
         isCompleted = false;
         canGrind = false;

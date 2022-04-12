@@ -7,7 +7,7 @@ public class GrindRail : MonoBehaviour
 {    
     public Transform[] nodes;
 
-    public bool inRange;
+    public bool isLoop;
 
     [ExecuteInEditMode]
     private void Start()

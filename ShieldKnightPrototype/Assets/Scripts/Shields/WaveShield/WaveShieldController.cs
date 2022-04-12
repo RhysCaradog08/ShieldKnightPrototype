@@ -152,7 +152,6 @@ public class WaveShieldController : MonoBehaviour
             if (col.tag == "Grind")
             {
                 rail = col.gameObject.GetComponent<GrindRail>();
-                rail.inRange = true;
 
                 grindPoints = new List<Transform>(rail.nodes);
                 GetClosestGrindPoint();
