@@ -12,7 +12,7 @@ public class WaveShieldController : MonoBehaviour
     [SerializeField] Collider[] grindObjects;
 
     [SerializeField] private int currentSegment;
-    [SerializeField] private float transition;
+    [SerializeField] private float transition, resetDelay;
     [SerializeField] List<Transform> grindPoints = new List<Transform>();
     [SerializeField] private Transform closest;
     [SerializeField] int index;
@@ -36,15 +36,32 @@ public class WaveShieldController : MonoBehaviour
         isSurfing = false;
         isAttacking = false;
         isGrinding = false;
+
+        resetDelay = 0;
     }
 
     private void Update()
     {
+        if (resetDelay > 0)
+        {
+            resetDelay -= Time.deltaTime;
+        }
+
+        if (resetDelay <= 0)
+        {
+            resetDelay = 0;
+        }
+
         if (Input.GetButton("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding)
         {
             isSurfing = true;
         }
         else isSurfing = false;
+
+        if(Input.GetButtonUp("Barge") && isSurfing)
+        {
+            ClearInformation();
+        }
 
         if (isSurfing || pc.waveGuarding)
         {
@@ -60,7 +77,8 @@ public class WaveShieldController : MonoBehaviour
             select.canChange = true;
         }
 
-        if (inRange) //Get Rail information if in close enough range.
+
+        if (inRange && isSurfing) //Get Rail information if in close enough range.
         {
             GetRail();
         }
@@ -88,16 +106,22 @@ public class WaveShieldController : MonoBehaviour
         if (!rail)
             return;
 
-        if (!isCompleted && canGrind)
+        if (resetDelay <= 0 && canGrind)
         {
-            Debug.Log("Play");
+            //Debug.Log("Play");
             Play(!isReversed);
         }
     }
 
     void Play(bool forward = true)  //Moves player transform through the array of nodes.
     {
-        float m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude; //Calculate magnitude of the current segment of rail the player is on.
+        float m; //Float used to calculate magnitude of the current segment of rail the player is on.
+
+        if (currentSegment == rail.nodes.Length - 1)
+        {
+            m = (rail.nodes[currentSegment].position - rail.nodes[currentSegment - 1].position).magnitude;
+        }
+        else m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
         float s = (Time.deltaTime * 1 / m) * speed; //Calculates speed of travel between nodes.
         transition += (forward) ? s : -s; //Determines if transform moves forward or back.
 
@@ -114,7 +138,8 @@ public class WaveShieldController : MonoBehaviour
                 }
                 else
                 {
-                    isCompleted = true;
+                    ClearInformation();
+                    resetDelay = 1;
                     return;
                 }
             }
@@ -132,7 +157,8 @@ public class WaveShieldController : MonoBehaviour
                 }
                 else
                 {
-                    isCompleted = true;
+                    ClearInformation();
+                    resetDelay = 1;
                     return;
                 }
             }
@@ -152,6 +178,11 @@ public class WaveShieldController : MonoBehaviour
             if (col.tag == "Grind")
             {
                 rail = col.gameObject.GetComponent<GrindRail>();
+                
+                if (rail.isLoop)
+                {
+                    isLooping = true;
+                }
 
                 grindPoints = new List<Transform>(rail.nodes);
                 GetClosestGrindPoint();
@@ -162,7 +193,7 @@ public class WaveShieldController : MonoBehaviour
                     Debug.DrawLine(transform.position, closest.position, Color.yellow);
                 }
 
-                if (Vector3.Distance(closest.position, transform.position) < 2f && !isCompleted) //Once Player is close enough to closest node enable grind.
+                if (Vector3.Distance(closest.position, transform.position) < 2f && resetDelay <= 0) //Once Player is close enough to closest node enable grind.
                 {
                     canGrind = true;
                 }
@@ -222,7 +253,6 @@ public class WaveShieldController : MonoBehaviour
 
         getDotProd = false;
         isReversed = false;
-        isCompleted = false;
         canGrind = false;
 
         for (int i = 0; i < grindObjects.Length; i++)
@@ -235,7 +265,7 @@ public class WaveShieldController : MonoBehaviour
     {
         if (other.tag == "Grind")
         {
-            Debug.Log("Rail in Trigger");
+            //Debug.Log("Rail in Trigger");
             inRange = true;
         }
     }

@@ -21,7 +21,7 @@ public class RailTest : MonoBehaviour
     public int nodesIndex;
     public float segMagnitude;
 
-    public bool isCompleted, canGrind, isReversed;
+    public bool canGrind, isReversed;
 
     [SerializeField] private bool isLooping, inRange, getDotProd;
     private void Start()
@@ -44,17 +44,9 @@ public class RailTest : MonoBehaviour
         if(inRange && resetDelay <= 0) //Get Rail information if in close enough range.
         {
             GetRail();
-
-            segMagnitude = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
-            nodesIndex = rail.nodes.Length;
-            if (segMagnitude >= 0 && segMagnitude < nodesIndex)
-            {
-                Debug.Log("Array is in bounds");
-            }
-            else Debug.Log("Array is out of bounds");
         }
 
-        if(inRange && !canGrind && resetDelay <= 0) //Condition to stop calculation of Dot Product once grind has begun.
+        if (inRange && !canGrind && resetDelay <= 0) //Condition to stop calculation of Dot Product once grind has begun.
         {
             if (Vector3.Distance(closest.position, transform.position) < 2.5f)
             {
@@ -77,16 +69,21 @@ public class RailTest : MonoBehaviour
         if (!rail)
             return;
 
-        if (!isCompleted && canGrind)
+        if (resetDelay <= 0 && canGrind)
         {
-            //Debug.Log("Play");
             Play(!isReversed);
         }
     }
 
     void Play(bool forward = true)  //Moves player transform through the array of nodes.
     {
-        float m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude; //Calculate magnitude of the current segment of rail the player is on.
+        float m; //Float used to calculate magnitude of the current segment of rail the player is on.
+
+        if (currentSegment == rail.nodes.Length - 1)
+        {
+            m = (rail.nodes[currentSegment].position - rail.nodes[currentSegment - 1].position).magnitude; 
+        }
+        else m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
         float s = (Time.deltaTime * 1 / m) * speed; //Calculates speed of travel between nodes.
         transition += (forward)? s : -s ; //Determines if transform moves forward or back.
 
@@ -97,13 +94,12 @@ public class RailTest : MonoBehaviour
 
             if(currentSegment == rail.nodes.Length -1)
             {
-                if(isLooping)
+                if(isLooping) //Returns back to first node in list;
                 {
                     currentSegment = 0;
                 }
-                else
+                else //
                 {
-                    isCompleted = true;
                     ClearInformation();
                     resetDelay = 1;
                     return;
@@ -119,11 +115,10 @@ public class RailTest : MonoBehaviour
             {
                 if (isLooping)
                 {
-                    currentSegment = rail.nodes.Length - 2;
+                    currentSegment = rail.nodes.Length - 2; //Returns back to the last node in the list.
                 }
                 else
                 {
-                    isCompleted = true;
                     ClearInformation();
                     resetDelay = 1;
                     return;
@@ -160,7 +155,7 @@ public class RailTest : MonoBehaviour
                     Debug.DrawLine(transform.position, closest.position, Color.yellow);
                 }
 
-                if (Vector3.Distance(closest.position, transform.position) < 2f && !isCompleted) //Once Player is close enough to closest node enable grind.
+                if (Vector3.Distance(closest.position, transform.position) < 2f && resetDelay <= 0) //Once Player is close enough to closest node enable grind.
                 {
                     canGrind = true;
                 }
@@ -221,7 +216,6 @@ public class RailTest : MonoBehaviour
         getDotProd = false;
         isLooping = false;
         isReversed = false;
-        isCompleted = false;
         canGrind = false;
 
         for(int i = 0; i < grindObjects.Length; i++)
