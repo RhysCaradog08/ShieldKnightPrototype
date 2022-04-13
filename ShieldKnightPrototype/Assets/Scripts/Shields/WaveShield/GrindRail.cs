@@ -27,13 +27,13 @@ public class GrindRail : MonoBehaviour
         return Vector3.Lerp(p1, p2, ratio);
     }
 
-    /*public Vector3 Orientation(int segment, float ratio)
+    public Quaternion Orientation(int segment, float ratio)
     {
         Quaternion q1 = nodes[segment].rotation;
         Quaternion q2 = nodes[segment + 1].rotation;
 
         return Quaternion.Lerp(q1, q2, ratio);
-    }*/
+    }
 
     private void OnDrawGizmos()
     {
