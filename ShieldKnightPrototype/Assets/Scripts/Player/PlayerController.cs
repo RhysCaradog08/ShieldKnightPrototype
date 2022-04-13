@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float attackReset;
     public float surfSpeed;
     public float attackDelay;
+    public bool isGrinding;
 
     [Header("Shield Booleans")]
     public bool hasShield, hasProjectile, hasCoil, hasWave;
@@ -175,6 +176,25 @@ public class PlayerController : MonoBehaviour
             else anim.SetBool("Jumping", false);
         }
 
+        if(isGrinding)
+        {
+            Debug.Log("Has Jumped " + hasJumped);
+            Debug.Log("Can press Space " + canPressSpace);
+
+            if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+            {
+                velocity.y = jumpSpeed;
+                hasJumped = true;
+                wave.isGrinding = false;
+            }
+
+            if(hasJumped)
+            {
+                canPressSpace = false;
+                hasJumped = false;
+            }
+        }
+
         if (velocity.y < 0)  //Allows for greater height to be achieved if Jump input is held.
         {
             velocity.y += gravity * (fallMultiplier + 1) * Time.deltaTime;
@@ -221,7 +241,7 @@ public class PlayerController : MonoBehaviour
 
             if(wave.isSurfing) //Add constant forward motion whilst player is surfing on Wave Shield.
             {
-                if (!wave.isGrinding)
+                if (!isGrinding)
                 {
                     cc.Move(transform.forward.normalized * surfSpeed * Time.deltaTime);
                     transform.Rotate(0, move.x * rotateSpeed, 0);

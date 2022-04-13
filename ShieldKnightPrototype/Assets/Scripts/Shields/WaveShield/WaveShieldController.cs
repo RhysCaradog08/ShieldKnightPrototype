@@ -52,11 +52,14 @@ public class WaveShieldController : MonoBehaviour
             resetDelay = 0;
         }
 
-        if (Input.GetButton("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding)
+        if (Input.GetButtonDown("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding)
         {
-            isSurfing = true;
+            if(!isSurfing)
+            {
+                isSurfing = true;
+            }
+            else isSurfing = false;
         }
-        else isSurfing = false;
 
         if(Input.GetButtonUp("Barge") && isSurfing)
         {
@@ -127,6 +130,7 @@ public class WaveShieldController : MonoBehaviour
 
         if (transition > 1) //If transform has reached the end of the transition increment through the nodes.
         {
+            pc.isGrinding = true;
             transition = 0;
             currentSegment++;
 
@@ -138,6 +142,7 @@ public class WaveShieldController : MonoBehaviour
                 }
                 else
                 {
+                    pc.isGrinding = false;
                     ClearInformation();
                     resetDelay = 1;
                     return;
@@ -146,6 +151,7 @@ public class WaveShieldController : MonoBehaviour
         }
         else if (transition < 0) //Reverses direction of travel by decrementing backwards through nodes.
         {
+            pc.isGrinding = true;
             transition = 1;
             currentSegment--;
 
@@ -157,6 +163,7 @@ public class WaveShieldController : MonoBehaviour
                 }
                 else
                 {
+                    pc.isGrinding = false;
                     ClearInformation();
                     resetDelay = 1;
                     return;
