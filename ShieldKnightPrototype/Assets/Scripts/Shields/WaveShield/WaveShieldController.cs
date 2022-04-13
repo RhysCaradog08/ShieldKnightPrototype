@@ -198,11 +198,12 @@ public class WaveShieldController : MonoBehaviour
             if (col.tag == "Grind")
             {
                 rail = col.gameObject.GetComponent<GrindRail>();
-                
+
                 if (rail.isLoop)
                 {
                     isLooping = true;
                 }
+                else isLooping = false;
 
                 grindPoints = new List<Transform>(rail.nodes);
                 GetClosestGrindPoint();
@@ -270,6 +271,7 @@ public class WaveShieldController : MonoBehaviour
         rail = null;
         getDotProd = false;
         isReversed = false;
+        isLooping = false;
         canGrind = false;
         isGrinding = false;
 
@@ -290,8 +292,6 @@ public class WaveShieldController : MonoBehaviour
         if (other.tag == "Grind")
         {
             //Debug.Log("Rail in Trigger");
-            currentSegment = 0;
-            index = 0;
             inRange = true;
         }
     }
@@ -302,13 +302,7 @@ public class WaveShieldController : MonoBehaviour
         {
             inRange = false;
             ClearInformation();
+            ResetInts();
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.green;
-        //Use the same vars you use to draw your Overlap Sphere to draw your Wire Sphere.
-        Gizmos.DrawWireSphere(transform.position, 10f);
     }
 }

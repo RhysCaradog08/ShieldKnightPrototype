@@ -116,7 +116,6 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         //Debug.Log("Is  Grounded " + cc.isGrounded);
-        Debug.DrawLine(transform.position, transform.position + transform.forward * 10, Color.red);
 
         if (shield.gameObject.activeInHierarchy) //Player is using Standard Shield.
         {
@@ -430,13 +429,13 @@ public class PlayerController : MonoBehaviour
             if (attackDelay > 0)
             {
                 attackDelay -= Time.deltaTime;
-                stopped = true;
+                stopTime = attackDelay;
             }
 
             if (attackDelay <= 0 && !waveGuarding)
             {
                 attackDelay = 0;
-                stopped = false;
+                stopTime = 0;
             }
 
             if (attackReset > 0)

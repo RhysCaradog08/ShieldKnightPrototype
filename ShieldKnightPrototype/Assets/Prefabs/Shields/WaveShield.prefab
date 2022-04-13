@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 7764338197064899317}
   - component: {fileID: 5486667725618818623}
   - component: {fileID: 435272211039416357}
+  - component: {fileID: 8085638945394691116}
   - component: {fileID: 1813777351056154631}
   - component: {fileID: 1082258475}
   m_Layer: 0
@@ -214,6 +215,19 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.45, y: 0.4, z: 4.6}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!135 &8085638945394691116
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6279270542741835754}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 10
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &1813777351056154631
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -242,10 +256,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b688dde126a6974b9104b9394e0e63c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rail: {fileID: 0}
+  grindObjects: []
+  currentSegment: 0
+  transition: 0
+  resetDelay: 0
+  grindPoints: []
+  closest: {fileID: 0}
+  index: 0
+  speed: 0
+  m: 0
   waves: {fileID: 635464012558620004}
   wavesFlipped: {fileID: 207116069298754255}
   isAttacking: 0
   isSurfing: 0
+  isGrinding: 0
+  isCompleted: 0
+  canGrind: 0
+  isReversed: 0
+  isLooping: 0
+  inRange: 0
+  getDotProd: 0
 --- !u!1 &8600530889733486949
 GameObject:
   m_ObjectHideFlags: 0

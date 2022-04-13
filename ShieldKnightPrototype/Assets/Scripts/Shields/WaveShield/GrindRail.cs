@@ -11,12 +11,12 @@ public class GrindRail : MonoBehaviour
 
     public bool isLoop;
 
+    [ExecuteInEditMode]
     private void Awake()
     {
         rail = FindObjectOfType<RailTest>();
     }
 
-    [ExecuteInEditMode]
     private void Start()
     {
         nodes = new Transform[transform.childCount];
