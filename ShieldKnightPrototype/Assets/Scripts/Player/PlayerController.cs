@@ -380,7 +380,7 @@ public class PlayerController : MonoBehaviour
         {
             if(wave.isGrinding)
             {
-                rotateSpeed = 0;
+                rotateSpeed = 0; //Stops player from turning whilst grinding;
             }
             else
             {

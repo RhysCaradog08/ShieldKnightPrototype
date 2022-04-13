@@ -52,15 +52,15 @@ public class WaveShieldController : MonoBehaviour
             resetDelay = 0;
         }
 
-        if(Input.GetButtonDown("Jump") && isGrinding)
+        if(Input.GetButtonDown("Jump") && isGrinding) //Disables grind in order to Jump off.
         {
-            Debug.Log("Jump off Grind");
+            //Debug.Log("Jump off Grind");
             isGrinding = false;
             ClearInformation();
             resetDelay = 1;
         }
 
-        if (Input.GetButtonDown("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding)
+        if (Input.GetButtonDown("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding) //Sets isSurfing bool;
         {
             if(!isSurfing)
             {
@@ -124,7 +124,7 @@ public class WaveShieldController : MonoBehaviour
 
     void Play(bool forward = true)  //Moves player transform through the array of nodes.
     {
-        float m; //Float used to calculate magnitude of the current segment of rail the player is on.
+        float m; //Calculate magnitude of the current segment of rail the player is on.
 
         if (currentSegment == rail.nodes.Length - 1)
         {
@@ -140,17 +140,17 @@ public class WaveShieldController : MonoBehaviour
             transition = 0;
             currentSegment++;
 
-            if (currentSegment == rail.nodes.Length - 1)
+            if (currentSegment == rail.nodes.Length - 1) //Reached end of nodes.
             {
                 if (isLooping)
                 {
-                    currentSegment = 0;
+                    currentSegment = 0; //Resets back to start of list of nodes.
                 }
-                else
+                else //Clear information and set resetDelay to stop unwanted continuous grinding.
                 {
                     isGrinding = false;
                     ClearInformation();
-                    ResetSegmentIndex();
+                    ResetInts();
                     resetDelay = 1;
                     return;
                 }
@@ -162,17 +162,17 @@ public class WaveShieldController : MonoBehaviour
             transition = 1;
             currentSegment--;
 
-            if (currentSegment == -1)
+            if (currentSegment == -1) //Reached end of nodes.
             {
                 if (isLooping)
                 {
-                    currentSegment = rail.nodes.Length - 2;
+                    currentSegment = rail.nodes.Length - 2; //Resets back to start of list of nodes.
                 }
-                else
+                else //Clear information and set resetDelay to stop unwanted continuous grinding.
                 {
                     isGrinding = false;
                     ClearInformation();
-                    ResetSegmentIndex();
+                    ResetInts();
                     resetDelay = 1;
                     return;
                 }
@@ -184,7 +184,7 @@ public class WaveShieldController : MonoBehaviour
         {
             pc.transform.LookAt(rail.nodes[currentSegment + 1].position); //Sets player rotation relative to direction of next node.
         }
-        else pc.transform.LookAt(rail.nodes[currentSegment - 1].position); ; //Inverses player rotation if tavelling back along rail.
+        else pc.transform.LookAt(rail.nodes[currentSegment - 1].position); ; //Reverses player rotation if tavelling back along rail.
     }
 
     void GetRail()  //Gets GrindRail component and array of nodes,finding the closest node and enabling the ability to grind.
@@ -268,8 +268,6 @@ public class WaveShieldController : MonoBehaviour
         closest = null;
         grindPoints.Clear();
         rail = null;
-        /*currentSegment = 0;
-        index = 0;*/
         getDotProd = false;
         isReversed = false;
         canGrind = false;
@@ -281,7 +279,7 @@ public class WaveShieldController : MonoBehaviour
         }
     }
 
-    void ResetSegmentIndex()
+    void ResetInts() //Resets currentSegment and index ints. Prevents inadvertantly looping back to start of grind.
     {
         currentSegment = 0;
         index = 0;
