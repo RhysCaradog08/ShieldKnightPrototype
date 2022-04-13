@@ -176,16 +176,19 @@ public class PlayerController : MonoBehaviour
             else anim.SetBool("Jumping", false);
         }
 
-        if(isGrinding)
+        if(wave.isGrinding)
         {
             Debug.Log("Has Jumped " + hasJumped);
             Debug.Log("Can press Space " + canPressSpace);
+            if(Input.GetButtonDown("Jump"))
+            {
+                isGrinding = false;
+            }
 
             if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
                 hasJumped = true;
-                wave.isGrinding = false;
             }
 
             if(hasJumped)
@@ -377,12 +380,10 @@ public class PlayerController : MonoBehaviour
         {
             if(wave.isGrinding)
             {
-                surfSpeed = 0;
                 rotateSpeed = 0;
             }
             else
             {
-                surfSpeed = 25;
                 rotateSpeed = 2.5f;
             }
 

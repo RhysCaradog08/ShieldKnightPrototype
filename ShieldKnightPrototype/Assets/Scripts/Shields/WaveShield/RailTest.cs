@@ -14,6 +14,7 @@ public class RailTest : MonoBehaviour
     [SerializeField] List<Transform> grindPoints = new List<Transform>();
     [SerializeField] private Transform closest;
     [SerializeField] int index;
+    [SerializeField] Vector3 direction;
     public float speed = 5;
 
     [SerializeField] float resetDelay;
@@ -21,12 +22,14 @@ public class RailTest : MonoBehaviour
     public int nodesIndex;
     public float segMagnitude;
 
-    public bool canGrind, isReversed;
+    public bool canGrind, isReversed, isGrinding;
 
     [SerializeField] private bool isLooping, inRange, getDotProd;
     private void Start()
     {
         resetDelay = 0;
+
+        isGrinding = false;
     }
 
     private void Update()
@@ -71,6 +74,11 @@ public class RailTest : MonoBehaviour
 
         if (resetDelay <= 0 && canGrind)
         {
+            isGrinding = true;
+        }
+
+        if(isGrinding)
+        {
             Play(!isReversed);
         }
     }
@@ -81,9 +89,10 @@ public class RailTest : MonoBehaviour
 
         if (currentSegment == rail.nodes.Length - 1)
         {
-            m = (rail.nodes[currentSegment].position - rail.nodes[currentSegment - 1].position).magnitude; 
+            m = (rail.nodes[currentSegment].position - rail.nodes[currentSegment - 1].position).magnitude;
         }
         else m = (rail.nodes[currentSegment + 1].position - rail.nodes[currentSegment].position).magnitude;
+
         float s = (Time.deltaTime * 1 / m) * speed; //Calculates speed of travel between nodes.
         transition += (forward)? s : -s ; //Determines if transform moves forward or back.
 
@@ -98,9 +107,10 @@ public class RailTest : MonoBehaviour
                 {
                     currentSegment = 0;
                 }
-                else //
+                else
                 {
                     ClearInformation();
+                    isGrinding = false;
                     resetDelay = 1;
                     return;
                 }
@@ -120,13 +130,19 @@ public class RailTest : MonoBehaviour
                 else
                 {
                     ClearInformation();
+                    isGrinding = false;
                     resetDelay = 1;
                     return;
                 }
             }
         }
 
-       transform.position = rail.LinearPosition(currentSegment, transition); //Monitors players current position on rail.
+        transform.position = rail.LinearPosition(currentSegment, transition); //Monitors players current position on rail.
+        if (!isReversed)
+        {
+            transform.LookAt(rail.nodes[currentSegment + 1].position); //Sets player rotation relative to direction of next node.
+        }
+        else transform.LookAt(rail.nodes[currentSegment - 1].position); ; //Inverses player rotation if tavelling back along rail.
     }
 
     void GetRail()  //Gets GrindRail component and array of nodes,finding the closest node and enabling the ability to grind.

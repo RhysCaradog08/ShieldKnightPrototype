@@ -16,7 +16,7 @@ public class WaveShieldController : MonoBehaviour
     [SerializeField] List<Transform> grindPoints = new List<Transform>();
     [SerializeField] private Transform closest;
     [SerializeField] int index;
-    public float speed = 5;
+    public float speed;
     [SerializeField] float m;
 
     public ParticleSystem waves, wavesFlipped;
@@ -52,6 +52,14 @@ public class WaveShieldController : MonoBehaviour
             resetDelay = 0;
         }
 
+        if(Input.GetButtonDown("Jump") && isGrinding)
+        {
+            Debug.Log("Jump off Grind");
+            isGrinding = false;
+            ClearInformation();
+            resetDelay = 1;
+        }
+
         if (Input.GetButtonDown("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding)
         {
             if(!isSurfing)
@@ -79,7 +87,6 @@ public class WaveShieldController : MonoBehaviour
             wavesFlipped.Stop();
             select.canChange = true;
         }
-
 
         if (inRange && isSurfing) //Get Rail information if in close enough range.
         {
@@ -111,7 +118,6 @@ public class WaveShieldController : MonoBehaviour
 
         if (resetDelay <= 0 && canGrind)
         {
-            //Debug.Log("Play");
             Play(!isReversed);
         }
     }
@@ -130,7 +136,7 @@ public class WaveShieldController : MonoBehaviour
 
         if (transition > 1) //If transform has reached the end of the transition increment through the nodes.
         {
-            pc.isGrinding = true;
+            isGrinding = true;
             transition = 0;
             currentSegment++;
 
@@ -142,8 +148,9 @@ public class WaveShieldController : MonoBehaviour
                 }
                 else
                 {
-                    pc.isGrinding = false;
+                    isGrinding = false;
                     ClearInformation();
+                    ResetSegmentIndex();
                     resetDelay = 1;
                     return;
                 }
@@ -151,7 +158,7 @@ public class WaveShieldController : MonoBehaviour
         }
         else if (transition < 0) //Reverses direction of travel by decrementing backwards through nodes.
         {
-            pc.isGrinding = true;
+            isGrinding = true;
             transition = 1;
             currentSegment--;
 
@@ -163,8 +170,9 @@ public class WaveShieldController : MonoBehaviour
                 }
                 else
                 {
-                    pc.isGrinding = false;
+                    isGrinding = false;
                     ClearInformation();
+                    ResetSegmentIndex();
                     resetDelay = 1;
                     return;
                 }
@@ -172,6 +180,11 @@ public class WaveShieldController : MonoBehaviour
         }
 
         pc.transform.position = rail.LinearPosition(currentSegment, transition); //Monitors players current position on rail.
+        if (!isReversed)
+        {
+            pc.transform.LookAt(rail.nodes[currentSegment + 1].position); //Sets player rotation relative to direction of next node.
+        }
+        else pc.transform.LookAt(rail.nodes[currentSegment - 1].position); ; //Inverses player rotation if tavelling back along rail.
     }
 
     void GetRail()  //Gets GrindRail component and array of nodes,finding the closest node and enabling the ability to grind.
@@ -253,14 +266,14 @@ public class WaveShieldController : MonoBehaviour
     void ClearInformation() //Clears all reference information to receive fresh information for next grind.
     {
         closest = null;
-        currentSegment = 0;
-        index = 0;
         grindPoints.Clear();
         rail = null;
-
+        /*currentSegment = 0;
+        index = 0;*/
         getDotProd = false;
         isReversed = false;
         canGrind = false;
+        isGrinding = false;
 
         for (int i = 0; i < grindObjects.Length; i++)
         {
@@ -268,11 +281,19 @@ public class WaveShieldController : MonoBehaviour
         }
     }
 
+    void ResetSegmentIndex()
+    {
+        currentSegment = 0;
+        index = 0;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Grind")
         {
             //Debug.Log("Rail in Trigger");
+            currentSegment = 0;
+            index = 0;
             inRange = true;
         }
     }
