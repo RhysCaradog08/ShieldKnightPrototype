@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 
 public class GrindRail : MonoBehaviour
 {    
@@ -46,7 +46,7 @@ public class GrindRail : MonoBehaviour
     {
        for (int i = 0; i < nodes.Length - 1; i++)
        {
-            Handles.DrawDottedLine(nodes[i].position, nodes[i + 1].position, 3f);
+            //Handles.DrawDottedLine(nodes[i].position, nodes[i + 1].position, 3f);
 
             Debug.DrawLine(nodes[i].transform.position, nodes[i].transform.position + nodes[i].transform.forward * 10, Color.green);
        }
