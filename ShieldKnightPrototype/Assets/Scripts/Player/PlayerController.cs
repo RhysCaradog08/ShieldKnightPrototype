@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float attackReset;
     public float surfSpeed;
     public float attackDelay;
-    public bool isGrinding;
+    public bool canSurf;
 
     [Header("Shield Booleans")]
     public bool hasShield, hasProjectile, hasCoil, hasWave;
@@ -59,6 +59,9 @@ public class PlayerController : MonoBehaviour
 
     [Header("Wave Animation Booleans")]
     public bool waveGuarding;
+
+    [Header("Environmental Actions")]
+    public bool inWater;
 
     private void Awake()
     {
@@ -111,6 +114,9 @@ public class PlayerController : MonoBehaviour
 
         //Wave Animation Booleans
         waveGuarding = false;
+
+        //Environmental Actions
+        inWater = false;
     }
 
     private void Update()
@@ -177,13 +183,6 @@ public class PlayerController : MonoBehaviour
 
         if(wave.isGrinding)
         {
-            Debug.Log("Has Jumped " + hasJumped);
-            Debug.Log("Can press Space " + canPressSpace);
-            if(Input.GetButtonDown("Jump"))
-            {
-                isGrinding = false;
-            }
-
             if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
@@ -191,6 +190,23 @@ public class PlayerController : MonoBehaviour
             }
 
             if(hasJumped)
+            {
+                canPressSpace = false;
+                hasJumped = false;
+            }
+        }
+
+        if(!canSurf && wave.isSurfing && Input.GetButton("Jump")) //Allows for jumping while surfing on Surfable Surfaces.
+        {
+            canSurf = true;
+
+            if (canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+            {
+                velocity.y = jumpSpeed;
+                hasJumped = true;
+            }
+
+            if (hasJumped)
             {
                 canPressSpace = false;
                 hasJumped = false;
@@ -243,7 +259,7 @@ public class PlayerController : MonoBehaviour
 
             if(wave.isSurfing) //Add constant forward motion whilst player is surfing on Wave Shield.
             {
-                if (!isGrinding)
+                if (!wave.isGrinding)
                 {
                     cc.Move(transform.forward.normalized * surfSpeed * Time.deltaTime);
                     transform.Rotate(0, move.x * rotateSpeed, 0);
@@ -251,9 +267,13 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        velocity.y += gravity * Time.deltaTime;
+        if(!canSurf && wave.isSurfing) //Stops player from having gravity applied while surfing on Surfable Surfaces.
+        {
+            velocity.y = 0;
+        }
+        else velocity.y += gravity * Time.deltaTime;
 
-        if(cc.isGrounded && velocity.y < 0)
+        if (cc.isGrounded && velocity.y < 0)
         {
             velocity.y = -2;
         }

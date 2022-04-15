@@ -7,14 +7,14 @@ public class GrindRail : MonoBehaviour
 {    
     public Transform[] nodes;
 
-    RailTest rail;
+    //RailTest rail;
 
     public bool isLoop;
 
     [ExecuteInEditMode]
     private void Awake()
     {
-        rail = FindObjectOfType<RailTest>();
+        //rail = FindObjectOfType<RailTest>();
     }
 
     private void Start()
@@ -47,6 +47,8 @@ public class GrindRail : MonoBehaviour
        for (int i = 0; i < nodes.Length - 1; i++)
        {
             Handles.DrawDottedLine(nodes[i].position, nodes[i + 1].position, 3f);
+
+            Debug.DrawLine(nodes[i].transform.position, nodes[i].transform.position + nodes[i].transform.forward * 10, Color.green);
        }
     }
 }

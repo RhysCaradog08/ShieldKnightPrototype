@@ -62,11 +62,16 @@ public class WaveShieldController : MonoBehaviour
 
         if (Input.GetButtonDown("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding) //Sets isSurfing bool;
         {
-            if(!isSurfing)
+            if (!isSurfing)
             {
                 isSurfing = true;
+                pc.canSurf = true;
             }
-            else isSurfing = false;
+            else
+            {
+                isSurfing = false;
+                pc.canSurf = false;
+            }
         }
 
         if(Input.GetButtonUp("Barge") && isSurfing)
@@ -254,14 +259,14 @@ public class WaveShieldController : MonoBehaviour
     void CalculateDotProduct() //Use Dot Product to determine if player is in front or behind closest node. If behind the directiopn of travel is reversed.
     {
         Debug.Log("Calculating Dot Product");
-        Vector3 forward = closest.transform.TransformDirection(Vector3.forward);
+        Vector3 nodeDirection = closest.transform.TransformDirection(closest.transform.position + closest.transform.forward);
         Vector3 toOther = transform.position - closest.transform.position;
 
-        if (Vector3.Dot(forward, toOther) < 0)
+        if (Vector3.Dot(nodeDirection, toOther) < 0)
         {
-            isReversed = true;
+            isReversed = false;
         }
-        else isReversed = false;
+        else isReversed = true;
     }
 
     void ClearInformation() //Clears all reference information to receive fresh information for next grind.
@@ -296,6 +301,36 @@ public class WaveShieldController : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.tag == "Water")
+        {
+            Debug.Log("Found Water");
+
+            RaycastHit hit;
+            if(Physics.Raycast(transform.position, transform.TransformDirection(-transform.up), out hit, 15)) //Directs a raycast down to detect distance between Wave Shield and the Surfable Surface.
+            {
+                //Debug.DrawRay(transform.position, transform.TransformDirection(-transform.up) * hit.distance, Color.red);
+                if(hit.transform.gameObject.layer == LayerMask.NameToLayer("Surfable Surface"))
+                {
+                    Debug.Log("Water Surface Point: " + hit.point);
+
+                    if(hit.distance < 1 && pc.canSurf) //If Wave Shield is close enough to Surfable Surface, disable player velocity.y and set new transform to be on top of the Surfable Surface.
+                    {
+                        //Debug.DrawRay(transform.position, transform.TransformDirection(-transform.up) * hit.distance, Color.green);
+                        pc.canSurf = false;
+                        pc.transform.position = new Vector3(pc.transform.position.x, hit.point.y + 1, pc.transform.position.z);
+                    }
+                    else if(hit.distance >= 1 || !isSurfing)
+                    {
+                       // Debug.Log("Stop Surfing");
+                        pc.canSurf = true;
+                    }
+                }
+            }
+        }
+    }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Grind")
@@ -303,6 +338,14 @@ public class WaveShieldController : MonoBehaviour
             inRange = false;
             ClearInformation();
             ResetInts();
+        }
+
+        if(other.tag == "Water")
+        {
+            if(pc.isSurfing)
+            {
+                pc.isSurfing = false;
+            }
         }
     }
 }

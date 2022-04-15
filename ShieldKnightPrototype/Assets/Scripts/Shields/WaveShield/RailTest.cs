@@ -171,7 +171,7 @@ public class RailTest : MonoBehaviour
                     Debug.DrawLine(transform.position, closest.position, Color.yellow);
                 }
 
-                if (Vector3.Distance(closest.position, transform.position) < 2f && resetDelay <= 0) //Once Player is close enough to closest node enable grind.
+                if (Vector3.Distance(closest.position, transform.position) < 3f && resetDelay <= 0) //Once Player is close enough to closest node enable grind.
                 {
                     canGrind = true;
                 }
