@@ -342,9 +342,9 @@ public class WaveShieldController : MonoBehaviour
 
         if(other.tag == "Water")
         {
-            if(pc.isSurfing)
+            if(!pc.canSurf)
             {
-                pc.isSurfing = false;
+                pc.canSurf = true;
             }
         }
     }
