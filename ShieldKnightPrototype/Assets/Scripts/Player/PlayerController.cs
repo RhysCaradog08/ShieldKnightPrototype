@@ -196,11 +196,14 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if(!canSurf && wave.isSurfing && Input.GetButton("Jump")) //Allows for jumping while surfing on Surfable Surfaces.
+        if(!canSurf && wave.isSurfing && Input.GetButtonDown("Jump")) //Allows for jumping while surfing on Surfable Surfaces.
         {
             canSurf = true;
+        }
 
-            if (canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+        if(canSurf && wave.isSurfing)
+        {
+            if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
                 hasJumped = true;
