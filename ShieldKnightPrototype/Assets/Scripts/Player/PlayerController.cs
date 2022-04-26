@@ -387,6 +387,22 @@ public class PlayerController : MonoBehaviour
 
         if(hasCoil)
         {
+            if (Input.GetButtonUp("Throw") && coil.canExtend || (Input.GetButtonUp("Barge") && coil.enableTether))
+            {
+                anim.SetTrigger("Whip");
+            }
+
+            if(Input.GetButtonUp("Throw") && coil.hasObject)
+            {
+                anim.SetTrigger("Throw");
+            }
+
+            if (coil.isExtending)
+            {
+                anim.SetBool("Extending", true);
+            }
+            else anim.SetBool("Extending", false);
+
             if (slamming)
             {
                 Debug.Log("Coil Slamming");
@@ -521,9 +537,28 @@ public class PlayerController : MonoBehaviour
         parryBox.SetActive(false);
     }
 
-    public void EnableThrow()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
+    public void EnableThrowShield()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
     {
-        shield.canThrow = true;
+        if(hasShield)
+        {
+            shield.canThrow = true;
+        }
+    }
+
+    public void EnableCoilExtension()
+    {
+        if(hasCoil)
+        {
+            coil.isExtending = true;
+        }
+    }
+
+    void EnableThrowObject()
+    {
+        if(hasCoil && coil.hasObject)
+        {
+            coil.throwObject = true;
+        }
     }
 
     public void WaveAttackOn() //Sets isAttacking bool in WaveShieldController to enable collision when attacking.

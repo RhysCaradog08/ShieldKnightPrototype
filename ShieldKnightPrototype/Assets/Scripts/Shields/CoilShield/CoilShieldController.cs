@@ -39,7 +39,7 @@ public class CoilShieldController : MonoBehaviour
     Rigidbody tetheredRB;
     ObjectIsHeld heldObj;
     Vector3 throwDestination;
-    public bool hasObject;
+    public bool hasObject, throwObject;
 
     [Header("Spring Jump")]
     [SerializeField] float springHeight;
@@ -89,6 +89,7 @@ public class CoilShieldController : MonoBehaviour
         height = 0.25f;
         gravity = -9.81f;
         hasObject = false;
+        throwObject = false;
 
         //Spring Jump
         isSpringing = false;
@@ -140,7 +141,7 @@ public class CoilShieldController : MonoBehaviour
         if (Input.GetButtonUp("Throw") && canExtend)
         {
             stopTime = 0.1f;
-            isExtending = true;
+            //isExtending = true;
         }
         else if (Input.GetButtonDown("Throw") && !isSpringing)
         {
@@ -153,7 +154,14 @@ public class CoilShieldController : MonoBehaviour
             isExtending = false;
         }
 
-        if(Input.GetButtonUp("Throw") && hasObject)
+        /*if(Input.GetButtonUp("Throw") && hasObject)
+        {
+            isTethered = false;
+            tetherPoint = null;
+
+            ThrowTetheredObject();
+        }*/
+        if(hasObject && throwObject)
         {
             isTethered = false;
             tetherPoint = null;
@@ -176,7 +184,7 @@ public class CoilShieldController : MonoBehaviour
         if (Input.GetButtonUp("Barge") && enableTether)
         {
             stopTime = 0.1f;
-            isExtending = true;
+            //isExtending = true;
         }
 
         if (!isSpringing && canExtend && cc.isGrounded)
@@ -509,7 +517,7 @@ public class CoilShieldController : MonoBehaviour
   
     }
 
-    void ThrowTetheredObject()
+    public void ThrowTetheredObject()
     {
         //Debug.Log("Throw Tethered Object");
         tetheredObject.transform.parent = null;
@@ -529,6 +537,7 @@ public class CoilShieldController : MonoBehaviour
 
         tetheredRB = null;
         hasObject = false;
+        throwObject = false;
         select.canChange = true;
     }
 
