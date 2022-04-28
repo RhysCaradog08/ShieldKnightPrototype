@@ -141,7 +141,6 @@ public class PlayerController : MonoBehaviour
         }
         else hasCoil = false;
 
-
         if (wave.gameObject.activeInHierarchy) //Player is using Wave Shield.
         {
             hasWave = true;
@@ -397,6 +396,17 @@ public class PlayerController : MonoBehaviour
                 anim.SetTrigger("Throw");
             }
 
+            if (cc.isGrounded && Input.GetButton("Guard") && coil.canSpring)
+            {
+                anim.SetBool("Spring Set", true);
+                Debug.Log("Set Spring Jump: " + anim.GetBool("Spring Set"));
+            }
+            else if(!coil.canSpring)
+            {
+                anim.SetBool("Spring Set", false);
+                Debug.Log("Set Spring Jump: " + anim.GetBool("Spring Set"));
+            }
+
             if (coil.isExtending)
             {
                 anim.SetBool("Extending", true);
@@ -405,7 +415,7 @@ public class PlayerController : MonoBehaviour
 
             if (slamming)
             {
-                Debug.Log("Coil Slamming");
+                //Debug.Log("Coil Slamming");
                 anim.SetBool("Slamming", true);
             }
             else
