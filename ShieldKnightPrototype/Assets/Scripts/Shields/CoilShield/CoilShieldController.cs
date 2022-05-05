@@ -48,7 +48,7 @@ public class CoilShieldController : MonoBehaviour
     public bool canSpring, isSpringing;
 
     [Header("Slam")]
-    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay, slamWait;
+    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, damageDelay, slamWait, distToGround;
     GameObject slamStars;
     public bool canSlam, isSlamming;
     bool showSlamVFX;
@@ -123,6 +123,7 @@ public class CoilShieldController : MonoBehaviour
             if(canSlam)
             {
                 CoilSlam();
+                isExtending = true;
             }
 
             stopTime = 0;
@@ -157,9 +158,8 @@ public class CoilShieldController : MonoBehaviour
             if (slamWait <= 0)  //Resets player being immobile once grounded after Slam action is performed.
             {
                 isSlamming = false;
-                canSpring = true;
             }
-            else //Whilst waitTime > 0 player is immobile.
+            else //Whilst slamWait > 0 player is immobile.
             {
                 isSlamming = true;
             }
@@ -279,6 +279,8 @@ public class CoilShieldController : MonoBehaviour
 
             if(isSlamming)
             {
+                slamWait = 1;
+
                 if(dist >= 0.5f)
                 {
                     head.transform.position = springPoint;
@@ -398,14 +400,12 @@ public class CoilShieldController : MonoBehaviour
             if (Physics.Raycast(pc.transform.position, -pc.transform.up, out hit))
             {
                 Debug.DrawRay(pc.transform.position, -pc.transform.up, Color.red);
-                float distToGround = hit.distance;
+                distToGround = hit.distance;
 
-                if (distToGround < 1)
+                if (distToGround < 2)
                 {
                     //Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
                     isExtending = false;
-                    dir = Vector3.zero;
-
                     SlamImpact();
 
                     if (!showSlamVFX)
@@ -415,7 +415,6 @@ public class CoilShieldController : MonoBehaviour
                     }
 
                     springPoint = Vector3.zero;
-                    //slamWait = 1;
                 }
             }
         }
@@ -432,7 +431,7 @@ public class CoilShieldController : MonoBehaviour
         }
     }
 
-    void NonTargetWhip()
+    void NonTargetWhip() //Launches coil head forward to the extent of range value.
     {
         dir = player.position + player.forward * 10;
         //Debug.DrawLine(player.position, dir * range, Color.green);
@@ -445,7 +444,7 @@ public class CoilShieldController : MonoBehaviour
         }
     }
 
-    void TargetedWhip()
+    void TargetedWhip() //Launches coil head towards target.
     {
         dist = Vector3.Distance(head.transform.position, target.transform.position);
 
@@ -603,13 +602,13 @@ public class CoilShieldController : MonoBehaviour
 
     void CoilSlam()
     {
-        if (Physics.Raycast(pc.transform.position, -pc.transform.forward, out hit, Mathf.Infinity))
+        if (Physics.Raycast(pc.transform.position, -pc.transform.up, out hit, Mathf.Infinity))
         {
             springPoint = hit.point;
             //Debug.DrawLine(head.transform.position, springPoint, Color.green);
         }
 
-        isExtending = true;
+        //isExtending = true;
 
         head.transform.position = springPoint;
 
@@ -618,6 +617,10 @@ public class CoilShieldController : MonoBehaviour
 
     void SlamImpact()
     {
+        Debug.Log("Slam Impact");
+
+        distToGround = 0;
+
         Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
 
         foreach (Collider col in colliders)
