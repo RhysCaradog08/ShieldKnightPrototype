@@ -396,22 +396,16 @@ public class PlayerController : MonoBehaviour
                 anim.SetTrigger("Throw");
             }
 
-            /*if (cc.isGrounded && Input.GetButton("Guard") && coil.canSpring)
+            if (cc.isGrounded && Input.GetButton("Guard") && coil.canSpring)
             {
                 anim.SetBool("Spring Set", true);
                 Debug.Log("Set Spring Jump: " + anim.GetBool("Spring Set"));
             }
-            else if(!coil.canSpring)
+            else if(cc.isGrounded && !coil.canSpring)
             {
                 anim.SetBool("Spring Set", false);
                 Debug.Log("Set Spring Jump: " + anim.GetBool("Spring Set"));
-            }*/
-
-            if (coil.isExtending)
-            {
-                anim.SetBool("Extending", true);
             }
-            else anim.SetBool("Extending", false);
 
             if (slamming)
             {

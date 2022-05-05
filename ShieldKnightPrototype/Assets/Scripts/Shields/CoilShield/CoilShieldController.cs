@@ -270,6 +270,8 @@ public class CoilShieldController : MonoBehaviour
 
             if (!isSpringing || !canSlam || !isSlamming)
             {
+                pc.anim.SetBool("Extending", true);
+
                 if (hasTarget)
                 {
                     TargetedWhip();
@@ -307,7 +309,9 @@ public class CoilShieldController : MonoBehaviour
 
         if (!isExtending)
         {
-            if(!ts.lockedOn)
+            pc.anim.SetBool("Extending", false);
+
+            if (!ts.lockedOn)
             {
                 //Debug.Log("Not Locked on to Target");
                 target = null;
