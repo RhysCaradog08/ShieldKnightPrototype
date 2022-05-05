@@ -55,7 +55,7 @@ public class PlayerController : MonoBehaviour
     public bool aiming;
 
     [Header("Coil Animation Booleans")]
-    public bool grappling;
+    public bool grappling, canSpring;
 
     [Header("Wave Animation Booleans")]
     public bool waveGuarding;
@@ -386,6 +386,12 @@ public class PlayerController : MonoBehaviour
 
         if(hasCoil)
         {
+            if (cc.isGrounded)
+            {
+                canSpring = true;
+            }
+            else canSpring = false;
+
             if (Input.GetButtonUp("Throw") && coil.canExtend || (Input.GetButtonUp("Barge") && coil.enableTether))
             {
                 anim.SetTrigger("Whip");
@@ -396,20 +402,14 @@ public class PlayerController : MonoBehaviour
                 anim.SetTrigger("Throw");
             }
 
-            if (cc.isGrounded && Input.GetButton("Guard") && coil.canSpring)
+            if (!cc.isGrounded && !coil.isSpringing)
             {
-                anim.SetBool("Spring Set", true);
-                Debug.Log("Set Spring Jump: " + anim.GetBool("Spring Set"));
+                anim.SetBool("Is Falling", true);
             }
-            else if(cc.isGrounded && !coil.canSpring)
-            {
-                anim.SetBool("Spring Set", false);
-                Debug.Log("Set Spring Jump: " + anim.GetBool("Spring Set"));
-            }
+            else anim.SetBool("Is Falling", false);
 
             if (slamming)
             {
-                //Debug.Log("Coil Slamming");
                 anim.SetBool("Slamming", true);
             }
             else

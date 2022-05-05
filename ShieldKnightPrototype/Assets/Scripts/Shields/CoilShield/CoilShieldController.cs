@@ -42,10 +42,10 @@ public class CoilShieldController : MonoBehaviour
     public bool hasObject, throwObject;
 
     [Header("Spring Jump")]
-    [SerializeField] float springDelay, springHeight;
+    [SerializeField] float springHeight;
     RaycastHit hit;
     [SerializeField] Vector3 springPoint;
-    public bool canSpring, isSpringing;
+    public bool canSpring, isSpringing, isFalling;
 
     [Header("Slam")]
     [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, damageDelay, slamWait, distToGround;
@@ -92,7 +92,6 @@ public class CoilShieldController : MonoBehaviour
         throwObject = false;
 
         //Spring Jump
-        canSpring = true;
         isSpringing = false;
         springPoint = Vector3.zero;
 
@@ -105,7 +104,6 @@ public class CoilShieldController : MonoBehaviour
     void Update()
     {
         Debug.Log("Is Springing: " + isSpringing);
-        Debug.Log("Can spring: " + canSpring);
 
         if (target != null)
         {
@@ -118,9 +116,9 @@ public class CoilShieldController : MonoBehaviour
             stopTime -= Time.deltaTime;
             pc.enabled = false;
         }
-        else if(stopTime <= 0)
+        else if (stopTime <= 0)
         {
-            if(canSlam)
+            if (canSlam)
             {
                 CoilSlam();
                 isExtending = true;
@@ -130,18 +128,9 @@ public class CoilShieldController : MonoBehaviour
             pc.enabled = true;
         }
 
-        if(dist <= 0)
+        if (dist <= 0)
         {
             dist = 0;
-        }
-
-        if(springDelay > 0)
-        {
-            springDelay -= Time.deltaTime;
-        }
-        else if (springDelay <= 0)
-        {
-            springDelay = 0;
         }
 
         if (slamWait > 0)
@@ -162,11 +151,6 @@ public class CoilShieldController : MonoBehaviour
             else //Whilst slamWait > 0 player is immobile.
             {
                 isSlamming = true;
-            }
-
-            if(springDelay <= 0)
-            {
-                canSpring = true;
             }
         }
 
@@ -215,12 +199,13 @@ public class CoilShieldController : MonoBehaviour
             if (Input.GetButton("Guard"))
             {
                 pc.speed = 0;
+                pc.anim.SetBool("Spring Set", true);
                 pc.enabled = false;
             }
             else
             {
-                pc.speed = pc.moveSpeed;
                 pc.enabled = true;
+                pc.speed = pc.moveSpeed;
             }
 
             if (Input.GetButtonUp("Guard"))
@@ -231,6 +216,8 @@ public class CoilShieldController : MonoBehaviour
                 }
 
                 isSpringing = true;
+                pc.anim.SetBool("Spring Set", false);
+                
 
                 pc.velocity.y = pc.jumpHeight * springHeight;
             }
@@ -247,10 +234,6 @@ public class CoilShieldController : MonoBehaviour
             SpringJump();
             head.transform.position = springPoint;
             stopTime = 0;
-        }
-        else if (!isSpringing && cc.isGrounded)
-        {
-            springDelay = 1;
         }
 
         if (isSpringing || isSlamming)
