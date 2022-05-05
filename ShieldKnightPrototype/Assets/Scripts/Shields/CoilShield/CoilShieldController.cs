@@ -262,6 +262,11 @@ public class CoilShieldController : MonoBehaviour
                 else NonTargetWhip();
             }
 
+            if(isGrappling)
+            {
+                head.transform.position = tetherPoint.position;
+            }
+
             if(isSlamming)
             {
                 slamWait = 1;
@@ -328,7 +333,6 @@ public class CoilShieldController : MonoBehaviour
         if(isTethered)
         {
             canExtend = false;
-            isExtending = false;
 
             head.transform.position = tetherPoint.position;
             canTether = false;
@@ -479,10 +483,11 @@ public class CoilShieldController : MonoBehaviour
 
     void Grapple()
     {
-        Debug.Log("Grappling");
+        //Debug.Log("Grappling");
         dir = (head.transform.position - player.position).normalized;
         dist = Vector3.Distance(player.position, head.transform.position);
 
+        pc.anim.SetBool("Grapple", true);
         pc.enabled = false;
 
         if (dist < 1.5f)
@@ -497,6 +502,7 @@ public class CoilShieldController : MonoBehaviour
             pc.velocity.y = 0;*/
 
             hc.grappleFixed = false;
+            pc.anim.SetBool("Grapple", false);
             pc.enabled = true;
             pc.speed = pc.moveSpeed;
 
