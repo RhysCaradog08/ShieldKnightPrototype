@@ -6,7 +6,6 @@ public class WaveShieldController : MonoBehaviour
 {
     PlayerController pc;
     ShieldSelect select;
-    WaveShieldController wave;
     public GrindRail rail;
 
     [SerializeField] Collider[] grindObjects;
@@ -28,7 +27,6 @@ public class WaveShieldController : MonoBehaviour
     {
         pc = FindObjectOfType<PlayerController>();
         select = FindObjectOfType<ShieldSelect>();
-        wave = FindObjectOfType<WaveShieldController>();
     }
 
     private void Start()
@@ -79,7 +77,7 @@ public class WaveShieldController : MonoBehaviour
             ClearInformation();
         }
 
-        if (isSurfing || pc.waveGuarding)
+        if (isSurfing || pc.waveGuarding || pc.attackReset > 0)
         {
             waves.Play();
             wavesFlipped.Play();

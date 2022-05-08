@@ -40,9 +40,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Wave Shield Actions")]
     [SerializeField] int attackCount;
-    [SerializeField] float attackReset;
-    public float surfSpeed;
-    public float attackDelay;
+    public float surfSpeed, attackDelay, attackReset;
     public bool canSurf;
 
     [Header("Shield Booleans")]
@@ -446,20 +444,20 @@ public class PlayerController : MonoBehaviour
                         attackReset = 0.75f;
                     }
 
-                    if (attackCount == 2) //&& attackReset > 0)
+                    if (attackCount == 2)
                     {
                         Debug.Log("Attack Left");
                         anim.SetTrigger("WaveAttackLeft");
                     }
 
-                    if (attackCount == 1) //&& attackReset > 0)
+                    if (attackCount == 1)
                     {
                         Debug.Log("Attack Right");
                         anim.SetTrigger("WaveAttackRight");
                         anim.ResetTrigger("WaveAttackLeft");
                     }
 
-                    if (attackCount == 0) //&& attackReset > 0)
+                    if (attackCount == 0)
                     {
                         Debug.Log("Attack Overhead");
                         anim.ResetTrigger("WaveAttackRight");
