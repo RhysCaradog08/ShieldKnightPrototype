@@ -1,15 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class WaveShieldController : MonoBehaviour
 {
     PlayerController pc;
+    CharacterController cc;
     ShieldSelect select;
     public GrindRail rail;
 
     [SerializeField] Collider[] grindObjects;
 
+    [Header("Grinding")]
     [SerializeField] private int currentSegment;
     [SerializeField] private float transition, resetDelay;
     [SerializeField] List<Transform> grindPoints = new List<Transform>();
@@ -18,24 +21,39 @@ public class WaveShieldController : MonoBehaviour
     public float speed;
     [SerializeField] float m;
 
+    [Header("Wave Slam")]
+    [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay, slamWait;
+    GameObject slamStars;
+    public bool isSlamming;
+    bool showSlamVFX;
+
+    [Header("VFX")]
     public ParticleSystem waves, wavesFlipped;
 
+    [Header("Booleans")]
     public bool isAttacking, isSurfing, isGrinding, isCompleted, canGrind, isReversed;
     [SerializeField] private bool isLooping, inRange, getDotProd;
 
     private void Awake()
     {
         pc = FindObjectOfType<PlayerController>();
+        cc = FindObjectOfType<CharacterController>();
         select = FindObjectOfType<ShieldSelect>();
     }
 
     private void Start()
     {
+        //Grinding
+        resetDelay = 0;
+
+        //Wave Slam
+        isSlamming = false;
+        showSlamVFX = false;
+
+        //Booleans
         isSurfing = false;
         isAttacking = false;
         isGrinding = false;
-
-        resetDelay = 0;
     }
 
     private void Update()
@@ -50,12 +68,84 @@ public class WaveShieldController : MonoBehaviour
             resetDelay = 0;
         }
 
-        if(Input.GetButtonDown("Jump") && isGrinding) //Disables grind in order to Jump off.
+        if (slamDelay > 0)
+        {
+            slamDelay -= Time.deltaTime;
+        }
+
+        if (slamDelay <= 0)
+        {
+            slamDelay = 0;
+            isSlamming = false;
+        }
+
+        if (cc.isGrounded)
+        {
+            if (slamWait <= 0)  //Resets player being immobile once grounded after Slam action is performed.
+            {
+                slamWait = 0;
+                isSlamming = false;
+            }
+            else //Whilst waitTime > 0 player is immobile.
+            {
+                isSlamming = true;
+            }
+        }
+
+
+        if (Input.GetButtonDown("Jump") && isGrinding) //Disables grind in order to Jump off.
         {
             //Debug.Log("Jump off Grind");
             isGrinding = false;
             ClearInformation();
             resetDelay = 1;
+        }
+
+        if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
+        {
+            slamWait = 0.5f;
+            isSlamming = true;
+        }
+
+        if (isSlamming)
+        {
+            pc.stopped = true;
+            pc.slamming = true;
+
+            pc.velocity.y = slamForce;
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(pc.transform.position, -pc.transform.up * 10, out hit))
+            {
+                //Debug.DrawLine(pc.transform.position, -pc.transform.up * 10, Color.green);
+
+                float distToGround = hit.distance;
+
+                if (distToGround < 1)
+                {
+                    SlamImpact();
+
+                    if (!showSlamVFX)
+                    {
+                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, transform.position, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                        showSlamVFX = true;
+                    }
+
+                    slamDelay = 0.5f;
+                }
+            }
+        }
+        else
+        {
+            pc.stopped = false;
+            pc.slamming = false;
+            showSlamVFX = false;
+        }
+
+        if (cc.isGrounded && isSlamming)
+        {
+            slamWait -= Time.deltaTime;
         }
 
         if (Input.GetButtonDown("Barge") && pc.attackDelay <= 0 && !pc.waveGuarding) //Sets isSurfing bool;
@@ -288,6 +378,31 @@ public class WaveShieldController : MonoBehaviour
     {
         currentSegment = 0;
         index = 0;
+    }
+
+    void SlamImpact()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
+
+        foreach (Collider col in colliders)
+        {
+            Rigidbody slamRB = col.GetComponent<Rigidbody>();
+
+            if (slamRB != null)
+            {
+                slamRB.AddExplosionForce(slamPushBack, transform.position, slamRadius, slamLift, ForceMode.Impulse);
+            }
+
+            EnemyHealth enemy = col.GetComponent<EnemyHealth>();
+
+            if (enemy != null)
+            {
+                if (damageDelay <= 0)
+                {
+                    enemy.TakeDamage(10);
+                }
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)

@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ProjectileShieldController projectile;
     [SerializeField] CoilShieldController coil;
     [SerializeField] WaveShieldController wave;
+    ShieldSelect select;
     TargetingSystem ts;
 
     [Header("Movement")]
@@ -77,6 +78,7 @@ public class PlayerController : MonoBehaviour
         projectile = FindObjectOfType<ProjectileShieldController>();
         coil = FindObjectOfType<CoilShieldController>();
         wave = FindObjectOfType<WaveShieldController>();
+        select = FindObjectOfType<ShieldSelect>();
     }
 
     private void Start()
@@ -292,11 +294,21 @@ public class PlayerController : MonoBehaviour
 
             if (buttonHeld) //Sets Guarding animation.
             {
+                if (select.canChange)
+                {
+                    select.canChange = false;
+                }
+
                 anim.SetBool("Guarding", true);
                 stopped = true;
             }
             else
             {
+                if (!select.canChange)
+                {
+                    select.canChange = true;
+                }
+
                 stopped = false;
                 anim.SetBool("Guarding", false);
             }
@@ -510,6 +522,15 @@ public class PlayerController : MonoBehaviour
                 waveGuarding = false;
                 stopped = false;
                 anim.SetBool("WaveGuard", false);
+            }
+
+            if (slamming)
+            {
+                anim.SetBool("WaveSlam", true);
+            }
+            else
+            {
+                anim.SetBool("WaveSlam", false);
             }
         }
 

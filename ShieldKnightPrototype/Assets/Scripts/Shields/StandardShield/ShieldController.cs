@@ -154,13 +154,8 @@ public class ShieldController : MonoBehaviour
         {
             trail.enabled = true;
             canThrow = false;
-            select.canChange = false;
         }
-        else
-        {
-            trail.enabled = false;
-            select.canChange = true;
-        }
+        else trail.enabled = false;
 
         bargeDelay -= Time.deltaTime;
         dodgeDelay -= Time.deltaTime;
@@ -201,11 +196,6 @@ public class ShieldController : MonoBehaviour
         }
         else pc.dodging = false;
 
-        canBarge = true;
-        isBarging = false;
-
-        canDodge = true;
-        isDodging = false;        
 
         if (isSlamming)
         {
@@ -248,6 +238,26 @@ public class ShieldController : MonoBehaviour
             slamWait -= Time.deltaTime;
         }
 
+        if (thrown || isBarging || isSlamming)
+        {
+            if (select.canChange)
+            {
+                select.canChange = false;
+            }
+        }
+        else
+        {
+            if (!select.canChange)
+            {
+                select.canChange = true;
+            }
+        }
+
+        canBarge = true;
+        isBarging = false;
+
+        canDodge = true;
+        isDodging = false;        
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.

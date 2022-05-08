@@ -219,7 +219,7 @@ public class CoilShieldController : MonoBehaviour
                 }
 
                 pc.speed = 0;
-                pc.anim.SetBool("Spring Set", true);
+                pc.anim.SetBool("SpringSet", true);
                 pc.enabled = false;
             }
             else
@@ -236,7 +236,7 @@ public class CoilShieldController : MonoBehaviour
                 }
 
                 isSpringing = true;
-                pc.anim.SetBool("Spring Set", false);
+                pc.anim.SetBool("SpringSet", false);
                 
 
                 pc.velocity.y = pc.jumpHeight * springHeight;
