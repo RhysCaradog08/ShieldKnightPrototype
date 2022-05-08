@@ -126,6 +126,11 @@ public class CoilShieldController : MonoBehaviour
 
             stopTime = 0;
             pc.enabled = true;
+
+            if (!select.canChange)
+            {
+                select.canChange = true;
+            }
         }
 
         if (dist <= 0)
@@ -140,6 +145,11 @@ public class CoilShieldController : MonoBehaviour
         else if (slamWait <= 0)
         {
             slamWait = 0;
+
+            if (!select.canChange)
+            {
+                select.canChange = true;
+            }
         }
 
         if (cc.isGrounded)
@@ -185,6 +195,11 @@ public class CoilShieldController : MonoBehaviour
 
                 target = null;
                 ts.visibleTargets.Clear();
+
+                if (!select.canChange)
+                {
+                    select.canChange = true;
+                }
             }           
             else enableTether = true;
         }
@@ -198,6 +213,11 @@ public class CoilShieldController : MonoBehaviour
         {
             if (Input.GetButton("Guard"))
             {
+                if (select.canChange)
+                {
+                    select.canChange = false;
+                }
+
                 pc.speed = 0;
                 pc.anim.SetBool("Spring Set", true);
                 pc.enabled = false;
@@ -230,15 +250,12 @@ public class CoilShieldController : MonoBehaviour
         }
 
         if (isSpringing)
-        { 
+        {
+            select.canChange = false;
+
             SpringJump();
             head.transform.position = springPoint;
             stopTime = 0;
-        }
-
-        if (isSpringing || isSlamming)
-        {
-            canSpring = false;
         }
 
         if (isExtending)
@@ -321,11 +338,6 @@ public class CoilShieldController : MonoBehaviour
                     {
                         canTether = false;
                     }
-
-                    if(!hasObject)
-                    {
-                        select.canChange = true;
-                    }
                 }
             }
         } 
@@ -341,6 +353,8 @@ public class CoilShieldController : MonoBehaviour
 
         if (isGrappling)
         {
+            select.canChange = false;
+
             if (hc.grappleFixed)
             {
                 Grapple();
@@ -379,6 +393,8 @@ public class CoilShieldController : MonoBehaviour
 
         if (isSlamming)
         {
+            select.canChange = false;
+
             canSlam = false;
 
             pc.speed = 0;
