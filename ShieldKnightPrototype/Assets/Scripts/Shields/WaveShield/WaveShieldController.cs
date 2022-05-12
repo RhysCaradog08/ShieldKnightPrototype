@@ -103,13 +103,16 @@ public class WaveShieldController : MonoBehaviour
 
         if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
         {
-            slamWait = 0.5f;
-            isSlamming = true;
+            if (!isSurfing || !isSlamming)
+            {
+                slamWait = 0.5f;
+                isSlamming = true;
+            }
         }
 
-        if (isSlamming)
+        if (isSlamming && !isSurfing)
         {
-            pc.stopped = true;
+            pc.speed = 0;
             pc.slamming = true;
 
             pc.velocity.y = slamForce;
