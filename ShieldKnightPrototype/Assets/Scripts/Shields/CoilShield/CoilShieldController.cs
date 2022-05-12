@@ -406,7 +406,7 @@ public class CoilShieldController : MonoBehaviour
 
             if (Physics.Raycast(pc.transform.position, -pc.transform.up, out hit))
             {
-                Debug.DrawRay(pc.transform.position, -pc.transform.up, Color.red);
+                //Debug.DrawRay(pc.transform.position, -pc.transform.up, Color.red);
                 distToGround = hit.distance;
 
                 if (distToGround < 2)

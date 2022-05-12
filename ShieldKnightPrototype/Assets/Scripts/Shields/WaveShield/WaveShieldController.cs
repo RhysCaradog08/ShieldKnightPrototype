@@ -119,7 +119,7 @@ public class WaveShieldController : MonoBehaviour
 
             RaycastHit hit;
 
-            if (Physics.Raycast(pc.transform.position, -pc.transform.up * 10, out hit))
+            if (Physics.Raycast(pc.transform.position, -pc.transform.up, out hit))
             {
                 //Debug.DrawLine(pc.transform.position, -pc.transform.up * 10, Color.green);
 
