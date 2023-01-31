@@ -130,7 +130,7 @@ GameObject:
   - component: {fileID: 1813777351056154631}
   - component: {fileID: 1082258475}
   m_Layer: 0
-  m_Name: WaveShield
+  m_Name: Wave_Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
