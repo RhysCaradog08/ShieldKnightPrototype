@@ -542,6 +542,33 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(hasGauntlet)
+        {
+            if(gauntlet.isAttacking)
+            {
+                if(gauntlet.attackInt == 1)
+                {
+                    anim.SetInteger("PunchInt", 1);
+                }
+                else if(gauntlet.attackInt == 2)
+                {
+                    anim.SetInteger("PunchInt", 2);
+                }
+            }
+            else anim.SetInteger("PunchInt", 0);
+
+            if(Input.GetButtonDown("Barge"))
+            {
+                anim.SetTrigger("Uppercut");
+            }
+
+            if (Input.GetButton("Guard"))
+            {
+                anim.SetBool("GauntletGuard", true);
+            }
+            else anim.SetBool("GauntletGuard", false);
+        }
+
         if (stopped)  //Disables Character Controller to keep player in place. 
         {
             cc.enabled = false;
