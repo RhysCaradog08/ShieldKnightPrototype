@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ProjectileShieldController projectile;
     [SerializeField] CoilShieldController coil;
     [SerializeField] WaveShieldController wave;
+    [SerializeField] GauntletShieldController gauntlet;
     ShieldSelect select;
     TargetingSystem ts;
 
@@ -45,7 +46,7 @@ public class PlayerController : MonoBehaviour
     public bool canSurf;
 
     [Header("Shield Booleans")]
-    public bool hasShield, hasProjectile, hasCoil, hasWave;
+    public bool hasShield, hasProjectile, hasCoil, hasWave, hasGauntlet;
 
     [Header("Shield Animation Booleans")]
     public bool barging, dodging, slamming;
@@ -78,6 +79,7 @@ public class PlayerController : MonoBehaviour
         projectile = FindObjectOfType<ProjectileShieldController>();
         coil = FindObjectOfType<CoilShieldController>();
         wave = FindObjectOfType<WaveShieldController>();
+        gauntlet = FindObjectOfType<GauntletShieldController>();
         select = FindObjectOfType<ShieldSelect>();
     }
 
@@ -146,6 +148,12 @@ public class PlayerController : MonoBehaviour
             hasWave = true;
         }
         else hasWave = false;
+
+        if (gauntlet.gameObject.activeInHierarchy)
+        {
+            hasGauntlet = true;
+        }
+        else hasGauntlet = false;
 
         if (stopTime > 0) //Decrease stopTime whilst stopping player in place.
         {
