@@ -38,7 +38,7 @@ public class GauntletShieldController : MonoBehaviour
                 isAttacking = true;
             }
 
-            if(isAttacking && attackInt <= 0.5f)
+            if(isAttacking && attackTime <= 0.5f)
             {
                 attackTime = 1;
             }
