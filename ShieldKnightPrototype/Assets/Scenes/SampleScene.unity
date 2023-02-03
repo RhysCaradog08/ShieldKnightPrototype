@@ -3515,6 +3515,11 @@ PrefabInstance:
       propertyPath: dodgeSpeed
       value: 50
       objectReference: {fileID: 0}
+    - target: {fileID: 4397355590264708777, guid: 69d14d387bca79f4aa6eb7e3d949a83f,
+        type: 3}
+      propertyPath: uppercutHeight
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 4479279837530809666, guid: 69d14d387bca79f4aa6eb7e3d949a83f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
