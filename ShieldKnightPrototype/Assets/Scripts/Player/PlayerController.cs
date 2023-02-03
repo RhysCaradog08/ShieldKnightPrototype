@@ -333,7 +333,7 @@ public class PlayerController : MonoBehaviour
 
             if (dodging)
             {
-                //Debug.Log("Shield Dodging");
+                Debug.Log("Shield Dodging");
                 anim.SetTrigger("Dodge");
             }
             else
@@ -557,16 +557,20 @@ public class PlayerController : MonoBehaviour
             }
             else anim.SetInteger("PunchInt", 0);
 
-            if(Input.GetButtonDown("Barge"))
+            if (dodging)
             {
-                anim.SetTrigger("Uppercut");
+                Debug.Log("Gauntlet Dodging");
+                anim.SetTrigger("Dodge");
+            }
+            else
+            {
+                anim.ResetTrigger("Dodge");
             }
 
             if (Input.GetButton("Guard"))
             {
-                anim.SetBool("GauntletGuard", true);
+                anim.SetTrigger("Uppercut");
             }
-            else anim.SetBool("GauntletGuard", false);
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 

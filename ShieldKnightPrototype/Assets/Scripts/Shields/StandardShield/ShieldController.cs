@@ -411,7 +411,7 @@ public class ShieldController : MonoBehaviour
 
         new WaitForSeconds(1); //Prevents player from stacking Dodges.
 
-        while (Time.time < startTime + bargeTime)  //Player movement speed is disabled then moved by dodgeSpeed over dodgeTime;
+        while (Time.time < startTime + dodgeTime)  //Player movement speed is disabled then moved by dodgeSpeed over dodgeTime;
         {
             isDodging = true;
             canDodge = false;
