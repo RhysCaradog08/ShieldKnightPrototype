@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float gravity, jumpSpeed;
     public Vector3 velocity;
     public float jumpHeight, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
-    bool hasJumped;
+    public bool hasJumped;
     [SerializeField] bool canPressSpace;
 
     [Header("Guard/Parry")]
@@ -567,10 +567,32 @@ public class PlayerController : MonoBehaviour
                 anim.ResetTrigger("Dodge");
             }
 
-            if (Input.GetButton("Guard"))
+            if (Input.GetButtonDown("Guard"))
             {
                 anim.SetTrigger("Uppercut");
             }
+            else anim.ResetTrigger("Uppercut");
+
+            if(gauntlet.isUppercutting)
+            {
+                canPressSpace = false;
+
+                velocity.y = jumpHeight * gauntlet.uppercutHeight;
+
+
+                if(cc.isGrounded && !canPressSpace)
+                {
+                    gauntlet.isUppercutting = false;
+
+                    canPressSpace = true;
+                }
+
+                if(cc.isGrounded && !gauntlet.canUppercut)
+                {
+                    gauntlet.uppercutDelay = 0.5f;
+                }
+            }
+
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 

@@ -5,7 +5,8 @@ using UnityEngine;
 public class GauntletShieldController : MonoBehaviour
 {
     [SerializeField] PlayerController pc;
-    [SerializeField]CharacterController cc;
+    [SerializeField] CharacterController cc;
+    [SerializeField] ShieldSelect select;
 
     [Header("Attacking")]
     [SerializeField] float attackTime;
@@ -13,23 +14,36 @@ public class GauntletShieldController : MonoBehaviour
     public bool isAttacking;
 
     [Header("Dodge")]
-    public bool canDodge, isDodging;
     public float dodgeTime, dodgeSpeed;
     [SerializeField] float dodgeDelay;
+    public bool canDodge, isDodging;
+
+    [Header("Uppercut")]
+    public float uppercutHeight, uppercutForce, uppercutDelay;
+    public bool canUppercut, isUppercutting; 
 
     private void Awake()
     {
         pc = FindObjectOfType<PlayerController>();
         cc = FindObjectOfType<CharacterController>();
+        select = FindObjectOfType<ShieldSelect>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        //Attack
         attackTime = 0;
         attackInt = 0;
         isAttacking = false;
+
+        //Dodge
         isDodging = false;
+
+        //Uppercut
+        canUppercut = true;
+        isUppercutting = false;
+        uppercutDelay = 0;
     }
 
     // Update is called once per frame
@@ -46,12 +60,40 @@ public class GauntletShieldController : MonoBehaviour
             isAttacking = false;
         }
 
-        if (dodgeDelay <= 0)
+        if(dodgeDelay > 0)
+        {
+            dodgeDelay -= Time.deltaTime;
+        }
+        else if (dodgeDelay <= 0)
         {
             dodgeDelay = 0;
         }
 
-        dodgeDelay -= Time.deltaTime;
+
+        if(uppercutDelay > 0)
+        {
+            uppercutDelay -= Time.deltaTime;
+        }
+        else if(uppercutDelay <= 0)
+        {
+            uppercutDelay = 0;
+            canUppercut = true;
+        }
+
+        if(isAttacking || isDodging || isUppercutting)
+        {
+            if (select.canChange)
+            {
+                select.canChange = false;
+            }
+        }
+        else
+        {
+            if (!select.canChange)
+            {
+                select.canChange = true;
+            }
+        }
 
         if (Input.GetButtonDown("Throw"))
         {
@@ -83,6 +125,12 @@ public class GauntletShieldController : MonoBehaviour
             }
 
             attackTime = 0;
+
+            if(canUppercut && uppercutDelay <= 0)
+            {
+                canUppercut = false;
+                isUppercutting = true;
+            }
         }
 
         if(Input.GetButtonDown("Barge"))
