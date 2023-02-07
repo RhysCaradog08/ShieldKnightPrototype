@@ -20,7 +20,7 @@ public class GauntletShieldController : MonoBehaviour
 
     [Header("Uppercut")]
     public float uppercutHeight, uppercutForce, uppercutDelay;
-    public bool canUppercut, isUppercutting; 
+    public bool canUppercut; 
 
     private void Awake()
     {
@@ -42,7 +42,7 @@ public class GauntletShieldController : MonoBehaviour
 
         //Uppercut
         canUppercut = true;
-        isUppercutting = false;
+        pc.isUppercutting = false;
         uppercutDelay = 0;
     }
 
@@ -69,7 +69,6 @@ public class GauntletShieldController : MonoBehaviour
             dodgeDelay = 0;
         }
 
-
         if(uppercutDelay > 0)
         {
             uppercutDelay -= Time.deltaTime;
@@ -80,7 +79,7 @@ public class GauntletShieldController : MonoBehaviour
             canUppercut = true;
         }
 
-        if(isAttacking || isDodging || isUppercutting)
+        if(isAttacking || isDodging || pc.isUppercutting)
         {
             if (select.canChange)
             {
@@ -93,6 +92,11 @@ public class GauntletShieldController : MonoBehaviour
             {
                 select.canChange = true;
             }
+        }
+
+        if(pc.isUppercutting)
+        {
+            Debug.Log("Is Uppercutting");
         }
 
         if (Input.GetButtonDown("Throw"))
@@ -129,7 +133,7 @@ public class GauntletShieldController : MonoBehaviour
             if(canUppercut && uppercutDelay <= 0)
             {
                 canUppercut = false;
-                isUppercutting = true;
+                pc.isUppercutting = true;
             }
         }
 

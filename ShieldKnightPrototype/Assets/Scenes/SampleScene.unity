@@ -3425,6 +3425,11 @@ PrefabInstance:
       propertyPath: gauntlet
       value: 
       objectReference: {fileID: 896185137}
+    - target: {fileID: 3728687135300490863, guid: 69d14d387bca79f4aa6eb7e3d949a83f,
+        type: 3}
+      propertyPath: hasJumped
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3839318728114091100, guid: 69d14d387bca79f4aa6eb7e3d949a83f,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -3518,7 +3523,7 @@ PrefabInstance:
     - target: {fileID: 4397355590264708777, guid: 69d14d387bca79f4aa6eb7e3d949a83f,
         type: 3}
       propertyPath: uppercutHeight
-      value: 15
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 4479279837530809666, guid: 69d14d387bca79f4aa6eb7e3d949a83f,
         type: 3}

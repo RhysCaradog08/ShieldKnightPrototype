@@ -45,6 +45,9 @@ public class PlayerController : MonoBehaviour
     public float surfSpeed, attackDelay, attackReset;
     public bool canSurf;
 
+    [Header("Gauntlet Shield Actions")]
+    public bool isUppercutting;
+
     [Header("Shield Booleans")]
     public bool hasShield, hasProjectile, hasCoil, hasWave, hasGauntlet;
 
@@ -93,6 +96,7 @@ public class PlayerController : MonoBehaviour
         //Jumping
         gravity = -(2* jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         jumpSpeed = Mathf.Abs(gravity) * timeToJumpApex;
+        hasJumped = false;
         canPressSpace = true;
 
         //Guard/Parry
@@ -102,6 +106,9 @@ public class PlayerController : MonoBehaviour
         //Wave Shield Actions
         attackCount = 3;
         surfSpeed = 25;
+
+        //Gauntlet Sheild Actions
+        isUppercutting = false;
 
         //Shield Animation Booleans
         barging = false;
@@ -171,9 +178,14 @@ public class PlayerController : MonoBehaviour
             canPressSpace = true;
         }
 
+        if(!canPressSpace)
+        {
+            Debug.Log("Can't Press Space");
+        }
+
         if (cc.isGrounded)
         {
-            if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+            if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
                 hasJumped = true;
@@ -223,11 +235,24 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if(isUppercutting)
+        {
+            canPressSpace = false;
+        }
+
+        if (gauntlet.uppercutDelay <= 0)
+        {
+            if (canPressSpace == false)
+            {
+                canPressSpace = true;
+            }
+        }
+
         if (velocity.y < 0)  //Allows for greater height to be achieved if Jump input is held.
         {
             velocity.y += gravity * (fallMultiplier + 1) * Time.deltaTime;
         }
-        else if (velocity.y > 0 && !Input.GetKey(KeyCode.Space))  //Allows for a brief Jump action to be performed.
+        else if (velocity.y > 0 && !Input.GetButton("Jump"))  //Allows for a brief Jump action to be performed.
         {
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
         }
@@ -569,30 +594,27 @@ public class PlayerController : MonoBehaviour
 
             if (Input.GetButtonDown("Guard"))
             {
-                anim.SetTrigger("Uppercut");
+                if(gauntlet.canUppercut)
+                {
+                    anim.SetTrigger("Uppercut");
+                }
             }
             else anim.ResetTrigger("Uppercut");
 
-            if(gauntlet.isUppercutting)
+            if(isUppercutting)
             {
-                canPressSpace = false;
-
-                velocity.y = jumpHeight * gauntlet.uppercutHeight;
-
-
-                if(cc.isGrounded && !canPressSpace)
+                if(cc.isGrounded)
                 {
-                    gauntlet.isUppercutting = false;
-
-                    canPressSpace = true;
-                }
-
-                if(cc.isGrounded && !gauntlet.canUppercut)
-                {
-                    gauntlet.uppercutDelay = 0.5f;
+                    if(gauntlet.canUppercut)
+                    {
+                        isUppercutting = false;
+                    }
+                    else if(!gauntlet.canUppercut)
+                    {
+                        gauntlet.uppercutDelay = 0.5f;
+                    }
                 }
             }
-
         }
 
         if (stopped)  //Disables Character Controller to keep player in place. 
@@ -653,6 +675,12 @@ public class PlayerController : MonoBehaviour
     public void WaveAttackOff()
     {
         wave.isAttacking = false;
+    }
+
+    public void Uppercut()
+    {
+        isUppercutting = true;
+        velocity.y = gauntlet.uppercutHeight;
     }
 
     /*void OnDrawGizmosSelected()
