@@ -31,7 +31,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float gravity, jumpSpeed;
     public Vector3 velocity;
     public float jumpHeight, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
-    public bool hasJumped;
+    public bool hasJumped, isJumping;
     [SerializeField] bool canPressSpace;
 
     [Header("Guard/Parry")]
@@ -97,6 +97,7 @@ public class PlayerController : MonoBehaviour
         gravity = -(2* jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
         jumpSpeed = Mathf.Abs(gravity) * timeToJumpApex;
         hasJumped = false;
+        isJumping = false;
         canPressSpace = true;
 
         //Guard/Parry
@@ -173,6 +174,11 @@ public class PlayerController : MonoBehaviour
             stopped = false;
         }
 
+        if(!canPressSpace && !cc.isGrounded)
+        {
+            isJumping = true;
+        }
+
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
         {
             canPressSpace = true;
@@ -193,9 +199,14 @@ public class PlayerController : MonoBehaviour
                 hasJumped = false;
             }
             else anim.SetBool("Jumping", false);
+
+            if(isJumping)
+            {
+                isJumping = false;
+            }
         }
 
-        if(wave.isGrinding)
+        if (wave.isGrinding)
         {
             if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
@@ -227,19 +238,6 @@ public class PlayerController : MonoBehaviour
             {
                 canPressSpace = false;
                 hasJumped = false;
-            }
-        }
-
-        if(isUppercutting)
-        {
-            canPressSpace = false;
-        }
-
-        if (gauntlet.uppercutDelay <= 0)
-        {
-            if (canPressSpace == false)
-            {
-                canPressSpace = true;
             }
         }
 
