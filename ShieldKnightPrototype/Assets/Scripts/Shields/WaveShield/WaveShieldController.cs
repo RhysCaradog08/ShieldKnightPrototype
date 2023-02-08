@@ -172,16 +172,22 @@ public class WaveShieldController : MonoBehaviour
 
         if (isSurfing || pc.waveGuarding || pc.attackReset > 0)
         {
+            select.canChange = false;
+        }
+        else
+        {
+            select.canChange = true;
+        }
+
+        if(isSurfing || pc.waveGuarding)
+        {
             waves.Play();
             wavesFlipped.Play();
-
-            select.canChange = false;
         }
         else
         {
             waves.Stop();
             wavesFlipped.Stop();
-            select.canChange = true;
         }
 
         if (inRange && isSurfing) //Get Rail information if in close enough range.

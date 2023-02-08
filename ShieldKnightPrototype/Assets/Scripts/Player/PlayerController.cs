@@ -178,11 +178,6 @@ public class PlayerController : MonoBehaviour
             canPressSpace = true;
         }
 
-        if(!canPressSpace)
-        {
-            Debug.Log("Can't Press Space");
-        }
-
         if (cc.isGrounded)
         {
             if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
@@ -202,7 +197,7 @@ public class PlayerController : MonoBehaviour
 
         if(wave.isGrinding)
         {
-            if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+            if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
                 hasJumped = true;
@@ -222,7 +217,7 @@ public class PlayerController : MonoBehaviour
 
         if(canSurf && wave.isSurfing)
         {
-            if (Input.GetButton("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+            if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
                 velocity.y = jumpSpeed;
                 hasJumped = true;
