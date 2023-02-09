@@ -130,13 +130,6 @@ public class GauntletShieldController : MonoBehaviour
 
             attackTime = 0;
 
-            if(pc.velocity.y > 0)
-            {
-                Debug.Log("Stop Jumping!");
-                pc.jumpSpeed = 0;
-                pc.velocity.y = 0;
-            }
-
             if(canUppercut && uppercutDelay <= 0)
             {
                 canUppercut = false;

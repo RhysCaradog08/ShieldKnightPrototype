@@ -174,9 +174,14 @@ public class PlayerController : MonoBehaviour
             stopped = false;
         }
 
-        if(!canPressSpace && !cc.isGrounded)
+        if(!cc.isGrounded)
         {
-            isJumping = true;
+            Debug.Log("Velocity.Y: " + velocity.y);
+        }
+
+        if(Input.GetButton("Jump") && gauntlet.canUppercut)
+        {
+            gauntlet.canUppercut = false;
         }
 
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
@@ -193,13 +198,13 @@ public class PlayerController : MonoBehaviour
 
             if (hasJumped)  //Sets Jump animation and prevents player from additional jumps once the Jump action is performed.
             {
-                Debug.Log("Is Jumping");
+                //Debug.Log("Is Jumping");
                 anim.SetBool("Jumping", true);
                 SetJumpBoolsToFalse();
             }
             else
             {
-                Debug.Log("Stop Jumping");
+                //Debug.Log("Stop Jumping");
                 anim.SetBool("Jumping", false);
             }
 
@@ -590,7 +595,7 @@ public class PlayerController : MonoBehaviour
             else anim.ResetTrigger("Uppercut");
 
             if(isUppercutting)
-            {               
+            {
                 if(cc.isGrounded)
                 {
                     if(gauntlet.canUppercut)
