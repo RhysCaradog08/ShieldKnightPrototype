@@ -10,7 +10,7 @@ public class GauntletShieldController : MonoBehaviour
 
     [Header("Attacking")]
     [SerializeField] float attackTime;
-    public int attackInt;
+    public int attackInt, punchCount;
     public bool isAttacking;
 
     [Header("Dodge")]
@@ -35,6 +35,7 @@ public class GauntletShieldController : MonoBehaviour
         //Attack
         attackTime = 0;
         attackInt = 0;
+        punchCount = 0;
         isAttacking = false;
 
         //Dodge
@@ -57,6 +58,7 @@ public class GauntletShieldController : MonoBehaviour
         {
             attackTime = 0;
             attackInt = 0;
+            punchCount = 0;
             isAttacking = false;
         }
 
@@ -77,6 +79,12 @@ public class GauntletShieldController : MonoBehaviour
         {
             uppercutDelay = 0;
             canUppercut = true;
+        }
+
+        if(punchCount >5)
+        {
+            punchCount = 5;
+            isAttacking = false;
         }
 
         if(isAttacking || isDodging || pc.isUppercutting)
@@ -112,9 +120,13 @@ public class GauntletShieldController : MonoBehaviour
                 attackTime = 1;
             }
 
-            attackInt++;
+            if (punchCount < 4)
+            {
+                attackInt++;
+            }
+            punchCount++;
 
-            if(attackInt > 2)
+            if (attackInt > 2)
 
             {
                 attackInt = 1;

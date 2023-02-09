@@ -572,8 +572,16 @@ public class PlayerController : MonoBehaviour
                 {
                     anim.SetInteger("PunchInt", 2);
                 }
+
             }
             else anim.SetInteger("PunchInt", 0);
+
+            if (gauntlet.punchCount >= 5)
+            {
+                Debug.Log("Big Punch");
+                anim.SetTrigger("GauntletBigPunch");
+            }
+            else anim.ResetTrigger("GauntletBigPunch");
 
             if (dodging)
             {
