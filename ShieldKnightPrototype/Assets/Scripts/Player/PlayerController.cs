@@ -28,9 +28,9 @@ public class PlayerController : MonoBehaviour
     public bool stopped;
 
     [Header("Jumping")]
-    [SerializeField] float gravity, jumpSpeed;
+    [SerializeField] float gravity;//, jumpSpeed;
     public Vector3 velocity;
-    public float jumpHeight, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
+    public float jumpHeight, jumpSpeed, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
     public bool hasJumped, isJumping;
     [SerializeField] bool canPressSpace;
 
@@ -186,19 +186,22 @@ public class PlayerController : MonoBehaviour
 
         if (cc.isGrounded)
         {
-            if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
+            if (Input.GetButtonDown("Jump") && canPressSpace)
             {
-                velocity.y = jumpSpeed;
-                hasJumped = true;
+                Jump();
             }
 
             if (hasJumped)  //Sets Jump animation and prevents player from additional jumps once the Jump action is performed.
             {
+                Debug.Log("Is Jumping");
                 anim.SetBool("Jumping", true);
-                canPressSpace = false;
-                hasJumped = false;
+                SetJumpBoolsToFalse();
             }
-            else anim.SetBool("Jumping", false);
+            else
+            {
+                Debug.Log("Stop Jumping");
+                anim.SetBool("Jumping", false);
+            }
 
             if(isJumping)
             {
@@ -210,14 +213,12 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
-                velocity.y = jumpSpeed;
-                hasJumped = true;
+                Jump();
             }
 
             if(hasJumped)
             {
-                canPressSpace = false;
-                hasJumped = false;
+                SetJumpBoolsToFalse();
             }
         }
 
@@ -230,22 +231,16 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetButtonDown("Jump") && canPressSpace)  //Sets Y position to match jumpSpeed identifies that player has performed the Jump action.
             {
-                velocity.y = jumpSpeed;
-                hasJumped = true;
+                Jump();
             }
 
             if (hasJumped)
             {
-                canPressSpace = false;
-                hasJumped = false;
+                SetJumpBoolsToFalse();
             }
         }
-
-        if (velocity.y < 0)  //Allows for greater height to be achieved if Jump input is held.
-        {
-            velocity.y += gravity * (fallMultiplier + 1) * Time.deltaTime;
-        }
-        else if (velocity.y > 0 && !Input.GetButton("Jump"))  //Allows for a brief Jump action to be performed.
+        
+        if (velocity.y > 0 && !Input.GetButton("Jump"))  //Allows for a brief Jump action to be performed.
         {
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
         }
@@ -254,7 +249,7 @@ public class PlayerController : MonoBehaviour
         {
             if (hasProjectile)
             {
-                Debug.LogFormat("Slow Descent");
+                //Debug.LogFormat("Slow Descent");
                 anim.SetBool("Helicopter", true);
                 velocity.y = -2;
             }
@@ -595,7 +590,7 @@ public class PlayerController : MonoBehaviour
             else anim.ResetTrigger("Uppercut");
 
             if(isUppercutting)
-            {
+            {               
                 if(cc.isGrounded)
                 {
                     if(gauntlet.canUppercut)
@@ -624,6 +619,18 @@ public class PlayerController : MonoBehaviour
         cc.Move(velocity * Time.deltaTime);
 
         speed = moveSpeed;
+    }
+
+    void Jump()
+    {
+        velocity.y = jumpSpeed;
+        hasJumped = true;
+    }
+
+    void SetJumpBoolsToFalse()
+    {
+        canPressSpace = false;
+        hasJumped = false;
     }
 
     public void EnableParry()  ///Sets ParryBox.
