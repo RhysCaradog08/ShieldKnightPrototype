@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShieldKnightController : MonoBehaviour
 {
     AnimationController animControl;
+    ShieldController shield;
 
     Camera cam;
     Transform camPos;
@@ -110,7 +111,7 @@ public class ShieldKnightController : MonoBehaviour
         {
             isThrowing = true;
         }
-        else isThrowing = false;    
+        else isThrowing = false;   
 
         if (Input.GetButton("Barge"))
         {
