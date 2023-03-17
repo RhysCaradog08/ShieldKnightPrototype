@@ -125,4 +125,12 @@ public class ShieldKnightController : MonoBehaviour
         }
         else isGuarding = false;
     }
+
+    public void EnableThrowShield()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
+    {
+        /*if (hasShield)
+        {
+        }*/
+            shield.canThrow = true;
+    }
 }
