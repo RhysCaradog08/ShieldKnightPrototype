@@ -6,23 +6,23 @@ using Basics.ObjectPool;
 public class ShieldController : MonoBehaviour
 {
     PlayerController pc;
+    ShieldKnightController sk;
     CharacterController cc;
     TargetingSystem ts;
     ShieldSelect select;
 
-    Rigidbody shieldRB;
+    [SerializeField] Rigidbody shieldRB;
     Transform shieldHoldPos;
 
     [Header("Throw")]
     public float throwForce;
-    [SerializeField] float stopTime;
     public GameObject target;
     TrailRenderer trail;
     GameObject hitStars;
     public bool thrown, hasTarget, canThrow;
 
     [Header("Recall")]
-    public Transform curvePoint;
+    //public Transform curvePoint;
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
@@ -38,6 +38,12 @@ public class ShieldController : MonoBehaviour
     public float dodgeTime, dodgeSpeed;
     [SerializeField] float dodgeDelay;
 
+    [Header("Guard/Parry")]
+    const float minButtonHold = 0.25f;
+    float buttonHeldTime;
+    bool buttonHeld;
+    public GameObject parryBox;
+
     [Header("Slam")]
     [SerializeField] float slamForce, slamPushBack, slamRadius, slamLift, slamDelay, damageDelay, slamWait;
     GameObject slamStars;
@@ -51,6 +57,7 @@ public class ShieldController : MonoBehaviour
     void Awake()
     {
         pc = FindObjectOfType<PlayerController>();
+        sk = FindObjectOfType<ShieldKnightController>();
         cc = FindObjectOfType<CharacterController>();
         ts = FindObjectOfType<TargetingSystem>();
         select = FindObjectOfType<ShieldSelect>();
@@ -85,8 +92,6 @@ public class ShieldController : MonoBehaviour
 
     private void Update()
     {
-        //Debug.Log("Shield Barging: " + isBarging);
-        //Debug.Log("Shield Dodging: " + isDodging);
         transform.localScale = transform.localScale;
 
         if (target != null)
@@ -95,11 +100,19 @@ public class ShieldController : MonoBehaviour
         }
         else hasTarget = false;
 
+        if (bargeDelay > 0) 
+        {
+            bargeDelay -= Time.deltaTime;
+        }
         if (bargeDelay <= 0)
         {
             bargeDelay = 0;
         }
 
+        if(dodgeDelay > 0) 
+        {
+            dodgeDelay -= Time.deltaTime;
+        }
         if(dodgeDelay <= 0)
         {
             dodgeDelay = 0;
@@ -109,7 +122,6 @@ public class ShieldController : MonoBehaviour
         {
             slamDelay -= Time.deltaTime;
         }
-
         if(slamDelay <= 0)
         {
             slamDelay = 0;
@@ -157,9 +169,6 @@ public class ShieldController : MonoBehaviour
         }
         else trail.enabled = false;
 
-        bargeDelay -= Time.deltaTime;
-        dodgeDelay -= Time.deltaTime;
-
         if (Input.GetButtonDown("Barge")) //Input to perform Barge/Dodge action.
         {
             if (!thrown)
@@ -187,8 +196,13 @@ public class ShieldController : MonoBehaviour
         if (isBarging)
         {
             pc.barging = true;
+            sk.isBarging = true;
         }
-        else pc.barging = false;
+        else
+        {
+            pc.barging = false;
+            sk.isBarging = false;
+        }
 
         if (isDodging)
         {
@@ -267,7 +281,8 @@ public class ShieldController : MonoBehaviour
         thrown = true;
 
         shieldRB.isKinematic = false;
-        shieldRB.AddForce(pc.transform.forward * throwForce, ForceMode.Impulse);
+        //shieldRB.AddForce(pc.transform.forward * throwForce, ForceMode.Impulse);
+        shieldRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
 
         transform.parent = null;
     }

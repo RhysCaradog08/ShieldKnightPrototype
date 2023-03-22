@@ -77,10 +77,12 @@ MonoBehaviour:
   speed: 0
   moveSpeed: 10
   rotateSpeed: 2.5
+  stopTime: 0
   move: {x: 0, y: 0, z: 0}
   moveDir: {x: 0, y: 0, z: 0}
   turnSmoothTime: 0.1
   canMove: 0
+  hasShield: 0
   isJumping: 0
   isThrowing: 0
   isBarging: 0
@@ -149,7 +151,7 @@ PrefabInstance:
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_RootOrder
-      value: 21
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
@@ -159,7 +161,7 @@ PrefabInstance:
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.029933674
       objectReference: {fileID: 0}
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
@@ -169,22 +171,22 @@ PrefabInstance:
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.5
+      value: 0.49999994
       objectReference: {fileID: 0}
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0.5
+      value: -0.50000006
       objectReference: {fileID: 0}
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.5
+      value: 0.5000001
       objectReference: {fileID: 0}
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.5
+      value: 0.49999982
       objectReference: {fileID: 0}
     - target: {fileID: 56816387369335003, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
@@ -307,6 +309,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1720871142}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 454767837f1768741b7e23fe0196f47d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5457803890733835448}
   m_SourcePrefab: {fileID: 100100000, guid: 454767837f1768741b7e23fe0196f47d, type: 3}
 --- !u!4 &644268650726501837 stripped
 Transform:
@@ -340,6 +346,19 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!114 &5457803890733835448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2660533545634220918}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f87879e9e7ee0440aeaf64c31704275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shield: {fileID: 0}
 --- !u!4 &3433939214125339084 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 454767837f1768741b7e23fe0196f47d,

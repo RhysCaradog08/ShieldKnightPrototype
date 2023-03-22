@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimationController : MonoBehaviour
 {
-    [SerializeField] Animator anim;
+    public Animator anim;
     [SerializeField] string currentState;
 
     //Animation States
@@ -21,48 +21,6 @@ public class AnimationController : MonoBehaviour
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>();
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        /*float moveX = Input.GetAxisRaw("Horizontal");
-        float moveZ = Input.GetAxisRaw("Vertical");
-
-        if (moveX != 0 || moveZ != 0)
-        {
-            ChangeAnimationState(move);
-        }
-        else
-        {
-            ChangeAnimationState(idle);
-        }
-
-        if (Input.GetButton("Throw"))
-        {
-            ChangeAnimationState(throwing);
-        }
-
-        if (Input.GetButton("Jump"))
-        {
-            ChangeAnimationState(jump);
-        }
-
-        if (Input.GetButton("Barge"))
-        {
-            ChangeAnimationState(barge);
-        }
-
-        if (Input.GetButton("Guard"))
-        {
-            ChangeAnimationState(guard);
-        }*/
     }
 
     public void ChangeAnimationState(string newState)

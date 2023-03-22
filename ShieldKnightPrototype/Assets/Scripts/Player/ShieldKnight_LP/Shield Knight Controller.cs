@@ -12,14 +12,23 @@ public class ShieldKnightController : MonoBehaviour
 
     [Header("Movement")]
     CharacterController cc;
-    public float speed, moveSpeed, rotateSpeed;
+    public float speed, moveSpeed, rotateSpeed, stopTime;
     public Vector3 move, moveDir;
     public float turnSmoothTime;
     float turnSmoothVelocity;
     public bool canMove;
 
-    //Action Booleans
-    [SerializeField] bool isJumping, isThrowing, isBarging, isGuarding;
+    [Header("Button Press Check")]
+    const float minButtonHold = 0.25f;
+    float buttonHeldTime;
+    bool buttonHeld;
+
+    [Header("Shield Booleans")]
+    public bool hasShield;
+
+
+    [Header("Animation Booleans")]
+    public bool isJumping, isThrowing, isBarging, isGuarding;
 
     private void Awake()
     {
@@ -48,33 +57,26 @@ public class ShieldKnightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(stopTime > 0) 
+        {
+            stopTime -= Time.deltaTime;
+            canMove = false;
+        }
+        if(stopTime <= 0)
+        {
+            stopTime = 0;
+            canMove = true;   
+        }
+
         InputCheck();
+
+        SetCurrentAnimation();
 
         if (isJumping || isThrowing || isBarging || isGuarding)
         {
             canMove = false;
         }
         else canMove = true;
-
-        if(isJumping)
-        {
-            animControl.ChangeAnimationState(animControl.jump);
-        }
-
-        if (isThrowing)
-        {
-            animControl.ChangeAnimationState(animControl.throwing);
-        }
-
-        if (isBarging)
-        {
-            animControl.ChangeAnimationState(animControl.barge);
-        }
-
-        if (isGuarding)
-        {
-            animControl.ChangeAnimationState(animControl.guard);
-        }
 
         if (canMove)
         {
@@ -107,11 +109,14 @@ public class ShieldKnightController : MonoBehaviour
         }
         else isJumping = false;
 
-        if (Input.GetButton("Throw"))
+        if (Input.GetButtonDown("Throw"))
         {
-            isThrowing = true;
+            if(!isThrowing) 
+            {
+                isThrowing = true;
+                //stopTime = animControl.anim.GetCurrentAnimatorStateInfo(0).length;
+            }
         }
-        else isThrowing = false;   
 
         if (Input.GetButton("Barge"))
         {
@@ -119,18 +124,49 @@ public class ShieldKnightController : MonoBehaviour
         }
         else isBarging = false;
 
-        if (Input.GetButton("Guard"))
+        if (Input.GetButtonDown("Guard") && cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
         {
-            isGuarding = true;
+            buttonHeldTime = Time.timeSinceLevelLoad;
+            buttonHeld = false;
         }
-        else isGuarding = false;
+        else if (Input.GetButtonUp("Guard") && cc.isGrounded)
+        {
+            if (!buttonHeld)//If button is released without being held.
+            {
+                stopTime = 0.5f;
+            }
+            buttonHeld = false;
+        }
+
+        if (Input.GetButton("Guard") && cc.isGrounded)
+        {
+            if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
+            {
+                buttonHeld = true;
+            }
+        }
     }
 
-    public void EnableThrowShield()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
+    void SetCurrentAnimation()
     {
-        /*if (hasShield)
+        if (isJumping)
         {
-        }*/
-            shield.canThrow = true;
+            animControl.ChangeAnimationState(animControl.jump);
+        }
+
+        if (isThrowing)
+        {
+            animControl.ChangeAnimationState(animControl.throwing);
+        }
+
+        if (isBarging)
+        {
+            animControl.ChangeAnimationState(animControl.barge);
+        }
+
+        if (isGuarding)
+        {
+            animControl.ChangeAnimationState(animControl.guard);
+        }
     }
 }
