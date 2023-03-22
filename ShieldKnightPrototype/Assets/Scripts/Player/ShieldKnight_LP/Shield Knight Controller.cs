@@ -18,6 +18,13 @@ public class ShieldKnightController : MonoBehaviour
     float turnSmoothVelocity;
     public bool canMove;
 
+    [Header("Jumping")]
+    [SerializeField] float gravity;
+    public Vector3 velocity;
+    public float jumpHeight, jumpSpeed, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
+    public bool hasJumped, isJumping;
+    [SerializeField] bool canPressSpace;
+
     [Header("Button Press Check")]
     const float minButtonHold = 0.25f;
     float buttonHeldTime;
@@ -28,7 +35,7 @@ public class ShieldKnightController : MonoBehaviour
 
 
     [Header("Animation Booleans")]
-    public bool isJumping, isThrowing, isBarging, isGuarding;
+    public bool /*isJumping*/ isThrowing, isBarging, isGuarding;
 
     private void Awake()
     {
@@ -46,6 +53,13 @@ public class ShieldKnightController : MonoBehaviour
         speed = moveSpeed;
         turnSmoothTime = 0.1f;
         canMove = true;
+
+        //Jumping
+        gravity = -(2 * jumpHeight) / Mathf.Pow(timeToJumpApex, 2);
+        jumpSpeed = Mathf.Abs(gravity) * timeToJumpApex;
+        hasJumped = false;
+        isJumping = false;
+        canPressSpace = true;
 
         //Action Booleans
         isJumping = false;
@@ -72,7 +86,33 @@ public class ShieldKnightController : MonoBehaviour
 
         SetCurrentAnimation();
 
-        if (isJumping || isThrowing || isBarging || isGuarding)
+        if (velocity.y > 0 && !Input.GetButton("Jump"))  //Allows for a brief Jump action to be performed.
+        {
+            velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
+        }
+
+        if (cc.isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2;
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+
+        if (velocity.y > 0)
+        {
+            isJumping = true;
+        }
+        else if (velocity.y < 0)
+        {
+            isJumping = false;
+        }
+
+        if (velocity.y > 0 && !Input.GetButton("Jump"))  //Allows for a brief Jump action to be performed.
+        {
+            velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
+        }
+
+        if (isThrowing || isBarging || isGuarding)
         {
             canMove = false;
         }
@@ -88,14 +128,42 @@ public class ShieldKnightController : MonoBehaviour
 
                 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 cc.Move(moveDir.normalized * speed * Time.deltaTime);
-                animControl.ChangeAnimationState(animControl.move);
+
+                if (!isJumping)
+                {
+                    animControl.ChangeAnimationState(animControl.move);
+                }
             }
-            else animControl.ChangeAnimationState(animControl.idle);
+            else if (!isJumping)
+            {
+                animControl.ChangeAnimationState(animControl.idle);
+            }
         }
+
+        cc.Move(velocity * Time.deltaTime);
+
+        speed = moveSpeed;
     }
 
     void InputCheck()
     {
+        if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
+        {
+            canPressSpace = true;
+        }
+
+        if (cc.isGrounded)
+        {
+            if (Input.GetButtonDown("Jump") && canPressSpace)
+            {
+                Jump();
+            }
+
+            if (hasJumped)  //Sets Jump animation and prevents player from additional jumps once the Jump action is performed.
+            {
+                SetJumpBoolsToFalse();
+            }
+        }
 
         float moveX = Input.GetAxisRaw("Horizontal");
         float moveZ = Input.GetAxisRaw("Vertical");
@@ -103,18 +171,11 @@ public class ShieldKnightController : MonoBehaviour
         move = new Vector3(moveX, 0, moveZ).normalized;
 
 
-        if (Input.GetButton("Jump"))
-        {
-            isJumping = true;
-        }
-        else isJumping = false;
-
         if (Input.GetButtonDown("Throw"))
         {
             if(!isThrowing) 
             {
                 isThrowing = true;
-                //stopTime = animControl.anim.GetCurrentAnimatorStateInfo(0).length;
             }
         }
 
@@ -145,6 +206,18 @@ public class ShieldKnightController : MonoBehaviour
                 buttonHeld = true;
             }
         }
+    }
+
+    void Jump()
+    {
+        velocity.y = jumpSpeed;
+        hasJumped = true;
+    }
+
+    void SetJumpBoolsToFalse()
+    {
+        canPressSpace = false;
+        hasJumped = false;
     }
 
     void SetCurrentAnimation()

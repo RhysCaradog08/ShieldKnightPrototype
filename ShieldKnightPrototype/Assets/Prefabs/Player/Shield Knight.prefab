@@ -82,8 +82,17 @@ MonoBehaviour:
   moveDir: {x: 0, y: 0, z: 0}
   turnSmoothTime: 0.1
   canMove: 0
-  hasShield: 0
+  gravity: -9.81
+  velocity: {x: 0, y: 0, z: 0}
+  jumpHeight: 5
+  jumpSpeed: 9
+  timeToJumpApex: 0.5
+  fallMultiplier: 1
+  lowJumpMultiplier: 10
+  hasJumped: 0
   isJumping: 0
+  canPressSpace: 0
+  hasShield: 0
   isThrowing: 0
   isBarging: 0
   isGuarding: 0
