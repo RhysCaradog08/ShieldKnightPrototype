@@ -11,7 +11,7 @@ public class ShieldKnightController : MonoBehaviour
     Transform camPos;
 
     [Header("Movement")]
-    CharacterController cc;
+    public CharacterController cc;
     public float speed, moveSpeed, rotateSpeed, stopTime;
     public Vector3 move, moveDir;
     public float turnSmoothTime;
@@ -28,7 +28,7 @@ public class ShieldKnightController : MonoBehaviour
     [Header("Button Press Check")]
     const float minButtonHold = 0.25f;
     float buttonHeldTime;
-    bool buttonHeld;
+    public bool buttonHeld;
 
     [Header("Shield Booleans")]
     public bool hasShield;

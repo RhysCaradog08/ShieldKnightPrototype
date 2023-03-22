@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class StandardShieldController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
+    AnimationController animControl;
     [SerializeField] Rigidbody shieldRB;
 
     [Header("Throw")]
@@ -65,6 +66,15 @@ public class StandardShieldController : MonoBehaviour
         {
             StartCoroutine(RecallShield());
         }
+
+        if (Input.GetButton("Guard") && sk.cc.isGrounded)
+        {
+            if(!thrown)
+            {
+                sk.isGuarding = true;
+            }
+        }
+        else sk.isGuarding = false;
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.

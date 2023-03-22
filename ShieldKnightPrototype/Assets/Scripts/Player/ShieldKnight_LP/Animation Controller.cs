@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimationController : MonoBehaviour
 {
-    public Animator anim;
+    Animator anim;
     [SerializeField] string currentState;
 
     //Animation States
