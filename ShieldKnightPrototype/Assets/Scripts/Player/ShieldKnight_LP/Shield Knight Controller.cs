@@ -34,7 +34,7 @@ public class ShieldKnightController : MonoBehaviour
 
 
     [Header("Animation Booleans")]
-    public bool isThrowing, isBarging, isGuarding, isParrying;
+    public bool isThrowing, isBarging, isGuarding, isParrying, isSlamming;
 
     private void Awake()
     {
@@ -66,6 +66,7 @@ public class ShieldKnightController : MonoBehaviour
         isBarging = false;
         isGuarding = false;
         isParrying = false;
+        isSlamming = false;
     }
 
     // Update is called once per frame
@@ -182,11 +183,11 @@ public class ShieldKnightController : MonoBehaviour
             }
         }
 
-        if (Input.GetButton("Barge"))
+        if (Input.GetButtonDown("Barge"))
         {
             isBarging = true;
         }
-        else isBarging = false;
+
 
         if (Input.GetButtonDown("Guard") && cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
         {
@@ -209,6 +210,11 @@ public class ShieldKnightController : MonoBehaviour
             {
                 buttonHeld = true;
             }
+        }
+
+        if (Input.GetButtonDown("Guard") && !cc.isGrounded)
+        {
+            isSlamming = true;
         }
     }
 

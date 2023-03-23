@@ -256,6 +256,12 @@ MonoBehaviour:
   thrown: 0
   canThrow: 0
   meshCol: {fileID: 794708382715563845}
+  bargeDelay: 0
+  bargeTime: 0.25
+  bargeSpeed: 50
+  closest: {fileID: 0}
+  canBarge: 0
+  isBarging: 0
 --- !u!1 &3598030612893438767
 GameObject:
   m_ObjectHideFlags: 0

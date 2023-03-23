@@ -187,11 +187,6 @@ public class ShieldController : MonoBehaviour
             }
         }
 
-        if(sk.buttonHeld) 
-        {
-            
-        }
-
         if (!cc.isGrounded && Input.GetButtonDown("Guard"))  //Input to perform Slam action.
         {
             slamWait = 0.5f;
