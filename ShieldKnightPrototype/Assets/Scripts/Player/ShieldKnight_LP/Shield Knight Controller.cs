@@ -5,7 +5,6 @@ using UnityEngine;
 public class ShieldKnightController : MonoBehaviour
 {
     AnimationController animControl;
-    ShieldController shield;
 
     Camera cam;
     Transform camPos;
@@ -35,7 +34,7 @@ public class ShieldKnightController : MonoBehaviour
 
 
     [Header("Animation Booleans")]
-    public bool /*isJumping*/ isThrowing, isBarging, isGuarding;
+    public bool isThrowing, isBarging, isGuarding, isParrying;
 
     private void Awake()
     {
@@ -60,12 +59,13 @@ public class ShieldKnightController : MonoBehaviour
         hasJumped = false;
         isJumping = false;
         canPressSpace = true;
+        isJumping = false;
 
         //Action Booleans
-        isJumping = false;
         isThrowing = false;
         isBarging = false;
-        isGuarding = false; 
+        isGuarding = false;
+        isParrying = false;
     }
 
     // Update is called once per frame
@@ -80,6 +80,10 @@ public class ShieldKnightController : MonoBehaviour
         {
             stopTime = 0;
             canMove = true;   
+            if(isParrying)
+            {
+                isParrying = false;
+            }
         }
 
         InputCheck();
@@ -95,8 +99,7 @@ public class ShieldKnightController : MonoBehaviour
         {
             velocity.y = -2;
         }
-
-        velocity.y += gravity * Time.deltaTime;
+        else velocity.y += gravity * Time.deltaTime;
 
         if (velocity.y > 0)
         {
@@ -112,7 +115,7 @@ public class ShieldKnightController : MonoBehaviour
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
         }
 
-        if (isThrowing || isBarging || isGuarding)
+        if (isThrowing || isBarging || isGuarding || isParrying)
         {
             canMove = false;
         }
@@ -134,7 +137,7 @@ public class ShieldKnightController : MonoBehaviour
                     animControl.ChangeAnimationState(animControl.move);
                 }
             }
-            else if (!isJumping)
+            else if (!isJumping && cc.isGrounded)
             {
                 animControl.ChangeAnimationState(animControl.idle);
             }
@@ -195,6 +198,7 @@ public class ShieldKnightController : MonoBehaviour
             if (!buttonHeld)//If button is released without being held.
             {
                 stopTime = 0.5f;
+                isParrying = true;
             }
             buttonHeld = false;
         }
@@ -240,6 +244,11 @@ public class ShieldKnightController : MonoBehaviour
         if (isGuarding)
         {
             animControl.ChangeAnimationState(animControl.guard);
+        }
+
+        if (isParrying) 
+        {
+            animControl.ChangeAnimationState(animControl.parry);
         }
     }
 }

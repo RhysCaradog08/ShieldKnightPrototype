@@ -67,7 +67,7 @@ public class StandardShieldController : MonoBehaviour
             StartCoroutine(RecallShield());
         }
 
-        if (Input.GetButton("Guard") && sk.cc.isGrounded)
+        if (sk.cc.isGrounded && sk.buttonHeld)
         {
             if(!thrown)
             {

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AnimationController : MonoBehaviour
 {
-    Animator anim;
+    public Animator anim;
     [SerializeField] string currentState;
 
     //Animation States
@@ -12,6 +12,7 @@ public class AnimationController : MonoBehaviour
     public string move = "ShieldKnight_Move";
     public string throwing = "ShieldKnight_Throw";
     public string jump = "ShieldKnight_Jump";
+    public string fall = "ShieldKnight_Fall";
     public string barge = "ShieldKnight_Barge";
     public string guard = "ShieldKnight_Guard";
     public string parry = "ShieldKnight_Parry";
