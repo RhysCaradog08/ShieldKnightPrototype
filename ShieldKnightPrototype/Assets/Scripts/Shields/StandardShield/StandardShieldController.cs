@@ -29,6 +29,11 @@ public class StandardShieldController : MonoBehaviour
     GameObject marker;
     public bool canBarge, isBarging;
 
+    [Header("Slam")]
+    public float slamForce, slamDelay, slamPushBack, slamRadius, slamLift, damageDelay;
+    GameObject slamStars;
+    bool showSlamVFX;
+
     Vector3 shieldScale;
 
     private void Awake()
@@ -81,6 +86,20 @@ public class StandardShieldController : MonoBehaviour
             }  
         }
 
+        if (slamDelay > 0)
+        {
+            slamDelay -= Time.deltaTime;
+        }
+        if (slamDelay <= 0)
+        {
+            slamDelay = 0;
+
+            if (sk.cc.isGrounded && sk.isSlamming)
+            {
+                sk.isSlamming = false;
+            }
+        }
+
         if (canThrow)
         {
             NonTargetThrow();
@@ -111,12 +130,41 @@ public class StandardShieldController : MonoBehaviour
             }
         }
 
-        //canBarge = true;
-        //sk.isBarging = false;
+        if (sk.isSlamming)
+        {
+            sk.velocity.y = -slamForce;
+
+            RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, -sk.transform.up, out hit))
+            {
+                //Debug.DrawLine(pc.transform.position, -pc.transform.up * 10, Color.green);
+
+                float distToGround = hit.distance;
+
+                //Debug.Log("Distance to Ground: " + distToGround);
+
+                if (distToGround < 3)
+                {
+                    Debug.Log("Hit Ground");
+                    /*SlamImpact();
+
+                    if (!showSlamVFX)
+                    {
+                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, transform.position, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                        showSlamVFX = true;
+                    }*/
+                    if (slamDelay <= 0)
+                    {
+                        slamDelay = 5;
+                    }
+                }
+            }
+        }
 
         if (sk.cc.isGrounded && sk.buttonHeld)
         {
-            if(!thrown)
+            if(!thrown && !sk.isSlamming)
             {
                 sk.isGuarding = true;
             }

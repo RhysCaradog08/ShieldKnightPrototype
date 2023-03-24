@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShieldKnightController : MonoBehaviour
 {
     AnimationController animControl;
+    StandardShieldController shield;
 
     Camera cam;
     Transform camPos;
@@ -32,13 +33,13 @@ public class ShieldKnightController : MonoBehaviour
     [Header("Shield Booleans")]
     public bool hasShield;
 
-
-    [Header("Animation Booleans")]
+    [Header("Action Booleans")]
     public bool isThrowing, isBarging, isGuarding, isParrying, isSlamming;
 
     private void Awake()
     {
         animControl = FindObjectOfType<AnimationController>();
+        shield = GetComponent<StandardShieldController>();  
 
         cc = GetComponent<CharacterController>();        
         cam = Camera.main;
@@ -80,7 +81,8 @@ public class ShieldKnightController : MonoBehaviour
         if(stopTime <= 0)
         {
             stopTime = 0;
-            canMove = true;   
+            //canMove = true; 
+            
             if(isParrying)
             {
                 isParrying = false;
@@ -116,7 +118,7 @@ public class ShieldKnightController : MonoBehaviour
             velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
         }
 
-        if (isThrowing || isBarging || isGuarding || isParrying)
+        if (isThrowing || isBarging || isGuarding || isParrying || isSlamming)
         {
             canMove = false;
         }
@@ -177,9 +179,12 @@ public class ShieldKnightController : MonoBehaviour
 
         if (Input.GetButtonDown("Throw"))
         {
-            if(!isThrowing) 
+            if (!isBarging && !isGuarding && !isParrying && !isSlamming)
             {
-                isThrowing = true;
+                if (!isThrowing)
+                {
+                    isThrowing = true;
+                }
             }
         }
 
@@ -188,11 +193,17 @@ public class ShieldKnightController : MonoBehaviour
             isBarging = true;
         }
 
-
-        if (Input.GetButtonDown("Guard") && cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
+        if (Input.GetButtonDown("Guard")) //&& cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
         {
-            buttonHeldTime = Time.timeSinceLevelLoad;
-            buttonHeld = false;
+            if (cc.isGrounded && stopTime <= 0)
+            {
+                buttonHeldTime = Time.timeSinceLevelLoad;
+                buttonHeld = false;
+            }
+            else if (!cc.isGrounded)
+            {
+                isSlamming = true;
+            }
         }
         else if (Input.GetButtonUp("Guard") && cc.isGrounded)
         {
@@ -212,10 +223,11 @@ public class ShieldKnightController : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Guard") && !cc.isGrounded)
+        /*if (Input.GetButtonDown("Guard") && !cc.isGrounded)
         {
+            Debug.LogWarning("SLAM!");
             isSlamming = true;
-        }
+        }*/
     }
 
     void Jump()
@@ -255,6 +267,11 @@ public class ShieldKnightController : MonoBehaviour
         if (isParrying) 
         {
             animControl.ChangeAnimationState(animControl.parry);
+        }
+
+        if(isSlamming)
+        {
+            animControl.ChangeAnimationState(animControl.slam);
         }
     }
 }
