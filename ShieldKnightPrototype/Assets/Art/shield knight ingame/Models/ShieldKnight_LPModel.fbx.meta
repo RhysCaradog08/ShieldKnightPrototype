@@ -3,7 +3,57 @@ guid: 454767837f1768741b7e23fe0196f47d
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Arms
+    second: {fileID: 2100000, guid: 398eced94702bef40bdaaa3177586e14, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Body
+    second: {fileID: 2100000, guid: d474a34e796b07a4f8a98bffdabc4c5f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Buckler
+    second: {fileID: 2100000, guid: 548eb82878bd72b4a973ed224045dfe2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Feet
+    second: {fileID: 2100000, guid: 1ca9b42b2e6fd5e47b4cf223b0407059, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Frontplate
+    second: {fileID: 2100000, guid: 740ae0a81ff61b54bb60cf527ee7d86f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Head
+    second: {fileID: 2100000, guid: 406a0fcbbdaf9bb4d92bf1c4d106cd9a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Legs
+    second: {fileID: 2100000, guid: 9ec71bcecf7cbd543b7cfb928cdc2260, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material
+    second: {fileID: 2100000, guid: d0f05127b5a93994a844c5e73b638b9a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Material.005
+    second: {fileID: 2100000, guid: 32c81a5e98f541b479fdabf2c045616d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Sideplates
+    second: {fileID: 2100000, guid: 8e93bf813bba1944ca18fda0dfefb840, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
