@@ -16,6 +16,7 @@ public class TargetSelector : MonoBehaviour
     Collider[] hitColliders;
     public List<GameObject> targetLocations = new List<GameObject>();
 
+    public float targetAngle;
     public GameObject closest;
 
     Ray centreRay;
@@ -74,7 +75,9 @@ public class TargetSelector : MonoBehaviour
                 Vector3 dir = collider.transform.position - transform.position;
                 float angle = Vector3.Angle(dir, cam.transform.forward);
 
-                if (angle < 100)
+                DrawTargetAngle();
+
+                if (angle < targetAngle)
                 {
                     Debug.DrawLine(transform.position, collider.transform.position, Color.green);
                     if (!targetLocations.Contains(collider.gameObject))
@@ -119,6 +122,16 @@ public class TargetSelector : MonoBehaviour
                 closest = target;
             }
         }
+    }
+
+    void DrawTargetAngle()
+    {
+        Vector3 positiveAngle = Quaternion.Euler(0f, targetAngle, 0f) * (transform.position + transform.forward * 10);
+        Vector3 negativeAngle = Quaternion.Euler(0f, -targetAngle, 0f) * (transform.position + transform.forward * 10);
+
+        Debug.DrawLine(transform.position, positiveAngle, Color.yellow);
+        Debug.DrawLine(transform.position, negativeAngle, Color.yellow);
+
     }
 
     void OnDrawGizmosSelected()
