@@ -48,7 +48,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3188890963822013292}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: f37615b74c386c34dadbbef2c64a65a2, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -262,6 +262,12 @@ MonoBehaviour:
   closest: {fileID: 0}
   canBarge: 0
   isBarging: 0
+  slamForce: 0
+  slamDelay: 0
+  slamPushBack: 0
+  slamRadius: 0
+  slamLift: 0
+  damageDelay: 0
 --- !u!1 &3598030612893438767
 GameObject:
   m_ObjectHideFlags: 0

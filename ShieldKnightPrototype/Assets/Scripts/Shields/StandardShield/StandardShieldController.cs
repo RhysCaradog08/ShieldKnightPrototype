@@ -109,7 +109,7 @@ public class StandardShieldController : MonoBehaviour
         {
             trail.enabled = true;
             canThrow = false;
-            sk.isThrowing = false;
+            //sk.isThrowing = false;
         }
         else trail.enabled = false;
 
@@ -241,5 +241,21 @@ public class StandardShieldController : MonoBehaviour
         {
             ObjectPoolManager.instance.RecallObject(marker);
         }*/
+    }
+
+    private void OnCollisionEnter(Collision col)
+    {
+        if (thrown)
+        {
+            shieldRB.isKinematic = true;
+            transform.rotation = Quaternion.Euler(-90, 0, 0);
+            Debug.Log("Hit " + col.collider.name);
+
+            if (col.gameObject.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
+            {
+                shieldRB.isKinematic = true;
+                transform.rotation = Quaternion.Euler(0, 0, 0);
+            }
+        }
     }
 }

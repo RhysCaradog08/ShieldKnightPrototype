@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShieldKnightController : MonoBehaviour
 {
     AnimationController animControl;
-    StandardShieldController shield;
+    [SerializeField] StandardShieldController shield;
 
     Camera cam;
     Transform camPos;
@@ -82,6 +82,11 @@ public class ShieldKnightController : MonoBehaviour
         {
             stopTime = 0;
             //canMove = true; 
+
+            if(isThrowing)
+            {
+                isThrowing = false;
+            }
             
             if(isParrying)
             {
@@ -179,11 +184,12 @@ public class ShieldKnightController : MonoBehaviour
 
         if (Input.GetButtonDown("Throw"))
         {
-            if (!isBarging && !isGuarding && !isParrying && !isSlamming)
+            if (!isBarging || !isGuarding || !isParrying || !isSlamming)
             {
                 if (!isThrowing)
                 {
                     isThrowing = true;
+                    stopTime = 0.5f;
                 }
             }
         }
