@@ -10,9 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4608288648347156761}
   - component: {fileID: 4900299008147383495}
-  - component: {fileID: 328104065813443228}
   - component: {fileID: 3506334854818597306}
   - component: {fileID: 7159875904572468473}
+  - component: {fileID: 698315720167530260}
   m_Layer: 0
   m_Name: Shield Knight
   m_TagString: Untagged
@@ -62,30 +62,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &328104065813443228
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2385585061553561584}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f8a6353d32fc7e94497aa5a010aa0df7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  markerCheck: {fileID: 0}
-  targetLocations: []
-  visibleTargets: []
-  closest: {fileID: 0}
-  range: 0
-  targetFOV: 0
-  targetMarker: {fileID: 0}
-  lockOnMarker: {fileID: 0}
-  canLockOn: 0
-  canTarget: 0
-  isVisible: 0
-  lockedOn: 0
 --- !u!114 &3506334854818597306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +124,30 @@ MonoBehaviour:
   guard: ShieldKnight_Guard
   parry: ShieldKnight_Parry
   slam: ShieldKnight_Slam
+--- !u!114 &698315720167530260
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385585061553561584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca1f414627d9da641931e7041110604a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  markerCheck: {fileID: 0}
+  targetLocations: []
+  visibleTargets: []
+  closest: {fileID: 0}
+  range: 0
+  targetFOV: 0
+  targetMarker: {fileID: 0}
+  lockOnMarker: {fileID: 0}
+  canLockOn: 0
+  canTarget: 0
+  isVisible: 0
+  lockedOn: 0
 --- !u!1001 &416831841
 PrefabInstance:
   m_ObjectHideFlags: 0

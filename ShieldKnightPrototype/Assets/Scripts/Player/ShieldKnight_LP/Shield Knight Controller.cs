@@ -39,7 +39,7 @@ public class ShieldKnightController : MonoBehaviour
     private void Awake()
     {
         animControl = FindObjectOfType<AnimationController>();
-        shield = GetComponent<StandardShieldController>();  
+        shield = FindObjectOfType<StandardShieldController>();  
 
         cc = GetComponent<CharacterController>();        
         cam = Camera.main;
@@ -73,6 +73,12 @@ public class ShieldKnightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (shield.gameObject.activeInHierarchy)
+        {
+            hasShield = true;
+        }
+        else hasShield = false;
+
         if(stopTime > 0) 
         {
             stopTime -= Time.deltaTime;
@@ -182,7 +188,7 @@ public class ShieldKnightController : MonoBehaviour
         move = new Vector3(moveX, 0, moveZ).normalized;
 
 
-        if (Input.GetButtonDown("Throw"))
+        if (Input.GetButtonUp("Throw"))
         {
             if (!isBarging || !isGuarding || !isParrying || !isSlamming)
             {

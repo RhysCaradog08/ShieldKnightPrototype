@@ -8,13 +8,15 @@ public class StandardShieldController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
     AnimationController animControl;
+    TargetingSystem ts;
     [SerializeField] Rigidbody shieldRB;
 
     [Header("Throw")]
     public float throwForce;
-    //public GameObject target;
+    public GameObject target;
     TrailRenderer trail;
-    public bool thrown, /*hasTarget,*/ canThrow;
+    GameObject hitStars;
+    public bool thrown, canThrow, hasTarget;
 
     [Header("Recall")]
     Transform shieldHoldPos;
@@ -49,6 +51,7 @@ public class StandardShieldController : MonoBehaviour
     {
         //Throw
         thrown = false;
+        hasTarget = false;
 
         //Recall
         shieldHoldPos = transform.parent.transform;
@@ -102,14 +105,21 @@ public class StandardShieldController : MonoBehaviour
 
         if (canThrow)
         {
-            NonTargetThrow();
+            /*if (hasTarget)
+            {
+                if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
+                {
+                    StartCoroutine(TargetedThrow());
+                }
+                else StartCoroutine(LockOnThrow());
+            }
+            else*/ NonTargetThrow();
         }
 
         if (thrown)  //Stops Player repeatedly throwing the shield.
         {
             trail.enabled = true;
             canThrow = false;
-            //sk.isThrowing = false;
         }
         else trail.enabled = false;
 
@@ -180,6 +190,76 @@ public class StandardShieldController : MonoBehaviour
         shieldRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
 
         transform.parent = null;
+    }
+
+    IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
+    {
+        thrown = true;
+
+        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
+        {
+            target = nextTarget;
+            Vector3 nextTargetPos = nextTarget.transform.position;
+            while (Vector3.Distance(nextTargetPos, transform.position) > 0.1f)
+            {
+                transform.parent = null;
+
+                transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
+
+                yield return null;
+            }
+
+            if (Vector3.Distance(nextTargetPos, transform.position) < 0.1f)
+            {
+                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTargetPos, Quaternion.identity, 1);
+
+
+                if (nextTarget.GetComponent<MarkerCheck>() != null)
+                {
+                    MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
+
+                    markerCheck.RemoveMarker();
+                }
+
+                if (nextTarget.GetComponent<EnemyHealth>() != null)
+                {
+                    EnemyHealth enemy = nextTarget.GetComponent<EnemyHealth>();
+
+                    enemy.TakeDamage(10);
+                }
+            }
+        }
+        target = null;  //Once all targets are reached return Shield to Player.
+        ts.visibleTargets.Clear();
+        StartCoroutine(RecallShield());
+    }
+
+    IEnumerator LockOnThrow()
+    {
+        thrown = true;
+
+        while (Vector3.Distance(transform.position, target.transform.position) > 0.1f)
+        {
+            transform.parent = null;
+
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, throwForce * Time.deltaTime);
+
+            yield return null;
+        }
+
+        if (Vector3.Distance(transform.position, target.transform.position) < 0.1f)
+        {
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, target.transform.position, Quaternion.identity, 1);
+        }
+
+        if (target.GetComponent<EnemyHealth>() != null)
+        {
+            EnemyHealth enemy = target.GetComponent<EnemyHealth>();
+
+            enemy.TakeDamage(10);
+        }
+
+        StartCoroutine(RecallShield());
     }
 
     IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
