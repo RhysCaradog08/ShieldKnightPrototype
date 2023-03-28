@@ -8,7 +8,7 @@ public class StandardShieldController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
     AnimationController animControl;
-    TargetingSystem ts;
+    TargetSelector ts;
     [SerializeField] Rigidbody shieldRB;
 
     [Header("Throw")]
@@ -51,7 +51,7 @@ public class StandardShieldController : MonoBehaviour
     {
         //Throw
         thrown = false;
-        hasTarget = false;
+        target = null;
 
         //Recall
         shieldHoldPos = transform.parent.transform;
@@ -69,6 +69,12 @@ public class StandardShieldController : MonoBehaviour
     void Update()
     {
         transform.localScale = shieldScale;
+
+        if (target != null)
+        {
+            hasTarget = true;
+        }
+        else hasTarget = false;
 
         if (bargeDelay > 0)
         {
@@ -105,15 +111,17 @@ public class StandardShieldController : MonoBehaviour
 
         if (canThrow)
         {
-            /*if (hasTarget)
+            if (hasTarget)
             {
-                if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
+                StartCoroutine(TargetedThrow());
+
+                /*if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
                 {
                     StartCoroutine(TargetedThrow());
                 }
-                else StartCoroutine(LockOnThrow());
+                else StartCoroutine(LockOnThrow());*/
             }
-            else*/ NonTargetThrow();
+            else NonTargetThrow();
         }
 
         if (thrown)  //Stops Player repeatedly throwing the shield.
@@ -196,8 +204,10 @@ public class StandardShieldController : MonoBehaviour
     {
         thrown = true;
 
-        foreach (GameObject nextTarget in ts.visibleTargets) //Sets nextTarget in list to be target and move shield towards target.
+        /*foreach (GameObject nextTarget in ts.targetLocations) //Sets nextTarget in list to be target and move shield towards target.
         {
+            Debug.Log("Throw at Targets");
+
             target = nextTarget;
             Vector3 nextTargetPos = nextTarget.transform.position;
             while (Vector3.Distance(nextTargetPos, transform.position) > 0.1f)
@@ -208,7 +218,7 @@ public class StandardShieldController : MonoBehaviour
 
                 yield return null;
             }
-
+            
             if (Vector3.Distance(nextTargetPos, transform.position) < 0.1f)
             {
                 hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTargetPos, Quaternion.identity, 1);
@@ -228,9 +238,18 @@ public class StandardShieldController : MonoBehaviour
                     enemy.TakeDamage(10);
                 }
             }
+        }*/
+        while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
+        {
+            transform.parent = null;
+
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, throwForce * Time.deltaTime);
+
+            yield return null;
         }
+
         target = null;  //Once all targets are reached return Shield to Player.
-        ts.visibleTargets.Clear();
+        //ts.targetLocations.Clear();
         StartCoroutine(RecallShield());
     }
 

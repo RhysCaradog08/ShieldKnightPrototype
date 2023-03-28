@@ -9,9 +9,9 @@ public class TargetSelector : MonoBehaviour
 {
     [SerializeField] Camera cam;
 
-    ShieldKnightController sk;
+    //ShieldKnightController sk;
+    [SerializeField]StandardShieldController shield;
     public MarkerCheck markerCheck;
-    StandardShieldController shield;
 
     Collider[] hitColliders;
     public List<GameObject> targetLocations = new List<GameObject>();
@@ -25,6 +25,8 @@ public class TargetSelector : MonoBehaviour
     private void Awake()
     {
         cam = Camera.main;
+
+        shield = FindObjectOfType<StandardShieldController>();    
     }
 
     // Start is called before the first frame update
@@ -39,13 +41,23 @@ public class TargetSelector : MonoBehaviour
         if(Input.GetButton("Throw"))
         {
             FindTargets();
+            FindClosestTarget();
 
-            Debug.DrawLine(transform.position, cam.transform.forward, Color.yellow);
+            if (closest != null)
+            {
+                Debug.DrawLine(transform.position, closest.transform.position, Color.yellow);
+            }
         }
 
         if(Input.GetButtonUp("Throw"))
         {
             targetLocations.Clear();
+            closest = null;
+        }
+
+        if(closest != null)
+        {
+            shield.target = closest;
         }
     }
 
@@ -57,12 +69,19 @@ public class TargetSelector : MonoBehaviour
         {
             if (collider.CompareTag("Target"))
             {
-                Debug.DrawLine(transform.position, collider.transform.position, Color.green);
-                if (!targetLocations.Contains(collider.gameObject))
-                {
-                    targetLocations.Add(collider.gameObject);
-                }
+                Debug.DrawLine(transform.position, collider.transform.position, Color.red);
 
+                Vector3 dir = collider.transform.position - transform.position;
+                float angle = Vector3.Angle(dir, cam.transform.forward);
+
+                if (angle < 100)
+                {
+                    Debug.DrawLine(transform.position, collider.transform.position, Color.green);
+                    if (!targetLocations.Contains(collider.gameObject))
+                    {
+                        targetLocations.Add(collider.gameObject);
+                    }
+                }
                 else if (targetLocations.Contains(collider.gameObject))
                 {
                     targetLocations.Remove(collider.gameObject);
@@ -72,8 +91,34 @@ public class TargetSelector : MonoBehaviour
             {
                 targetLocations.Remove(collider.gameObject);
             }
+        }      
+    }
+
+    void FindClosestTarget()
+    {
+        targetLocations.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
+        {
+            return Vector3.Distance(transform.position, a.transform.position)///////
+            .CompareTo(
+              Vector3.Distance(transform.position, b.transform.position));
+        });
+
+        closest = null;
+        float closestDistanceSqr = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
+
+        foreach (GameObject target in targetLocations) //Measures distance from player to targets and if it falls within an angle of focus then calculates which target is closest.
+        {
+            //Distance
+            Vector3 directionToTarget = target.transform.position - currentPosition;
+            float dSqrToTarget = directionToTarget.sqrMagnitude;
+
+            if (dSqrToTarget < closestDistanceSqr)
+            {
+                closestDistanceSqr = dSqrToTarget;
+                closest = target;
+            }
         }
-        
     }
 
     void OnDrawGizmosSelected()
