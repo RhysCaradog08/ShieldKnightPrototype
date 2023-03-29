@@ -7,23 +7,14 @@ using UnityEngine;
 
 public class TargetSelector : MonoBehaviour
 {
-    [SerializeField] Camera cam;
-
-    //ShieldKnightController sk;
     [SerializeField]StandardShieldController shield;
-    public MarkerCheck markerCheck;
-
-    GameObject marker;
-
+    
+    [SerializeField] Camera cam;
     Collider[] hitColliders;
     public List<GameObject> targetLocations = new List<GameObject>();
-
+    [SerializeField] private float range;
     public float targetAngle;
     public GameObject closest;
-
-    Ray centreRay;
-
-    [SerializeField] private float range;
 
     private void Awake()
     {
@@ -41,21 +32,9 @@ public class TargetSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if(Input.GetButton("Throw"))
-        {
-            FindTargets();
-            FindClosestTarget();
-
-            if (closest != null)
-            {
-                Debug.DrawLine(transform.position, closest.transform.position, Color.yellow);
-            }
-        }*/
-
         if(Input.GetButtonUp("Throw"))
         {
-            targetLocations.Clear();
-            closest = null;
+            ClearTargets();
         }
 
         if(closest != null)
@@ -125,6 +104,12 @@ public class TargetSelector : MonoBehaviour
                 closest = target;
             }
         }
+    }
+
+    public void ClearTargets()
+    {
+        targetLocations.Clear();
+        closest = null;
     }
 
     void DrawTargetAngle()

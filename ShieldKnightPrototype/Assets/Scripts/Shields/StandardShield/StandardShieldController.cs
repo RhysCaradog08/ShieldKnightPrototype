@@ -28,7 +28,7 @@ public class StandardShieldController : MonoBehaviour
 
     [Header("Barge")]
     [SerializeField] float bargeDelay;
-    public float bargeTime, bargeSpeed;
+    public float bargeTime, bargeSpeed, bargeStartSpeed;
     public GameObject closest;
     public bool canBarge, isBarging;
 
@@ -61,6 +61,7 @@ public class StandardShieldController : MonoBehaviour
         shieldHoldRot = Quaternion.Euler(-90, 90, 0);
 
         //Barge
+        bargeStartSpeed = bargeSpeed;
         canBarge = true;
         isBarging = false;
         closest = null;
@@ -134,7 +135,7 @@ public class StandardShieldController : MonoBehaviour
         }
         else trail.enabled = false;
 
-        if(Input.GetButton("Throw") && !thrown)
+        if((Input.GetButton("Throw") || Input.GetButtonDown("Barge")) && !thrown)
         {
             ts.FindTargets();
             ts.FindClosestTarget();
@@ -204,10 +205,10 @@ public class StandardShieldController : MonoBehaviour
             {
                 marker = ObjectPoolManager.instance.CallObject("TargetMarker", null, Vector3.zero, Quaternion.identity);
             }
-            else if(marker != null)
+            else if (marker != null)
             {
                 marker.transform.parent = target.transform;
-                marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z -0.5f);
+                marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z - 0.5f);
             }
         }
     }
@@ -317,16 +318,34 @@ public class StandardShieldController : MonoBehaviour
 
             canBarge = false;
 
-            /*if (ts.lockedOn)
+            if (hasTarget)
             {
-                Vector3 closestDir = (ts.closest.transform.position - transform.position).normalized;
+                sk.transform.LookAt(target.transform.position); 
 
-                cc.Move(closestDir * bargeSpeed * Time.deltaTime);
+                Vector3 closestDir = (target.transform.position - transform.position).normalized;
+                sk.cc.Move(closestDir * bargeSpeed * Time.deltaTime);
+
+                if(Vector3.Distance(target.transform.position, transform.position) < 5)
+                {
+                    Debug.Log("Barge Distance" + Vector3.Distance(target.transform.position, transform.position));
+
+                    bargeSpeed = 0;
+
+                    if (marker != null)
+                    {
+                        ObjectPoolManager.instance.RecallObject(marker);
+                        marker = null;
+                    }
+
+                    target = null;
+                    ts.ClearTargets();  
+                }
             }
-            else*/ 
+            else 
             sk.cc.Move(sk.moveDir * bargeSpeed * Time.deltaTime);
 
             bargeDelay = 0.25f;
+            bargeSpeed = bargeStartSpeed;
 
             yield return null;
         }
