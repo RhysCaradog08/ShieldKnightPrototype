@@ -13,6 +13,8 @@ public class TargetSelector : MonoBehaviour
     [SerializeField]StandardShieldController shield;
     public MarkerCheck markerCheck;
 
+    GameObject marker;
+
     Collider[] hitColliders;
     public List<GameObject> targetLocations = new List<GameObject>();
 
@@ -68,7 +70,7 @@ public class TargetSelector : MonoBehaviour
 
         foreach (Collider collider in hitColliders)
         {
-            if (collider.CompareTag("Target"))
+            if (collider.tag == "Target")
             {
                 Debug.DrawLine(transform.position, collider.transform.position, Color.red);
 
@@ -112,6 +114,7 @@ public class TargetSelector : MonoBehaviour
 
         foreach (GameObject target in targetLocations) //Measures distance from player to targets and if it falls within an angle of focus then calculates which target is closest.
         {
+
             //Distance
             Vector3 directionToTarget = target.transform.position - currentPosition;
             float dSqrToTarget = directionToTarget.sqrMagnitude;

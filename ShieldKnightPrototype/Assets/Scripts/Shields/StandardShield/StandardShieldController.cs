@@ -11,6 +11,8 @@ public class StandardShieldController : MonoBehaviour
     TargetSelector ts;
     [SerializeField] Rigidbody shieldRB;
 
+    [SerializeField] GameObject marker;
+
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
@@ -28,7 +30,6 @@ public class StandardShieldController : MonoBehaviour
     [SerializeField] float bargeDelay;
     public float bargeTime, bargeSpeed;
     public GameObject closest;
-    GameObject marker;
     public bool canBarge, isBarging;
 
     [Header("Slam")]
@@ -188,6 +189,19 @@ public class StandardShieldController : MonoBehaviour
             }
         }
         else sk.isGuarding = false;
+
+        if (hasTarget)
+        {
+            if (!marker)
+            {
+                marker = ObjectPoolManager.instance.CallObject("TargetMarker", null, Vector3.zero, Quaternion.identity);
+            }
+            else if(marker != null)
+            {
+                marker.transform.parent = target.transform;
+                marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z -0.5f);
+            }
+        }
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
@@ -246,6 +260,15 @@ public class StandardShieldController : MonoBehaviour
             transform.position = Vector3.MoveTowards(transform.position, target.transform.position, throwForce * Time.deltaTime);
 
             yield return null;
+        }
+
+        if(Vector3.Distance(target.transform.position, transform.position) < 0.1f)
+        {
+            if(marker != null) 
+            {
+                ObjectPoolManager.instance.RecallObject(marker);
+                marker = null;
+            }
         }
 
         target = null;  //Once all targets are reached return Shield to Player.
