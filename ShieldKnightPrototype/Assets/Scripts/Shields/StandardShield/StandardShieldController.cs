@@ -42,6 +42,8 @@ public class StandardShieldController : MonoBehaviour
     private void Awake()
     {
         sk = FindObjectOfType<ShieldKnightController>();
+        ts = FindObjectOfType<TargetSelector>();
+
         shieldRB = GetComponentInChildren<Rigidbody>();
 
         trail = GetComponent<TrailRenderer>();
@@ -132,6 +134,12 @@ public class StandardShieldController : MonoBehaviour
         }
         else trail.enabled = false;
 
+        if(Input.GetButton("Throw") && !thrown)
+        {
+            ts.FindTargets();
+            ts.FindClosestTarget();
+        }
+
         if (Input.GetButtonDown("Throw") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
         {
             StartCoroutine(RecallShield());
@@ -218,41 +226,6 @@ public class StandardShieldController : MonoBehaviour
     {
         thrown = true;
 
-        /*foreach (GameObject nextTarget in ts.targetLocations) //Sets nextTarget in list to be target and move shield towards target.
-        {
-            Debug.Log("Throw at Targets");
-
-            target = nextTarget;
-            Vector3 nextTargetPos = nextTarget.transform.position;
-            while (Vector3.Distance(nextTargetPos, transform.position) > 0.1f)
-            {
-                transform.parent = null;
-
-                transform.position = Vector3.MoveTowards(transform.position, nextTargetPos, throwForce * Time.deltaTime);
-
-                yield return null;
-            }
-            
-            if (Vector3.Distance(nextTargetPos, transform.position) < 0.1f)
-            {
-                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTargetPos, Quaternion.identity, 1);
-
-
-                if (nextTarget.GetComponent<MarkerCheck>() != null)
-                {
-                    MarkerCheck markerCheck = nextTarget.GetComponent<MarkerCheck>();
-
-                    markerCheck.RemoveMarker();
-                }
-
-                if (nextTarget.GetComponent<EnemyHealth>() != null)
-                {
-                    EnemyHealth enemy = nextTarget.GetComponent<EnemyHealth>();
-
-                    enemy.TakeDamage(10);
-                }
-            }
-        }*/
         while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
         {
             transform.parent = null;
@@ -272,7 +245,6 @@ public class StandardShieldController : MonoBehaviour
         }
 
         target = null;  //Once all targets are reached return Shield to Player.
-        //ts.targetLocations.Clear();
         StartCoroutine(RecallShield());
     }
 

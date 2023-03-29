@@ -41,7 +41,7 @@ public class TargetSelector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButton("Throw"))
+        /*if(Input.GetButton("Throw"))
         {
             FindTargets();
             FindClosestTarget();
@@ -50,7 +50,7 @@ public class TargetSelector : MonoBehaviour
             {
                 Debug.DrawLine(transform.position, closest.transform.position, Color.yellow);
             }
-        }
+        }*/
 
         if(Input.GetButtonUp("Throw"))
         {
@@ -99,7 +99,7 @@ public class TargetSelector : MonoBehaviour
         }      
     }
 
-    void FindClosestTarget()
+    public void FindClosestTarget()
     {
         targetLocations.Sort(delegate (GameObject a, GameObject b) //Sorts targets by distance between player and object transforms.
         {
