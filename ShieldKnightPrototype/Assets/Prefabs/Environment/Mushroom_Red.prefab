@@ -9,10 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9147445440968380443}
-  - component: {fileID: 7338651057831971107}
+  - component: {fileID: 7433667523733198748}
   m_Layer: 15
   m_Name: Mushroom_Red
-  m_TagString: Untagged
+  m_TagString: Target
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,9 +31,9 @@ Transform:
   m_Children:
   - {fileID: 8948217467223800288}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &7338651057831971107
+--- !u!136 &7433667523733198748
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -52,10 +52,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.2
-  m_Height: 3.55
+  m_Radius: 1.15
+  m_Height: 3.5
   m_Direction: 1
-  m_Center: {x: 0, y: 1.65, z: 0}
+  m_Center: {x: 0, y: 0.15, z: 0}
 --- !u!1001 &4680536676262484085
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -77,7 +77,7 @@ PrefabInstance:
     - target: {fileID: 4385080170327957909, guid: ff62b58c5a9ea164fa8ddf8038e10cd1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 4385080170327957909, guid: ff62b58c5a9ea164fa8ddf8038e10cd1,
         type: 3}
@@ -132,10 +132,11 @@ PrefabInstance:
     - target: {fileID: 4385080170328260021, guid: ff62b58c5a9ea164fa8ddf8038e10cd1,
         type: 3}
       propertyPath: m_TagString
-      value: Target
+      value: Untagged
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 4729065021270817612, guid: ff62b58c5a9ea164fa8ddf8038e10cd1, type: 3}
+    - {fileID: 4179764965186754058, guid: ff62b58c5a9ea164fa8ddf8038e10cd1, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

@@ -268,7 +268,7 @@ public class StandardShieldController : MonoBehaviour
         }
 
         target = null;  //Once all targets are reached return Shield to Player.
-        StartCoroutine(RecallShield());
+        //StartCoroutine(RecallShield());
     }
 
     IEnumerator LockOnThrow()
@@ -382,11 +382,11 @@ public class StandardShieldController : MonoBehaviour
             {
                 if(!slamObjects.Contains(col.transform))
                 {
-                    slamObjects.Add(col.transform);
+                    slamObjects.Add(col.transform.GetChild(0));
                 }
 
-                Vector3 squashedSize = new Vector3(col.transform.localScale.x, 0.25f, col.transform.localScale.z);
-                col.transform.localScale = squashedSize;
+                Vector3 squashedSize = new Vector3(col.transform.GetChild(0).localScale.x, 0.25f, col.transform.localScale.z);
+                col.transform.GetChild(0).localScale = squashedSize;
 
                 if (col.GetComponent<Rigidbody>() != null)
                 {
@@ -411,7 +411,7 @@ public class StandardShieldController : MonoBehaviour
     {
         if (thrown)
         {
-            if (col.gameObject.tag == "Sticky") //Makes rigidbody kinematic so Shield sticks to object.
+            if (col.gameObject.tag == "Sticky" || col.gameObject.tag == "Target") //Makes rigidbody kinematic so Shield sticks to object.
             {
                 shieldRB.isKinematic = true;
                 transform.rotation = Quaternion.Euler(-90, 0, 0);
