@@ -251,14 +251,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sk: {fileID: 0}
+  ignoreLayer:
+    serializedVersion: 2
+    m_Bits: 0
   shieldRB: {fileID: 0}
+  marker: {fileID: 0}
   throwForce: 0
+  target: {fileID: 0}
   thrown: 0
   canThrow: 0
+  hasTarget: 0
   meshCol: {fileID: 794708382715563845}
   bargeDelay: 0
   bargeTime: 0.25
   bargeSpeed: 50
+  bargeStartSpeed: 0
   closest: {fileID: 0}
   canBarge: 0
   isBarging: 0
@@ -268,6 +275,7 @@ MonoBehaviour:
   slamRadius: 0
   slamLift: 0
   damageDelay: 0
+  slamObjects: []
 --- !u!1 &3598030612893438767
 GameObject:
   m_ObjectHideFlags: 0

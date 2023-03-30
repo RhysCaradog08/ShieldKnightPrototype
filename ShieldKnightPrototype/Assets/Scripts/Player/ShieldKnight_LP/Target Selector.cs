@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class TargetSelector : MonoBehaviour
 {
@@ -56,9 +57,9 @@ public class TargetSelector : MonoBehaviour
                 Vector3 dir = collider.transform.position - transform.position;
                 float angle = Vector3.Angle(dir, cam.transform.forward);
 
-                DrawTargetAngle();
+                ShowTargetAngle();
 
-                if (angle < targetAngle)
+                if (angle < targetAngle && angle > -targetAngle)
                 {
                     Debug.DrawLine(transform.position, collider.transform.position, Color.green);
                     if (!targetLocations.Contains(collider.gameObject))
@@ -112,15 +113,16 @@ public class TargetSelector : MonoBehaviour
         closest = null;
     }
 
-    void DrawTargetAngle()
+    void ShowTargetAngle()
     {
-        Vector3 positiveAngle = Quaternion.Euler(0f, targetAngle, 0f) * (transform.position + transform.forward * 10);
-        Vector3 negativeAngle = Quaternion.Euler(0f, -targetAngle, 0f) * (transform.position + transform.forward * 10);
+        Vector3 line = transform.position + (cam.transform.forward * range);
+        Vector3 plusRotatedLine = Quaternion.AngleAxis(targetAngle, cam.transform.up) * line;
+        Vector3 minusRotatedLine = Quaternion.AngleAxis(-targetAngle, cam.transform.up) * line;
 
-        Debug.DrawLine(transform.position, positiveAngle, Color.yellow);
-        Debug.DrawLine(transform.position, negativeAngle, Color.yellow);
-
+        Debug.DrawLine(transform.position, plusRotatedLine, Color.yellow);
+        Debug.DrawLine(transform.position, minusRotatedLine, Color.yellow);
     }
+
 
     void OnDrawGizmosSelected()
     {

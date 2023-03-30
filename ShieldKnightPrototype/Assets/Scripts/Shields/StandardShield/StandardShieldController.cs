@@ -9,15 +9,17 @@ public class StandardShieldController : MonoBehaviour
     [SerializeField] ShieldKnightController sk;
     AnimationController animControl;
     TargetSelector ts;
-    [SerializeField] Rigidbody shieldRB;
 
+    public LayerMask ignoreLayer;
+
+    [SerializeField] Rigidbody shieldRB;
     [SerializeField] GameObject marker;
+    GameObject hitStars;
 
     [Header("Throw")]
     public float throwForce;
     public GameObject target;
     TrailRenderer trail;
-    GameObject hitStars;
     public bool thrown, canThrow, hasTarget;
 
     [Header("Recall")]
@@ -35,6 +37,8 @@ public class StandardShieldController : MonoBehaviour
     [Header("Slam")]
     public float slamForce, slamDelay, slamPushBack, slamRadius, slamLift, damageDelay;
     GameObject slamStars;
+    Transform squashedObject;
+    [SerializeField] List<Transform> slamObjects = new List<Transform>();
     bool showSlamVFX;
 
     Vector3 shieldScale;
@@ -166,27 +170,43 @@ public class StandardShieldController : MonoBehaviour
 
             if (Physics.Raycast(transform.position, -sk.transform.up, out hit))
             {
-                //Debug.DrawLine(pc.transform.position, -pc.transform.up * 10, Color.green);
-
                 float distToGround = hit.distance;
 
-                //Debug.Log("Distance to Ground: " + distToGround);
+                Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
+                Debug.Log("Distance to Ground: " + distToGround);
 
                 if (distToGround < 3)
                 {
-                    Debug.Log("Hit Ground");
-                    /*SlamImpact();
+                    Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.green);
 
                     if (!showSlamVFX)
                     {
-                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, transform.position, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, hit.point, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
                         showSlamVFX = true;
-                    }*/
+                    }
+
+                    Debug.Log("Hit Ground");
+                    SlamImpact();
+
                     if (slamDelay <= 0)
                     {
-                        slamDelay = 5;
+                        slamDelay = 0.5f;
                     }
                 }
+            }
+        }
+        else
+        {
+            showSlamVFX = false;
+
+            if (slamObjects.Count > 0)
+            {
+                foreach (Transform so in slamObjects)
+                {
+                    so.transform.localScale = Vector3.one;
+                }
+
+                slamObjects.Clear();
             }
         }
 
@@ -238,7 +258,9 @@ public class StandardShieldController : MonoBehaviour
 
         if(Vector3.Distance(target.transform.position, transform.position) < 0.1f)
         {
-            if(marker != null) 
+            hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, target.transform.position, Quaternion.identity, 1);
+
+            if (marker != null) 
             {
                 ObjectPoolManager.instance.RecallObject(marker);
                 marker = null;
@@ -313,7 +335,6 @@ public class StandardShieldController : MonoBehaviour
         while (Time.time < startTime + bargeTime)  //Player movement speed is disabled then moved by bargeSpeed over bargeTime;
         {
             sk.isBarging = true;
-            //trailEffect.SetActive(true);
             sk.speed = 0;
 
             canBarge = false;
@@ -349,26 +370,59 @@ public class StandardShieldController : MonoBehaviour
 
             yield return null;
         }
+    }
 
-        /*if (marker != null)
+    void SlamImpact()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
+
+        foreach (Collider col in colliders)
         {
-            ObjectPoolManager.instance.RecallObject(marker);
-        }*/
+            if (col.gameObject.layer == 15)
+            {
+                if(!slamObjects.Contains(col.transform))
+                {
+                    slamObjects.Add(col.transform);
+                }
+
+                Vector3 squashedSize = new Vector3(col.transform.localScale.x, 0.25f, col.transform.localScale.z);
+                col.transform.localScale = squashedSize;
+
+                if (col.GetComponent<Rigidbody>() != null)
+                {
+                    Rigidbody slamRB = col.GetComponent<Rigidbody>();
+                    slamRB.AddExplosionForce(slamPushBack, transform.position, slamRadius, slamLift, ForceMode.Impulse);
+                }
+
+                /*EnemyHealth enemy = col.GetComponent<EnemyHealth>();
+
+                if (enemy != null)
+                {
+                    if (damageDelay <= 0)
+                    {
+                        enemy.TakeDamage(10);
+                    }
+                }*/
+            }
+        }
     }
 
     private void OnCollisionEnter(Collision col)
     {
         if (thrown)
         {
-            shieldRB.isKinematic = true;
-            transform.rotation = Quaternion.Euler(-90, 0, 0);
-            Debug.Log("Hit " + col.collider.name);
-
-            if (col.gameObject.CompareTag("Sticky"))  //Makes rigidbody kinematic so Shield sticks to object.
+            if (col.gameObject.tag == "Sticky") //Makes rigidbody kinematic so Shield sticks to object.
             {
                 shieldRB.isKinematic = true;
-                transform.rotation = Quaternion.Euler(0, 0, 0);
+                transform.rotation = Quaternion.Euler(-90, 0, 0);
             }
         }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+        Gizmos.DrawWireSphere(transform.position, slamRadius);
     }
 }
