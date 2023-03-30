@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 698315720167530260}
   m_Layer: 0
   m_Name: Shield Knight
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -136,18 +136,79 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca1f414627d9da641931e7041110604a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  markerCheck: {fileID: 0}
+  shield: {fileID: 0}
+  cam: {fileID: 0}
   targetLocations: []
-  visibleTargets: []
-  closest: {fileID: 0}
   range: 0
-  targetFOV: 0
-  targetMarker: {fileID: 0}
-  lockOnMarker: {fileID: 0}
-  canLockOn: 0
-  canTarget: 0
-  isVisible: 0
-  lockedOn: 0
+  targetAngle: 0
+  closest: {fileID: 0}
+--- !u!1 &7621472561945570529
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4562167117944886669}
+  - component: {fileID: 4694046681604364953}
+  - component: {fileID: 8727237318804569995}
+  m_Layer: 0
+  m_Name: Parry Box
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4562167117944886669
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7621472561945570529}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.75, z: 2}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2650344117709275834}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4694046681604364953
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7621472561945570529}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.5, y: 3, z: 3}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8727237318804569995
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7621472561945570529}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab28c8c731e0804dba5abd4cb2c2c55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parryForce: 100
 --- !u!1001 &416831841
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -308,6 +369,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 454767837f1768741b7e23fe0196f47d,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4562167117944886669}
     - targetCorrespondingSourceObject: {fileID: 2368209596398296042, guid: 454767837f1768741b7e23fe0196f47d,
         type: 3}
       insertIndex: -1
@@ -320,7 +385,7 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 454767837f1768741b7e23fe0196f47d,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3206468440310491779}
+      addedObject: {fileID: 1361593539648259188}
   m_SourcePrefab: {fileID: 100100000, guid: 454767837f1768741b7e23fe0196f47d, type: 3}
 --- !u!4 &256919063985077947 stripped
 Transform:
@@ -360,7 +425,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
---- !u!114 &3206468440310491779
+--- !u!114 &1361593539648259188
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -369,7 +434,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 3426176373464225792}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f87879e9e7ee0440aeaf64c31704275, type: 3}
+  m_Script: {fileID: 11500000, guid: de86bc6138ae70a42bd16bdd453d9ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   shield: {fileID: 0}
+  parryBox: {fileID: 7621472561945570529}

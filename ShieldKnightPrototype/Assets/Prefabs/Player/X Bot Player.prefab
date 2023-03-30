@@ -1193,12 +1193,14 @@ MonoBehaviour:
   turnSmoothTime: 0.1
   stopped: 0
   gravity: -9.81
-  jumpSpeed: 9
   velocity: {x: 0, y: 0, z: 0}
   jumpHeight: 5
+  jumpSpeed: 9
   timeToJumpApex: 0.5
   fallMultiplier: 1
   lowJumpMultiplier: 10
+  hasJumped: 0
+  isJumping: 0
   canPressSpace: 1
   parryBox: {fileID: 9147784981544543266}
   attackCount: 0
@@ -1206,6 +1208,7 @@ MonoBehaviour:
   attackDelay: 0
   attackReset: 0
   canSurf: 0
+  isUppercutting: 0
   hasShield: 0
   hasProjectile: 0
   hasCoil: 0
@@ -3440,6 +3443,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04f3b89c4d751b24a808d206d37e03d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  pc: {fileID: 0}
+  cc: {fileID: 0}
+  select: {fileID: 0}
+  attackTime: 0
+  attackInt: 0
+  punchCount: 0
+  isAttacking: 0
+  dodgeTime: 0
+  dodgeSpeed: 0
+  dodgeDelay: 0
+  canDodge: 0
+  isDodging: 0
+  uppercutHeight: 0
+  uppercutForce: 0
+  uppercutDelay: 0
+  canUppercut: 0
 --- !u!1001 &4009337734585349164
 PrefabInstance:
   m_ObjectHideFlags: 0

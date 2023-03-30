@@ -268,7 +268,7 @@ public class StandardShieldController : MonoBehaviour
         }
 
         target = null;  //Once all targets are reached return Shield to Player.
-        //StartCoroutine(RecallShield());
+        StartCoroutine(RecallShield());
     }
 
     IEnumerator LockOnThrow()
