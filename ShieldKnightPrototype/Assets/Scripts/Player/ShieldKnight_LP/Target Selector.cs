@@ -11,17 +11,23 @@ public class TargetSelector : MonoBehaviour
     [SerializeField]StandardShieldController shield;
     
     [SerializeField] Camera cam;
+    public Transform player, aimTarget;
+
+
     Collider[] hitColliders;
     public List<GameObject> targetLocations = new List<GameObject>();
     [SerializeField] private float range;
     public float targetAngle;
     public GameObject closest;
+    public LayerMask ignoreLayers;
 
     private void Awake()
     {
-        cam = Camera.main;
+        shield = FindObjectOfType<StandardShieldController>();
 
-        shield = FindObjectOfType<StandardShieldController>();    
+        player = GameObject.FindWithTag("Player").transform;
+
+        cam = Camera.main;
     }
 
     // Start is called before the first frame update

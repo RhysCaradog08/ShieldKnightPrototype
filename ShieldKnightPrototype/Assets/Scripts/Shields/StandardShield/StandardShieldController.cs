@@ -139,7 +139,7 @@ public class StandardShieldController : MonoBehaviour
         }
         else trail.enabled = false;
 
-        if((Input.GetButton("Throw") || Input.GetButtonDown("Barge")) && !thrown)
+        if ((Input.GetButton("Throw") || Input.GetButtonDown("Barge")) && !thrown)
         {
             ts.FindTargets();
             ts.FindClosestTarget();
