@@ -7,7 +7,6 @@ using UnityEngine.UIElements;
 public class StandardShieldController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
-    AnimationController animControl;
     TargetSelector ts;
 
     public LayerMask ignoreLayer;
