@@ -96,7 +96,7 @@ Transform:
   m_Children:
   - {fileID: 27089040678004589}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &5318002116993688393
 Rigidbody:
@@ -256,7 +256,7 @@ MonoBehaviour:
     m_Bits: 0
   shieldRB: {fileID: 0}
   marker: {fileID: 0}
-  throwForce: 0
+  throwForce: 100
   target: {fileID: 0}
   thrown: 0
   canThrow: 0
@@ -264,7 +264,7 @@ MonoBehaviour:
   meshCol: {fileID: 794708382715563845}
   bargeDelay: 0
   bargeTime: 0.25
-  bargeSpeed: 50
+  bargeSpeed: 100
   bargeStartSpeed: 0
   closest: {fileID: 0}
   canBarge: 0

@@ -6,6 +6,7 @@ public class ShieldKnightController : MonoBehaviour
 {
     AnimationController animControl;
     [SerializeField] StandardShieldController shield;
+    [SerializeField] MushroomCapController mushroom;
 
     Camera cam;
     Transform camPos;
@@ -31,7 +32,7 @@ public class ShieldKnightController : MonoBehaviour
     public bool buttonHeld;
 
     [Header("Shield Booleans")]
-    public bool hasShield;
+    public bool hasShield, hasMushroom;
 
     [Header("Action Booleans")]
     public bool isThrowing, isBarging, isGuarding, isParrying, isSlamming;
@@ -39,7 +40,8 @@ public class ShieldKnightController : MonoBehaviour
     private void Awake()
     {
         animControl = FindObjectOfType<AnimationController>();
-        shield = FindObjectOfType<StandardShieldController>();  
+        shield = FindObjectOfType<StandardShieldController>(); 
+        mushroom = FindObjectOfType<MushroomCapController>();
 
         cc = GetComponent<CharacterController>();        
         cam = Camera.main;
@@ -73,11 +75,17 @@ public class ShieldKnightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (shield.gameObject.activeInHierarchy)
+        /*if (shield.gameObject.activeInHierarchy)
         {
             hasShield = true;
         }
-        else hasShield = false;
+        else hasShield = false;*/
+
+        if(mushroom.gameObject.activeInHierarchy)
+        {
+            hasMushroom = true;
+        }
+        else hasMushroom = false;
 
         if(stopTime > 0) 
         {

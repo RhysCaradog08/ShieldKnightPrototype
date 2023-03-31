@@ -40,7 +40,7 @@ public class StandardShieldController : MonoBehaviour
     [SerializeField] List<Transform> slamObjects = new List<Transform>();
     bool showSlamVFX;
 
-    Vector3 shieldScale;
+    Vector3 startScale;
 
     private void Awake()
     {
@@ -69,13 +69,13 @@ public class StandardShieldController : MonoBehaviour
         isBarging = false;
         closest = null;
 
-        shieldScale = transform.localScale;
+        startScale = transform.localScale;
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.localScale = shieldScale;
+        transform.localScale = startScale;
 
         if (target != null)
         {
