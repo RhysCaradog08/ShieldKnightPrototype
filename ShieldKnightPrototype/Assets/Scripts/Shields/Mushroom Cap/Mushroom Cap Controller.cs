@@ -1,3 +1,4 @@
+using Basics.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,6 +16,7 @@ public class MushroomCapController : MonoBehaviour
     [Header("Throw")]
     public float throwForce, dist;
     public GameObject target;
+    [SerializeField] List<Transform> targets = new List<Transform>();
     TrailRenderer trail;
     public bool thrown, canThrow, hasTarget;
 
@@ -22,7 +24,7 @@ public class MushroomCapController : MonoBehaviour
     Transform mushroomHoldPos;
     Quaternion mushroomHoldRot;
     float lerpTime = 1f;
-    //[SerializeField] MeshCollider meshCol;
+    [SerializeField] MeshCollider meshCol;
 
     Vector3 startScale;
 
@@ -61,7 +63,12 @@ public class MushroomCapController : MonoBehaviour
 
         if(canThrow)
         {
-            NonTargetThrow();
+            if(hasTarget) 
+            {
+                sk.transform.LookAt(target.transform);
+                StartCoroutine(TargetedThrow());
+            }
+            else NonTargetThrow();
         }
 
         if (thrown)  //Stops Player repeatedly throwing the shield.
@@ -78,7 +85,41 @@ public class MushroomCapController : MonoBehaviour
         }
         //else trail.enabled = false;
 
+        if ((Input.GetButton("Throw") && !thrown))
+        {
+            ts.FindTargets();
+            ts.FindClosestTarget();
+        }
 
+        if(Input.GetButtonUp("Throw"))
+        {
+            targets.Clear();
+        }
+
+        if (hasTarget)
+        {
+            for (int i = 0; i < ts.targetLocations.Count; i++)
+            {
+                if (!targets.Contains(ts.targetLocations[i].transform))
+                {
+                    if (targets.Count < 3)
+                    {
+                        targets.Add(ts.targetLocations[i].transform);
+                    }
+                }
+            }
+
+
+            foreach (Transform t in targets)
+            {
+                Debug.DrawLine(sk.transform.position, t.position, Color.green);
+
+                if (t.GetChild(0) != marker)
+                {
+                    marker = ObjectPoolManager.instance.CallObject("TargetMarker", t, new Vector3(t.transform.position.x, t.transform.position.y + 4.5f, t.transform.position.z - 0.5f), Quaternion.identity);
+                }
+            }
+        }
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
@@ -89,6 +130,32 @@ public class MushroomCapController : MonoBehaviour
         mushroomRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
 
         transform.parent = null;
+    }
+
+    IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
+    {
+        thrown = true;
+
+        while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
+        {
+            transform.parent = null;
+
+            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, throwForce * Time.deltaTime);
+
+            yield return null;
+        }
+
+        if (Vector3.Distance(target.transform.position, transform.position) < 0.1f)
+        {
+            if (marker != null)
+            {
+                ObjectPoolManager.instance.RecallObject(marker);
+                marker = null;
+            }
+        }
+
+        target = null;  //Once all targets are reached return Shield to Player.
+        StartCoroutine(RecallShield());
     }
 
     IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
@@ -102,7 +169,7 @@ public class MushroomCapController : MonoBehaviour
             transform.position = Vector3.Lerp(transform.position, mushroomHoldPos.position, t / lerpTime);
             transform.rotation = Quaternion.Lerp(transform.rotation, mushroomHoldPos.rotation, t / lerpTime);
 
-            //meshCol.enabled = false; //Prevents from unecessary collisions upon return.
+            meshCol.enabled = false; //Prevents from unecessary collisions upon return.
 
             yield return null;
         }
@@ -113,7 +180,7 @@ public class MushroomCapController : MonoBehaviour
         transform.localPosition = Vector3.zero;
         transform.localRotation = mushroomHoldRot;
 
-        //meshCol.enabled = true;
+        meshCol.enabled = true;
 
         thrown = false;
     }

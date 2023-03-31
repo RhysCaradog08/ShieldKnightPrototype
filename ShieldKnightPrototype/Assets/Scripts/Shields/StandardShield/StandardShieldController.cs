@@ -120,6 +120,7 @@ public class StandardShieldController : MonoBehaviour
         {
             if (hasTarget)
             {
+                sk.transform.LookAt(target.transform);
                 StartCoroutine(TargetedThrow());
 
                 /*if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.

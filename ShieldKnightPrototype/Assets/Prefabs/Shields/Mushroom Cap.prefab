@@ -212,3 +212,4 @@ MonoBehaviour:
   thrown: 0
   canThrow: 0
   hasTarget: 0
+  meshCol: {fileID: 4384803225959662623}

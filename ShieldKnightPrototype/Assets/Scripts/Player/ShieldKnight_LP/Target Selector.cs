@@ -8,7 +8,8 @@ using UnityEngine.UIElements;
 
 public class TargetSelector : MonoBehaviour
 {
-    [SerializeField]StandardShieldController shield;
+    [SerializeField] StandardShieldController shield;
+    [SerializeField] MushroomCapController mushroom;
     
     [SerializeField] Camera cam;
     public Transform player, aimTarget;
@@ -24,6 +25,7 @@ public class TargetSelector : MonoBehaviour
     private void Awake()
     {
         shield = FindObjectOfType<StandardShieldController>();
+        mushroom = FindObjectOfType<MushroomCapController>();
 
         player = GameObject.FindWithTag("Player").transform;
 
@@ -46,7 +48,15 @@ public class TargetSelector : MonoBehaviour
 
         if(closest != null)
         {
-            shield.target = closest;
+            /*if(shield.isActiveAndEnabled)
+            {
+                shield.target = closest;
+            }*/
+
+            if(mushroom.isActiveAndEnabled)
+            {
+                mushroom.target = closest;
+            }
         }
     }
 
