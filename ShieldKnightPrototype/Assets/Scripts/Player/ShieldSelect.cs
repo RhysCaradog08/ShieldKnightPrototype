@@ -74,8 +74,6 @@ public class ShieldSelect : MonoBehaviour
         int i = 0;
         foreach (Transform shield in transform)
         {
-            Debug.Log(shield.name);
-
             if (i == selectedShield)
                 shield.gameObject.SetActive(true);
             else
