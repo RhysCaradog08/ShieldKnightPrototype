@@ -76,6 +76,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: {fileID: 0}
+  mushroom: {fileID: 0}
   cc: {fileID: 0}
   speed: 0
   moveSpeed: 25
@@ -97,6 +98,7 @@ MonoBehaviour:
   canPressSpace: 0
   buttonHeld: 0
   hasShield: 0
+  hasMushroom: 0
   isThrowing: 0
   isBarging: 0
   isGuarding: 0
@@ -118,9 +120,9 @@ MonoBehaviour:
   currentState: 
   idle: ShieldKnight_Idle
   move: ShieldKnight_Move
-  throwing: ShieldKnight_Throw
   jump: ShieldKnight_Jump
   fall: ShieldKnight_Fall
+  throwing: ShieldKnight_Throw
   barge: ShieldKnight_Barge
   guard: ShieldKnight_Guard
   parry: ShieldKnight_Parry
@@ -138,6 +140,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shield: {fileID: 0}
+  mushroom: {fileID: 0}
   cam: {fileID: 0}
   player: {fileID: 0}
   aimTarget: {fileID: 0}
@@ -286,7 +289,7 @@ PrefabInstance:
     - target: {fileID: 3344014965593987001, guid: 8017c063556dd704ca943d1aad4ba551,
         type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -330,12 +333,12 @@ PrefabInstance:
     - target: {fileID: 2635590278882357300, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 2635590278882357300, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 2635590278882357300, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
         type: 3}
@@ -350,7 +353,7 @@ PrefabInstance:
     - target: {fileID: 2635590278882357300, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
+      value: -90
       objectReference: {fileID: 0}
     - target: {fileID: 2635590278882357300, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
         type: 3}
@@ -447,7 +450,8 @@ PrefabInstance:
       value: ShieldKnight_LPModel
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 6039662099947689016, guid: 454767837f1768741b7e23fe0196f47d, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2368209596398296042, guid: 454767837f1768741b7e23fe0196f47d,
         type: 3}

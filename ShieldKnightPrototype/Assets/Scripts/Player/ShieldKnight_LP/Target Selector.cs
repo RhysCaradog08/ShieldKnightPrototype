@@ -48,10 +48,10 @@ public class TargetSelector : MonoBehaviour
 
         if(closest != null)
         {
-            /*if(shield.isActiveAndEnabled)
+            if(shield.isActiveAndEnabled)
             {
                 shield.target = closest;
-            }*/
+            }
 
             if(mushroom.isActiveAndEnabled)
             {
