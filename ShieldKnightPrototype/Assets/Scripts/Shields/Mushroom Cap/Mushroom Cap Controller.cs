@@ -118,6 +118,14 @@ public class MushroomCapController : MonoBehaviour
                 {
                     marker = ObjectPoolManager.instance.CallObject("TargetMarker", t, new Vector3(t.transform.position.x, t.transform.position.y + 4.5f, t.transform.position.z - 0.5f), Quaternion.identity);
                 }
+
+                if(!targets.Contains(t))
+                {
+                    if(t.GetChild(0) == marker)
+                    {
+                        ObjectPoolManager.instance.RecallObject(marker);
+                    }
+                }
             }
         }
     }
