@@ -109,21 +109,15 @@ public class MushroomCapController : MonoBehaviour
                 }
             }
 
-
             foreach (Transform t in targets)
             {
                 Debug.DrawLine(sk.transform.position, t.position, Color.green);
 
-                if (t.GetChild(0) != marker)
+                if (!t.Find("TargetMarker"))
                 {
-                    marker = ObjectPoolManager.instance.CallObject("TargetMarker", t, new Vector3(t.transform.position.x, t.transform.position.y + 4.5f, t.transform.position.z - 0.5f), Quaternion.identity);
-                }
-
-                if(!targets.Contains(t))
-                {
-                    if(t.GetChild(0) == marker)
+                    if (!marker)
                     {
-                        ObjectPoolManager.instance.RecallObject(marker);
+                        marker = ObjectPoolManager.instance.CallObject("TargetMarker", t, new Vector3(t.transform.position.x, t.transform.position.y + 4.5f, t.transform.position.z - 0.5f), Quaternion.identity);
                     }
                 }
             }
