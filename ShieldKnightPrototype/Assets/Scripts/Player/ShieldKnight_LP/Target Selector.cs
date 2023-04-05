@@ -52,11 +52,6 @@ public class TargetSelector : MonoBehaviour
             {
                 shield.target = closest;
             }
-
-            if(mushroom.isActiveAndEnabled)
-            {
-                mushroom.target = closest;
-            }
         }
     }
 

@@ -7,6 +7,7 @@ public class MushroomCapController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
     TargetSelector ts;
+    ShieldSelect select;
 
     public LayerMask ignoreLayer;
 
@@ -15,7 +16,7 @@ public class MushroomCapController : MonoBehaviour
 
     [Header("Throw")]
     public float throwForce, dist;
-    public GameObject target;
+    public Transform target;
     [SerializeField] List<Transform> targets = new List<Transform>();
     TrailRenderer trail;
     public bool thrown, canThrow, hasTarget;
@@ -32,6 +33,7 @@ public class MushroomCapController : MonoBehaviour
     {
         sk = FindObjectOfType<ShieldKnightController>();
         ts = FindObjectOfType<TargetSelector>();
+        select = FindObjectOfType<ShieldSelect>();
 
         mushroomRB = GetComponentInChildren<Rigidbody>();
     }
@@ -73,31 +75,30 @@ public class MushroomCapController : MonoBehaviour
 
         if (thrown)  //Stops Player repeatedly throwing the shield.
         {
+            select.canChange = false;
+
             //trail.enabled = true;
             canThrow = false;
 
             dist = Vector3.Distance(transform.position, sk.transform.position);
 
-            if (dist > 50)
+            if (dist > 50 && !target)
             {
                 StartCoroutine(RecallShield());
             }
+
         }
-        //else trail.enabled = false;
+        else
+        {
+            select.canChange = true;
+            dist = 0;
+            //trail.enabled = false;
+        }
 
         if ((Input.GetButton("Throw") && !thrown))
         {
             ts.FindTargets();
-            ts.FindClosestTarget();
-        }
 
-        if(Input.GetButtonUp("Throw"))
-        {
-            targets.Clear();
-        }
-
-        if (hasTarget)
-        {
             for (int i = 0; i < ts.targetLocations.Count; i++)
             {
                 if (!targets.Contains(ts.targetLocations[i].transform))
@@ -109,19 +110,41 @@ public class MushroomCapController : MonoBehaviour
                 }
             }
 
-            foreach (Transform t in targets)
+            if (targets.Count > 0)
             {
-                Debug.DrawLine(sk.transform.position, t.position, Color.green);
+                SortTargetsByDistance();
 
-                if (!t.Find("TargetMarker"))
+                target = targets[0];
+
+                /*for (int i = 0; i < targets.Count; i++)
                 {
-                    if (!marker)
-                    {
-                        marker = ObjectPoolManager.instance.CallObject("TargetMarker", t, new Vector3(t.transform.position.x, t.transform.position.y + 4.5f, t.transform.position.z - 0.5f), Quaternion.identity);
-                    }
-                }
+                    Debug.DrawLine(sk.transform.position, targets[i].position, Color.green);
+
+                    SortTargetsByDistance();
+
+                    target = targets[i];
+                }*/
+
             }
         }
+
+        if(Input.GetButtonUp("Throw"))
+        {
+            //targets.Clear();
+        }
+
+       
+
+    }
+
+    void SortTargetsByDistance()
+    {
+        targets.Sort(delegate (Transform a, Transform b) //Sorts targets by distance between player and object transforms.
+        {
+            return Vector3.Distance(transform.position, a.position)///////
+            .CompareTo(
+              Vector3.Distance(transform.position, b.position));
+        });
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
@@ -138,25 +161,20 @@ public class MushroomCapController : MonoBehaviour
     {
         thrown = true;
 
-        while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
+        foreach (Transform nextTarget in targets)
         {
-            transform.parent = null;
-
-            transform.position = Vector3.MoveTowards(transform.position, target.transform.position, throwForce * Time.deltaTime);
-
-            yield return null;
-        }
-
-        if (Vector3.Distance(target.transform.position, transform.position) < 0.1f)
-        {
-            if (marker != null)
+            while(transform.position != nextTarget.position)
             {
-                ObjectPoolManager.instance.RecallObject(marker);
-                marker = null;
+                transform.parent = null;
+
+                transform.position = Vector3.MoveTowards(transform.position, nextTarget.position, throwForce * Time.deltaTime);
+
+                yield return null;  
             }
         }
 
         target = null;  //Once all targets are reached return Shield to Player.
+        targets.Clear();
         StartCoroutine(RecallShield());
     }
 
