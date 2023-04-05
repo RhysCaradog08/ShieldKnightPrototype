@@ -115,25 +115,8 @@ public class MushroomCapController : MonoBehaviour
                 SortTargetsByDistance();
 
                 target = targets[0];
-
-                /*for (int i = 0; i < targets.Count; i++)
-                {
-                    Debug.DrawLine(sk.transform.position, targets[i].position, Color.green);
-
-                    SortTargetsByDistance();
-
-                    target = targets[i];
-                }*/
-
             }
-        }
-
-        if(Input.GetButtonUp("Throw"))
-        {
-            //targets.Clear();
-        }
-
-       
+        }       
 
     }
 
