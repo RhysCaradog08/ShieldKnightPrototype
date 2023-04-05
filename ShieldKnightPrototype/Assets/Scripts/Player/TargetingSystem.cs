@@ -437,7 +437,7 @@ public class TargetingSystem : MonoBehaviour
                 {
                     foreach (GameObject target in visibleTargets)
                     {
-                        markerCheck = target.GetComponent<MarkerCheck>();///////
+                        markerCheck = target.GetComponent<MarkerCheck>();
                         markerCheck.RemoveMarker();
                     }
 

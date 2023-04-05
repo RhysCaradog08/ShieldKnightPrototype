@@ -13,6 +13,7 @@ public class MushroomCapController : MonoBehaviour
 
     [SerializeField] Rigidbody mushroomRB;
     [SerializeField] GameObject marker;
+    [SerializeField] GameObject hitStars;
 
     [Header("Throw")]
     public float throwForce, dist;
@@ -153,6 +154,11 @@ public class MushroomCapController : MonoBehaviour
                 transform.position = Vector3.MoveTowards(transform.position, nextTarget.position, throwForce * Time.deltaTime);
 
                 yield return null;  
+            }
+
+            if(Vector3.Distance(nextTarget.position, transform.position) <0.1f)
+            {
+                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
             }
         }
 
