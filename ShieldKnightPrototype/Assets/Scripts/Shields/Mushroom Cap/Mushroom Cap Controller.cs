@@ -8,11 +8,13 @@ public class MushroomCapController : MonoBehaviour
     [SerializeField] ShieldKnightController sk;
     TargetSelector ts;
     ShieldSelect select;
+    MarkerCheck markerCheck;
+
+    Camera cam;
 
     public LayerMask ignoreLayer;
 
     [SerializeField] Rigidbody mushroomRB;
-    [SerializeField] GameObject marker;
     [SerializeField] GameObject hitStars;
 
     [Header("Throw")]
@@ -35,6 +37,8 @@ public class MushroomCapController : MonoBehaviour
         sk = FindObjectOfType<ShieldKnightController>();
         ts = FindObjectOfType<TargetSelector>();
         select = FindObjectOfType<ShieldSelect>();
+
+        cam = Camera.main;
 
         mushroomRB = GetComponentInChildren<Rigidbody>();
     }
@@ -99,14 +103,28 @@ public class MushroomCapController : MonoBehaviour
         if ((Input.GetButton("Throw") && !thrown))
         {
             ts.FindTargets();
+            Transform targetToAdd;
 
             for (int i = 0; i < ts.targetLocations.Count; i++)
             {
-                if (!targets.Contains(ts.targetLocations[i].transform))
+                targetToAdd = ts.targetLocations[i].transform;
+
+                if (!targets.Contains(targetToAdd))
                 {
                     if (targets.Count < 3)
                     {
-                        targets.Add(ts.targetLocations[i].transform);
+                        targets.Add(targetToAdd);
+                    }
+                    else if(targets.Count == 3 && !targets.Contains(targetToAdd))
+                    {
+                        if (targets[2].GetComponent<MarkerCheck>())
+                        {
+                            markerCheck = targets[2].GetComponent<MarkerCheck>();
+                            markerCheck.RemoveMarker();
+                        }
+                        targets.Remove(targets[2]);
+
+                        targets.Add(targetToAdd);
                     }
                 }
             }
@@ -116,6 +134,21 @@ public class MushroomCapController : MonoBehaviour
                 SortTargetsByDistance();
 
                 target = targets[0];
+
+                foreach (Transform t in targets)
+                {
+                    if(t.GetComponent<MarkerCheck>() == null)
+                    {
+                        t.gameObject.AddComponent<MarkerCheck>();
+                    }
+
+                    markerCheck = t.GetComponent<MarkerCheck>();
+
+                    if (markerCheck.canAddMarker == true)
+                    {
+                        markerCheck.AddMarker();
+                    }
+                }
             }
         }       
 
@@ -159,6 +192,13 @@ public class MushroomCapController : MonoBehaviour
             if(Vector3.Distance(nextTarget.position, transform.position) <0.1f)
             {
                 hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
+
+                if(nextTarget.GetComponent<MarkerCheck>())
+                {
+                    Debug.Log("Remove Marker");
+                    markerCheck = nextTarget.GetComponent<MarkerCheck>();
+                    markerCheck.RemoveMarker();
+                }
             }
         }
 
