@@ -15,6 +15,7 @@ public class MushroomCapController : MonoBehaviour
     public LayerMask ignoreLayer;
 
     [SerializeField] Rigidbody mushroomRB;
+    [SerializeField] GameObject sporeTrail;
     [SerializeField] GameObject hitStars;
 
     [Header("Throw")]
@@ -82,7 +83,7 @@ public class MushroomCapController : MonoBehaviour
         {
             select.canChange = false;
 
-            //trail.enabled = true;
+            sporeTrail.SetActive(true);
             canThrow = false;
 
             dist = Vector3.Distance(transform.position, sk.transform.position);
@@ -97,7 +98,7 @@ public class MushroomCapController : MonoBehaviour
         {
             select.canChange = true;
             dist = 0;
-            //trail.enabled = false;
+            sporeTrail.SetActive(false);
         }
 
         if ((Input.GetButton("Throw") && !thrown))
