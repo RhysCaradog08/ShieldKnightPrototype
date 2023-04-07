@@ -1705,7 +1705,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550356148}
-  m_LocalRotation: {x: 0.028300779, y: 0.0000000010749681, z: -3.0434627e-11, w: 0.99959946}
+  m_LocalRotation: {x: 0.028300777, y: -0.0000000010749681, z: 3.0434624e-11, w: 0.99959946}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2295,7 +2295,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291376261}
-  m_LocalRotation: {x: 0.0645925, y: -1.323915e-15, z: 5.7975816e-16, w: 0.99791175}
+  m_LocalRotation: {x: 0.06459249, y: 0.00000003065538, z: -0.0000000019842508, w: 0.99791175}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3012,6 +3012,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4407074570003984531, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4500494876783943963, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
+        type: 3}
+      propertyPath: m_RenderAlignment
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6341668745224081244, guid: d9b0067a7fed93a418035b0fb9a1e0cd,
         type: 3}
       propertyPath: m_Name
@@ -3199,6 +3209,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Spore Trail
+      objectReference: {fileID: 0}
+    - target: {fileID: 8275863079050534046, guid: dc17779246fb3a748b3410a07d315666,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 6550198302169974685, guid: dc17779246fb3a748b3410a07d315666, type: 3}
