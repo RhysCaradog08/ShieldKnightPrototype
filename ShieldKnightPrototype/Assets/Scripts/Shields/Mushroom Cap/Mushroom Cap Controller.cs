@@ -6,6 +6,7 @@ using UnityEngine;
 public class MushroomCapController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
+    [SerializeField] MushroomCapAnimationController mcAnim;
     TargetSelector ts;
     ShieldSelect select;
     MarkerCheck markerCheck;
@@ -15,11 +16,12 @@ public class MushroomCapController : MonoBehaviour
     public LayerMask ignoreLayer;
 
     [SerializeField] Rigidbody mushroomRB;
-    [SerializeField] GameObject sporeTrail;
+    //[SerializeField] GameObject sporeTrail;
     [SerializeField] GameObject hitStars;
 
     [Header("Throw")]
     public float throwForce, dist;
+    [SerializeField] float hitTime;
     public Transform target;
     [SerializeField] List<Transform> targets = new List<Transform>();
     TrailRenderer trail;
@@ -31,11 +33,14 @@ public class MushroomCapController : MonoBehaviour
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
+    [Header("Bounce")]
+
     Vector3 startScale;
 
     private void Awake()
     {
         sk = FindObjectOfType<ShieldKnightController>();
+        mcAnim = FindObjectOfType<MushroomCapAnimationController>();
         ts = FindObjectOfType<TargetSelector>();
         select = FindObjectOfType<ShieldSelect>();
 
@@ -48,6 +53,7 @@ public class MushroomCapController : MonoBehaviour
     void Start()
     {
         //Throw
+        hitTime = 0;
         thrown = false;
         target = null;
 
@@ -62,6 +68,17 @@ public class MushroomCapController : MonoBehaviour
     void Update()
     {
         transform.localScale = startScale;
+
+        if(hitTime > 0) 
+        {
+            hitTime -= Time.deltaTime;
+            mcAnim.ChangeAnimationState(mcAnim.hit);
+        }
+        else if(hitTime <= 0)
+        {
+            hitTime = 0;
+            mcAnim.ChangeAnimationState(mcAnim.idle);
+        }
 
         if (target != null)
         {
@@ -83,7 +100,7 @@ public class MushroomCapController : MonoBehaviour
         {
             select.canChange = false;
 
-            sporeTrail.SetActive(true);
+            //sporeTrail.SetActive(true);
             canThrow = false;
 
             dist = Vector3.Distance(transform.position, sk.transform.position);
@@ -98,7 +115,7 @@ public class MushroomCapController : MonoBehaviour
         {
             select.canChange = true;
             dist = 0;
-            sporeTrail.SetActive(false);
+            //sporeTrail.SetActive(false);
         }
 
         if ((Input.GetButton("Throw") && !thrown))
@@ -192,6 +209,8 @@ public class MushroomCapController : MonoBehaviour
 
             if(Vector3.Distance(nextTarget.position, transform.position) <0.1f)
             {
+                hitTime = 0.1f;
+
                 hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
 
                 if(nextTarget.GetComponent<MarkerCheck>())
@@ -237,9 +256,12 @@ public class MushroomCapController : MonoBehaviour
 
     private void OnCollisionEnter(Collision col)
     {
+
         if(col.gameObject.tag != "Player")
         {
             Debug.Log(col.gameObject.name);
+            hitTime = 0.1F;
+
             StartCoroutine(RecallShield());
         }
     }
