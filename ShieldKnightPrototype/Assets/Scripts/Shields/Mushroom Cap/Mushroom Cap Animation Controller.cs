@@ -10,6 +10,7 @@ public class MushroomCapAnimationController : MonoBehaviour
     //Animation States
     public string idle = "MushroomCap_Idle";
     public string hit = "MushroomCap_Hit";
+    public string guard = "MushroomCap_Guard";
     public string slam = "MushroomCap_Slam";
     public string bounce = "MushroomCap_Bounce";
 

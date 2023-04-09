@@ -14,7 +14,7 @@ public class Turret : MonoBehaviour
     public float shotForce;
     float shotDelay;
 
-    float range = 20f;
+    public float range;
 
     GameObject cannonBall;
 

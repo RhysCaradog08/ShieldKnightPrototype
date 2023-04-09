@@ -31,9 +31,6 @@ public class ShieldKnightController : MonoBehaviour
     float buttonHeldTime;
     public bool buttonHeld;
 
-    [Header("Shield Booleans")]
-    public bool hasShield, hasMushroom;
-
     [Header("Action Booleans")]
     public bool isThrowing, isBarging, isGuarding, isParrying, isSlamming;
 
@@ -75,18 +72,6 @@ public class ShieldKnightController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if (shield.gameObject.activeInHierarchy)
-        {
-            hasShield = true;
-        }
-        else hasShield = false;*/
-
-        if(mushroom.gameObject.activeInHierarchy)
-        {
-            hasMushroom = true;
-        }
-        else hasMushroom = false;
-
         if(stopTime > 0) 
         {
             stopTime -= Time.deltaTime;
@@ -230,7 +215,6 @@ public class ShieldKnightController : MonoBehaviour
             if (!buttonHeld)//If button is released without being held.
             {
                 stopTime = 0.5f;
-                isParrying = true;
             }
             buttonHeld = false;
         }
@@ -242,12 +226,6 @@ public class ShieldKnightController : MonoBehaviour
                 buttonHeld = true;
             }
         }
-
-        /*if (Input.GetButtonDown("Guard") && !cc.isGrounded)
-        {
-            Debug.LogWarning("SLAM!");
-            isSlamming = true;
-        }*/
     }
 
     void Jump()

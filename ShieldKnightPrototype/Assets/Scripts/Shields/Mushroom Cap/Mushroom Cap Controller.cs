@@ -20,6 +20,7 @@ public class MushroomCapController : MonoBehaviour
     [SerializeField] GameObject hitStars;
 
     [Header("Throw")]
+    Vector3 startScale;
     public float throwForce, dist;
     [SerializeField] float hitTime;
     public Transform target;
@@ -33,9 +34,15 @@ public class MushroomCapController : MonoBehaviour
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
-    [Header("Bounce")]
+    [Header("Slam")]
+    public float slamForce,  slamRadius, damageDelay;
+    GameObject slamStars;
+    Transform squashedObject;
+    [SerializeField] List<Transform> slamObjects = new List<Transform>();
+    bool showSlamVFX;
 
-    Vector3 startScale;
+    [Header("Bounce")]
+    public float bounceHeight, bounceTime;
 
     private void Awake()
     {
@@ -69,15 +76,24 @@ public class MushroomCapController : MonoBehaviour
     {
         transform.localScale = startScale;
 
-        if(hitTime > 0) 
+        if (hitTime > 0)
         {
             hitTime -= Time.deltaTime;
             mcAnim.ChangeAnimationState(mcAnim.hit);
         }
-        else if(hitTime <= 0)
+        else if (hitTime <= 0)
         {
             hitTime = 0;
-            mcAnim.ChangeAnimationState(mcAnim.idle);
+        }
+
+        if(bounceTime > 0)
+        {
+            bounceTime -= Time.deltaTime;
+            mcAnim.ChangeAnimationState(mcAnim.bounce);
+        }
+        else if (bounceTime <= 0)
+        {
+            bounceTime = 0;
         }
 
         if (target != null)
@@ -86,9 +102,14 @@ public class MushroomCapController : MonoBehaviour
         }
         else hasTarget = false;
 
-        if(canThrow)
+        if(hitTime <= 0 && bounceTime <= 0 && !sk.isGuarding)
         {
-            if(hasTarget) 
+            mcAnim.ChangeAnimationState(mcAnim.idle);
+        }
+
+        if (canThrow)
+        {
+            if (hasTarget)
             {
                 sk.transform.LookAt(target.transform);
                 StartCoroutine(TargetedThrow());
@@ -133,7 +154,7 @@ public class MushroomCapController : MonoBehaviour
                     {
                         targets.Add(targetToAdd);
                     }
-                    else if(targets.Count == 3 && !targets.Contains(targetToAdd))
+                    else if (targets.Count == 3 && !targets.Contains(targetToAdd))
                     {
                         if (targets[2].GetComponent<MarkerCheck>())
                         {
@@ -155,7 +176,7 @@ public class MushroomCapController : MonoBehaviour
 
                 foreach (Transform t in targets)
                 {
-                    if(t.GetComponent<MarkerCheck>() == null)
+                    if (t.GetComponent<MarkerCheck>() == null)
                     {
                         t.gameObject.AddComponent<MarkerCheck>();
                     }
@@ -168,101 +189,185 @@ public class MushroomCapController : MonoBehaviour
                     }
                 }
             }
-        }       
+        }
 
-    }
-
-    void SortTargetsByDistance()
-    {
-        targets.Sort(delegate (Transform a, Transform b) //Sorts targets by distance between player and object transforms.
+        if (sk.isSlamming)
         {
-            return Vector3.Distance(transform.position, a.position)///////
-            .CompareTo(
-              Vector3.Distance(transform.position, b.position));
-        });
-    }
+            sk.velocity.y = -slamForce;
 
-    void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
-    {
-        thrown = true;
+            RaycastHit hit;
 
-        mushroomRB.isKinematic = false;
-        mushroomRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
-
-        transform.parent = null;
-    }
-
-    IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
-    {
-        thrown = true;
-
-        foreach (Transform nextTarget in targets)
-        {
-            while(transform.position != nextTarget.position)
+            if (Physics.Raycast(transform.position, -sk.transform.up, out hit))
             {
-                transform.parent = null;
+                float distToGround = hit.distance;
 
-                transform.position = Vector3.MoveTowards(transform.position, nextTarget.position, throwForce * Time.deltaTime);
+                Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
+                //Debug.Log("Distance to Ground: " + distToGround);
 
-                yield return null;  
-            }
-
-            if(Vector3.Distance(nextTarget.position, transform.position) <0.1f)
-            {
-                hitTime = 0.1f;
-
-                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
-
-                if(nextTarget.GetComponent<MarkerCheck>())
+                if (distToGround < 3)
                 {
-                    Debug.Log("Remove Marker");
-                    markerCheck = nextTarget.GetComponent<MarkerCheck>();
-                    markerCheck.RemoveMarker();
+                    Bounce();
+                    /*Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.green);
+
+                    if (!showSlamVFX)
+                    {
+                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, hit.point, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                        showSlamVFX = true;
+                    }
+
+                    Debug.Log("Hit Ground");
+                    SlamImpact();*/
                 }
             }
         }
 
-        target = null;  //Once all targets are reached return Shield to Player.
-        targets.Clear();
-        StartCoroutine(RecallShield());
+        if (sk.cc.isGrounded && sk.buttonHeld)
+        {
+            if (!thrown && !sk.isSlamming && hitTime <= 0)
+            {
+                sk.isGuarding = true;
+            }
+        }
+        else sk.isGuarding = false;
+
+        if (sk.isGuarding)
+        {
+            mcAnim.ChangeAnimationState(mcAnim.guard);
+        }
     }
 
-    IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
-    {
-        float t = 0f;
-        while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
+        void SortTargetsByDistance()
         {
-            mushroomRB.isKinematic = false;
-
-            t += Time.deltaTime;
-            transform.position = Vector3.Lerp(transform.position, mushroomHoldPos.position, t / lerpTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, mushroomHoldPos.rotation, t / lerpTime);
-
-            meshCol.enabled = false; //Prevents from unecessary collisions upon return.
-
-            yield return null;
+            targets.Sort(delegate (Transform a, Transform b) //Sorts targets by distance between player and object transforms.
+            {
+                return Vector3.Distance(transform.position, a.position)///////
+                .CompareTo(
+                  Vector3.Distance(transform.position, b.position));
+            });
         }
 
-        mushroomRB.isKinematic = true;
+        void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
+        {
+            thrown = true;
 
-        transform.parent = mushroomHoldPos;  //Sets Shields position and parent to stay attached to Player.
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = mushroomHoldRot;
+            mushroomRB.isKinematic = false;
+            mushroomRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
 
-        meshCol.enabled = true;
+            transform.parent = null;
+        }
 
-        thrown = false;
+        IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
+        {
+            thrown = true;
+
+            foreach (Transform nextTarget in targets)
+            {
+                while (transform.position != nextTarget.position)
+                {
+                    transform.parent = null;
+
+                    transform.position = Vector3.MoveTowards(transform.position, nextTarget.position, throwForce * Time.deltaTime);
+
+                    yield return null;
+                }
+
+                if (Vector3.Distance(nextTarget.position, transform.position) < 0.1f)
+                {
+                    hitTime = 0.2f;
+
+                    hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
+
+                    if (nextTarget.GetComponent<MarkerCheck>())
+                    {
+                        Debug.Log("Remove Marker");
+                        markerCheck = nextTarget.GetComponent<MarkerCheck>();
+                        markerCheck.RemoveMarker();
+                    }
+                }
+            }
+
+            target = null;  //Once all targets are reached return Shield to Player.
+            targets.Clear();
+            StartCoroutine(RecallShield());
+        }
+
+        IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
+        {
+            float t = 0f;
+            while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
+            {
+                mushroomRB.isKinematic = false;
+
+                t += Time.deltaTime;
+                transform.position = Vector3.Lerp(transform.position, mushroomHoldPos.position, t / lerpTime);
+                transform.rotation = Quaternion.Lerp(transform.rotation, mushroomHoldPos.rotation, t / lerpTime);
+
+                meshCol.enabled = false; //Prevents from unecessary collisions upon return.
+
+                yield return null;
+            }
+
+            mushroomRB.isKinematic = true;
+
+            transform.parent = mushroomHoldPos;  //Sets Shields position and parent to stay attached to Player.
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = mushroomHoldRot;
+
+            meshCol.enabled = true;
+
+            thrown = false;
+        }
+
+    void SlamImpact()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
+
+        foreach (Collider col in colliders)
+        {
+            if (col.gameObject.layer == 15)
+            {
+                if (!slamObjects.Contains(col.transform))
+                {
+                    slamObjects.Add(col.transform.GetChild(0));
+                }
+
+                Vector3 squashedSize = new Vector3(col.transform.GetChild(0).localScale.x, 0.75f, col.transform.localScale.z);
+                col.transform.GetChild(0).localScale = squashedSize;
+
+                /*EnemyHealth enemy = col.GetComponent<EnemyHealth>();
+
+                if (enemy != null)
+                {
+                    if (damageDelay <= 0)
+                    {
+                        enemy.TakeDamage(10);
+                    }
+                }*/
+            }
+        }
     }
 
-    private void OnCollisionEnter(Collision col)
+    void Bounce()
     {
+        Debug.Log("Bounce");
+        sk.isSlamming = false;
+        bounceTime = 0.2f;
 
-        if(col.gameObject.tag != "Player")
+        sk.velocity.y = bounceHeight;
+    }
+
+
+    void OnCollisionEnter(Collision col)
+    {
+        if (col.gameObject.tag != "Player")
         {
             Debug.Log(col.gameObject.name);
-            hitTime = 0.1F;
+            hitTime = 0.1f;
 
-            StartCoroutine(RecallShield());
+            if (thrown)
+            {
+                StartCoroutine(RecallShield());
+            }
         }
     }
 }

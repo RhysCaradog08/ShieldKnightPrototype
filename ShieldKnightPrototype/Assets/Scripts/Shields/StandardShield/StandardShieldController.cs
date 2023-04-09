@@ -219,6 +219,11 @@ public class StandardShieldController : MonoBehaviour
         }
         else sk.isGuarding = false;
 
+        if(sk.stopTime > 0)
+        {
+            sk.isParrying = true;
+        }
+
         if (hasTarget)
         {
             if (!marker)
