@@ -146,6 +146,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shield Knight
       objectReference: {fileID: 0}
+    - target: {fileID: 2385585061553561584, guid: 8b114dd01a94cf7469eec79ee6e8e023,
+        type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2895503755227909651, guid: 8b114dd01a94cf7469eec79ee6e8e023,
+        type: 3}
+      propertyPath: ignoreLayer.m_Bits
+      value: 200
+      objectReference: {fileID: 0}
     - target: {fileID: 4608288648347156761, guid: 8b114dd01a94cf7469eec79ee6e8e023,
         type: 3}
       propertyPath: m_RootOrder
@@ -1111,7 +1121,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550356148}
-  m_LocalRotation: {x: 0.028300777, y: -0.0000000010749681, z: 3.0434624e-11, w: 0.99959946}
+  m_LocalRotation: {x: 0.028300779, y: 0.0000000010749681, z: -3.0434627e-11, w: 0.99959946}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1290,7 +1300,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024900585}
-  m_LocalRotation: {x: 0.046430312, y: 0.000000017321582, z: -8.051148e-10, w: 0.9989216}
+  m_LocalRotation: {x: 0.046430312, y: -0.000000017321579, z: 8.0511464e-10, w: 0.9989216}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1556,7 +1566,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200537885}
-  m_LocalRotation: {x: 0.04643034, y: 0.00000003464316, z: -0.0000000016102304, w: 0.9989215}
+  m_LocalRotation: {x: 0.04643034, y: -0.00000003464316, z: 0.0000000016102304, w: 0.9989215}
   m_LocalPosition: {x: 0, y: 3.25, z: -95.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1701,7 +1711,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291376261}
-  m_LocalRotation: {x: 0.06459249, y: 0.000000030655375, z: -0.0000000019842505, w: 0.99791175}
+  m_LocalRotation: {x: 0.06459249, y: 0.00000003065538, z: -0.0000000019842508, w: 0.99791175}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

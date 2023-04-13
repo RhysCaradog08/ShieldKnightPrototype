@@ -168,12 +168,13 @@ public class StandardShieldController : MonoBehaviour
 
             RaycastHit hit;
 
-            if (Physics.Raycast(transform.position, -sk.transform.up, out hit))
+            if (Physics.Raycast(transform.position, -sk.transform.up, out hit, Mathf.Infinity, ignoreLayer))
             {
+                Debug.Log(hit.transform.name);
                 float distToGround = hit.distance;
 
                 Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
-                Debug.Log("Distance to Ground: " + distToGround);
+                //Debug.Log("Distance to Ground: " + distToGround);
 
                 if (distToGround < 3)
                 {
@@ -219,7 +220,7 @@ public class StandardShieldController : MonoBehaviour
         }
         else sk.isGuarding = false;
 
-        if(sk.stopTime > 0)
+        if(sk.stopTime > 0 && !sk.isThrowing)
         {
             sk.isParrying = true;
         }

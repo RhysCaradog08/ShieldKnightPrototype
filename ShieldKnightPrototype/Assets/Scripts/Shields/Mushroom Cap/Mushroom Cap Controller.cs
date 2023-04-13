@@ -193,6 +193,7 @@ public class MushroomCapController : MonoBehaviour
 
         if (sk.isSlamming)
         {
+            mcAnim.ChangeAnimationState(mcAnim.slam);
             sk.velocity.y = -slamForce;
 
             RaycastHit hit;
@@ -202,7 +203,6 @@ public class MushroomCapController : MonoBehaviour
                 float distToGround = hit.distance;
 
                 Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
-                //Debug.Log("Distance to Ground: " + distToGround);
 
                 if (distToGround < 3)
                 {
