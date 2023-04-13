@@ -193,10 +193,10 @@ public class ShieldKnightController : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Barge"))
+        /*if (Input.GetButtonDown("Barge"))
         {
             isBarging = true;
-        }
+        }*/
 
         if (Input.GetButtonDown("Guard")) //&& cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
         {

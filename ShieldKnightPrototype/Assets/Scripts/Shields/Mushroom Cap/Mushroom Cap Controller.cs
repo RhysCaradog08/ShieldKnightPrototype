@@ -1,6 +1,7 @@
 using Basics.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UI;
 using UnityEngine;
 
 public class MushroomCapController : MonoBehaviour
@@ -44,6 +45,10 @@ public class MushroomCapController : MonoBehaviour
     [Header("Bounce")]
     public float bounceHeight, bounceTime;
 
+    [Header("Bounce Pad")]
+    [SerializeField] float bouncePadRange, bounceDelay, bouncePadHeight;
+    public bool isBouncePad;
+
     private void Awake()
     {
         sk = FindObjectOfType<ShieldKnightController>();
@@ -63,18 +68,23 @@ public class MushroomCapController : MonoBehaviour
         hitTime = 0;
         thrown = false;
         target = null;
+        startScale = transform.localScale;
 
         //Recall
         mushroomHoldPos = transform.parent.transform;
         mushroomHoldRot = Quaternion.Euler(-90, 0, 0);
 
-        startScale = transform.localScale;
+        //Bounce Pad
+        isBouncePad = false;       
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.localScale = startScale;
+        if (!isBouncePad)
+        {
+            transform.localScale = startScale;
+        }
 
         if (hitTime > 0)
         {
@@ -94,6 +104,15 @@ public class MushroomCapController : MonoBehaviour
         else if (bounceTime <= 0)
         {
             bounceTime = 0;
+        }
+
+        if(bounceDelay > 0) 
+        {
+            bounceDelay -= Time.deltaTime;  
+        }
+        else if (bounceDelay <= 0)
+        {
+            bounceDelay = 0;
         }
 
         if (target != null)
@@ -191,6 +210,37 @@ public class MushroomCapController : MonoBehaviour
             }
         }
 
+        if (Input.GetButtonUp("Barge") && !isBouncePad)
+        {
+            if(bounceDelay <= 0)
+            {
+                transform.parent = null;
+
+                Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
+
+                transform.position = bouncePadPos;
+
+                isBouncePad = true;
+            }
+        }
+
+        if (isBouncePad)
+        {
+            BouncePad();
+            select.canChange = false;
+
+            if(Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge") || Input.GetButtonDown("Guard"))
+            {
+                isBouncePad = false;
+                bounceDelay = 1;
+                StartCoroutine(RecallShield());
+            }
+        }
+        else if (!isBouncePad)
+        {
+            select.canChange = true;
+        }
+
         if (sk.isSlamming)
         {
             mcAnim.ChangeAnimationState(mcAnim.slam);
@@ -236,87 +286,88 @@ public class MushroomCapController : MonoBehaviour
         }
     }
 
-        void SortTargetsByDistance()
+    void SortTargetsByDistance()
+    {
+        targets.Sort(delegate (Transform a, Transform b) //Sorts targets by distance between player and object transforms.
         {
-            targets.Sort(delegate (Transform a, Transform b) //Sorts targets by distance between player and object transforms.
+            return Vector3.Distance(transform.position, a.position)///////
+            .CompareTo(
+              Vector3.Distance(transform.position, b.position));
+        });
+    }
+
+    void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
+    {
+        thrown = true;
+
+        mushroomRB.isKinematic = false;
+        mushroomRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
+
+        transform.parent = null;
+    }
+
+    IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
+    {
+        thrown = true;
+
+        foreach (Transform nextTarget in targets)
+        {
+            while (transform.position != nextTarget.position)
             {
-                return Vector3.Distance(transform.position, a.position)///////
-                .CompareTo(
-                  Vector3.Distance(transform.position, b.position));
-            });
-        }
+                transform.parent = null;
 
-        void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.
-        {
-            thrown = true;
-
-            mushroomRB.isKinematic = false;
-            mushroomRB.AddForce(sk.transform.forward * throwForce, ForceMode.Impulse);
-
-            transform.parent = null;
-        }
-
-        IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
-        {
-            thrown = true;
-
-            foreach (Transform nextTarget in targets)
-            {
-                while (transform.position != nextTarget.position)
-                {
-                    transform.parent = null;
-
-                    transform.position = Vector3.MoveTowards(transform.position, nextTarget.position, throwForce * Time.deltaTime);
-
-                    yield return null;
-                }
-
-                if (Vector3.Distance(nextTarget.position, transform.position) < 0.1f)
-                {
-                    hitTime = 0.2f;
-
-                    hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
-
-                    if (nextTarget.GetComponent<MarkerCheck>())
-                    {
-                        Debug.Log("Remove Marker");
-                        markerCheck = nextTarget.GetComponent<MarkerCheck>();
-                        markerCheck.RemoveMarker();
-                    }
-                }
-            }
-
-            target = null;  //Once all targets are reached return Shield to Player.
-            targets.Clear();
-            StartCoroutine(RecallShield());
-        }
-
-        IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
-        {
-            float t = 0f;
-            while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
-            {
-                mushroomRB.isKinematic = false;
-
-                t += Time.deltaTime;
-                transform.position = Vector3.Lerp(transform.position, mushroomHoldPos.position, t / lerpTime);
-                transform.rotation = Quaternion.Lerp(transform.rotation, mushroomHoldPos.rotation, t / lerpTime);
-
-                meshCol.enabled = false; //Prevents from unecessary collisions upon return.
+                transform.position = Vector3.MoveTowards(transform.position, nextTarget.position, throwForce * Time.deltaTime);
 
                 yield return null;
             }
 
-            mushroomRB.isKinematic = true;
+            if (Vector3.Distance(nextTarget.position, transform.position) < 0.1f)
+            {
+                hitTime = 0.2f;
 
-            transform.parent = mushroomHoldPos;  //Sets Shields position and parent to stay attached to Player.
-            transform.localPosition = Vector3.zero;
-            transform.localRotation = mushroomHoldRot;
+                hitStars = ObjectPoolManager.instance.CallObject("HitStars", null, nextTarget.position, Quaternion.identity, 1);
 
-            meshCol.enabled = true;
-
-            thrown = false;
+                if (nextTarget.GetComponent<MarkerCheck>())
+                {
+                    Debug.Log("Remove Marker");
+                    markerCheck = nextTarget.GetComponent<MarkerCheck>();
+                    markerCheck.RemoveMarker();
+                }
+            }
         }
+
+        target = null;  //Once all targets are reached return Shield to Player.
+        targets.Clear();
+        StartCoroutine(RecallShield());
+    }
+
+    IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
+    {
+        Debug.Log("Recall");
+        float t = 0f;
+        while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
+        {
+            mushroomRB.isKinematic = false;
+
+            t += Time.deltaTime;
+            transform.position = Vector3.Lerp(transform.position, mushroomHoldPos.position, t / lerpTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, mushroomHoldPos.rotation, t / lerpTime);
+
+            meshCol.enabled = false; //Prevents from unecessary collisions upon return.
+
+            yield return null;
+        }
+
+        mushroomRB.isKinematic = true;
+
+        transform.parent = mushroomHoldPos;  //Sets Shields position and parent to stay attached to Player.
+        transform.localPosition = Vector3.zero;
+        transform.localRotation = mushroomHoldRot;
+
+        meshCol.enabled = true;
+
+        thrown = false;
+    }
 
     void SlamImpact()
     {
@@ -356,6 +407,12 @@ public class MushroomCapController : MonoBehaviour
         sk.velocity.y = bounceHeight;
     }
 
+    void BouncePad()
+    {
+        transform.position = transform.position;
+        transform.rotation = Quaternion.Euler(-90, 0, 0);
+        transform.localScale = new Vector3(3, 3, 2);
+    }
 
     void OnCollisionEnter(Collision col)
     {
@@ -367,6 +424,18 @@ public class MushroomCapController : MonoBehaviour
             if (thrown)
             {
                 StartCoroutine(RecallShield());
+            }
+        }
+
+    }
+
+    void OnTriggerEnter(Collider col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            if (isBouncePad)
+            {
+                sk.velocity.y = bouncePadHeight;
             }
         }
     }
