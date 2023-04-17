@@ -44,9 +44,10 @@ public class MushroomCapController : MonoBehaviour
 
     [Header("Bounce")]
     public float bounceHeight, bounceTime;
+    public bool isBouncing;
 
     [Header("Bounce Pad")]
-    [SerializeField] float bouncePadRange, bounceDelay, bouncePadHeight;
+    [SerializeField] float bouncePadRange, bouncePadDelay;
     public bool isBouncePad;
 
     private void Awake()
@@ -75,7 +76,8 @@ public class MushroomCapController : MonoBehaviour
         mushroomHoldRot = Quaternion.Euler(-90, 0, 0);
 
         //Bounce Pad
-        isBouncePad = false;       
+        isBouncePad = false;
+        isBouncing = true;
     }
 
     // Update is called once per frame
@@ -106,13 +108,27 @@ public class MushroomCapController : MonoBehaviour
             bounceTime = 0;
         }
 
-        if(bounceDelay > 0) 
+        if(bouncePadDelay > 0) 
         {
-            bounceDelay -= Time.deltaTime;  
+            bouncePadDelay -= Time.deltaTime;  
         }
-        else if (bounceDelay <= 0)
+        else if (bouncePadDelay <= 0)
         {
-            bounceDelay = 0;
+            bouncePadDelay = 0;
+        }
+
+        if(isBouncing && !sk.cc.isGrounded)
+        {
+            sk.canPressSpace = false;
+        }
+        
+        if(isBouncing)
+        {
+            if(sk.cc.isGrounded)
+            {
+                isBouncing = false;
+                sk.canPressSpace = true;
+            }
         }
 
         if (target != null)
@@ -126,101 +142,118 @@ public class MushroomCapController : MonoBehaviour
             mcAnim.ChangeAnimationState(mcAnim.idle);
         }
 
-        if (canThrow)
+        if (!isBouncing)
         {
-            if (hasTarget)
+            if (canThrow)
             {
-                sk.transform.LookAt(target.transform);
-                StartCoroutine(TargetedThrow());
-            }
-            else NonTargetThrow();
-        }
-
-        if (thrown)  //Stops Player repeatedly throwing the shield.
-        {
-            select.canChange = false;
-
-            //sporeTrail.SetActive(true);
-            canThrow = false;
-
-            dist = Vector3.Distance(transform.position, sk.transform.position);
-
-            if (dist > 50 && !target)
-            {
-                StartCoroutine(RecallShield());
-            }
-
-        }
-        else
-        {
-            select.canChange = true;
-            dist = 0;
-            //sporeTrail.SetActive(false);
-        }
-
-        if ((Input.GetButton("Throw") && !thrown))
-        {
-            ts.FindTargets();
-            Transform targetToAdd;
-
-            for (int i = 0; i < ts.targetLocations.Count; i++)
-            {
-                targetToAdd = ts.targetLocations[i].transform;
-
-                if (!targets.Contains(targetToAdd))
+                if (hasTarget)
                 {
-                    if (targets.Count < 3)
+                    sk.transform.LookAt(target.transform);
+                    StartCoroutine(TargetedThrow());
+                }
+                else NonTargetThrow();
+            }
+
+            if (thrown)  //Stops Player repeatedly throwing the shield.
+            {
+                select.canChange = false;
+
+                //sporeTrail.SetActive(true);
+                canThrow = false;
+
+                dist = Vector3.Distance(transform.position, sk.transform.position);
+
+                if (dist > 50 && !target)
+                {
+                    StartCoroutine(RecallShield());
+                }
+
+            }
+            else
+            {
+                select.canChange = true;
+                dist = 0;
+                //sporeTrail.SetActive(false);
+            }
+
+            if ((Input.GetButton("Throw") && !thrown))
+            {
+                ts.FindTargets();
+                Transform targetToAdd;
+
+                for (int i = 0; i < ts.targetLocations.Count; i++)
+                {
+                    targetToAdd = ts.targetLocations[i].transform;
+
+                    if (!targets.Contains(targetToAdd))
                     {
-                        targets.Add(targetToAdd);
-                    }
-                    else if (targets.Count == 3 && !targets.Contains(targetToAdd))
-                    {
-                        if (targets[2].GetComponent<MarkerCheck>())
+                        if (targets.Count < 3)
                         {
-                            markerCheck = targets[2].GetComponent<MarkerCheck>();
-                            markerCheck.RemoveMarker();
+                            targets.Add(targetToAdd);
                         }
-                        targets.Remove(targets[2]);
+                        else if (targets.Count == 3 && !targets.Contains(targetToAdd))
+                        {
+                            if (targets[2].GetComponent<MarkerCheck>())
+                            {
+                                markerCheck = targets[2].GetComponent<MarkerCheck>();
+                                markerCheck.RemoveMarker();
+                            }
+                            targets.Remove(targets[2]);
 
-                        targets.Add(targetToAdd);
+                            targets.Add(targetToAdd);
+                        }
                     }
                 }
-            }
 
-            if (targets.Count > 0)
-            {
-                SortTargetsByDistance();
-
-                target = targets[0];
-
-                foreach (Transform t in targets)
+                if (targets.Count > 0)
                 {
-                    if (t.GetComponent<MarkerCheck>() == null)
-                    {
-                        t.gameObject.AddComponent<MarkerCheck>();
-                    }
+                    SortTargetsByDistance();
 
-                    markerCheck = t.GetComponent<MarkerCheck>();
+                    target = targets[0];
 
-                    if (markerCheck.canAddMarker == true)
+                    foreach (Transform t in targets)
                     {
-                        markerCheck.AddMarker();
+                        if (t.GetComponent<MarkerCheck>() == null)
+                        {
+                            t.gameObject.AddComponent<MarkerCheck>();
+                        }
+
+                        markerCheck = t.GetComponent<MarkerCheck>();
+
+                        if (markerCheck.canAddMarker == true)
+                        {
+                            markerCheck.AddMarker();
+                        }
                     }
                 }
             }
-        }
 
-        if (Input.GetButtonUp("Barge") && !isBouncePad)
-        {
-            if(bounceDelay <= 0)
+            if (Input.GetButtonUp("Barge") && !isBouncePad)
             {
-                transform.parent = null;
+                if (bouncePadDelay <= 0)
+                {
+                    transform.parent = null;
 
-                Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
+                    Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
 
-                transform.position = bouncePadPos;
+                    transform.position = bouncePadPos;
 
-                isBouncePad = true;
+                    isBouncePad = true;
+                }
+            }
+
+            if (sk.cc.isGrounded && sk.buttonHeld)
+            {
+                if (!thrown && !sk.isSlamming && hitTime <= 0)
+                {
+                    sk.isGuarding = true;
+                }
+            }
+            else sk.isGuarding = false;
+
+            if (sk.isGuarding)
+            {
+                mcAnim.ChangeAnimationState(mcAnim.guard);
             }
         }
 
@@ -232,7 +265,7 @@ public class MushroomCapController : MonoBehaviour
             if(Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge") || Input.GetButtonDown("Guard"))
             {
                 isBouncePad = false;
-                bounceDelay = 1;
+                bouncePadDelay = 1;
                 StartCoroutine(RecallShield());
             }
         }
@@ -271,19 +304,6 @@ public class MushroomCapController : MonoBehaviour
             }
         }
 
-        if (sk.cc.isGrounded && sk.buttonHeld)
-        {
-            if (!thrown && !sk.isSlamming && hitTime <= 0)
-            {
-                sk.isGuarding = true;
-            }
-        }
-        else sk.isGuarding = false;
-
-        if (sk.isGuarding)
-        {
-            mcAnim.ChangeAnimationState(mcAnim.guard);
-        }
     }
 
     void SortTargetsByDistance()
@@ -343,7 +363,6 @@ public class MushroomCapController : MonoBehaviour
 
     IEnumerator RecallShield()  //Recalls Shield back to Shield Holder.
     {
-        Debug.Log("Recall");
         float t = 0f;
         while (t < lerpTime) //Returns Shield to Shield Holder over the course of 1 second.
         {
@@ -400,11 +419,10 @@ public class MushroomCapController : MonoBehaviour
 
     void Bounce()
     {
-        Debug.Log("Bounce");
         sk.isSlamming = false;
         bounceTime = 0.2f;
 
-        sk.velocity.y = bounceHeight;
+        sk.velocity.y = sk.jumpSpeed * bounceHeight;
     }
 
     void BouncePad()
@@ -418,7 +436,6 @@ public class MushroomCapController : MonoBehaviour
     {
         if (col.gameObject.tag != "Player")
         {
-            Debug.Log(col.gameObject.name);
             hitTime = 0.1f;
 
             if (thrown)
@@ -435,7 +452,9 @@ public class MushroomCapController : MonoBehaviour
         {
             if (isBouncePad)
             {
-                sk.velocity.y = bouncePadHeight;
+                hitTime = 0.1f;
+                isBouncing = true;
+                sk.velocity.y = sk.jumpSpeed * bounceHeight;
             }
         }
     }

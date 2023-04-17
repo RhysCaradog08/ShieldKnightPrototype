@@ -22,9 +22,8 @@ public class ShieldKnightController : MonoBehaviour
     [Header("Jumping")]
     [SerializeField] float gravity;
     public Vector3 velocity;
-    public float jumpHeight, jumpSpeed, timeToJumpApex, fallMultiplier, lowJumpMultiplier;
-    public bool hasJumped, isJumping;
-    [SerializeField] bool canPressSpace;
+    public float jumpHeight, jumpSpeed, timeToJumpApex, lowJumpMultiplier;
+    public bool hasJumped, isJumping, canPressSpace;
 
     [Header("Button Press Check")]
     const float minButtonHold = 0.25f;
@@ -117,11 +116,6 @@ public class ShieldKnightController : MonoBehaviour
             isJumping = false;
         }
 
-        if (velocity.y > 0 && !Input.GetButton("Jump"))  //Allows for a brief Jump action to be performed.
-        {
-            velocity.y += gravity * (lowJumpMultiplier + 1) * Time.deltaTime;
-        }
-
         if (isThrowing || isBarging || isGuarding || isParrying || isSlamming)
         {
             canMove = false;
@@ -193,10 +187,6 @@ public class ShieldKnightController : MonoBehaviour
             }
         }
 
-        /*if (Input.GetButtonDown("Barge"))
-        {
-            isBarging = true;
-        }*/
 
         if (Input.GetButtonDown("Guard")) //&& cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
         {
