@@ -232,13 +232,14 @@ public class MushroomCapController : MonoBehaviour
             {
                 if (bouncePadDelay <= 0)
                 {
-                    transform.parent = null;
+                    /*transform.parent = null;
 
-                    Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
+                    Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;*/
 
-                    transform.position = bouncePadPos;
+                    StartCoroutine(SetBouncePad());
+                    /*transform.position = bouncePadPos;
 
-                    isBouncePad = true;
+                    isBouncePad = true;*/
                 }
             }
 
@@ -423,6 +424,56 @@ public class MushroomCapController : MonoBehaviour
         bounceTime = 0.2f;
 
         sk.velocity.y = sk.jumpSpeed * bounceHeight;
+    }
+
+    Vector3 CalculateParaBolicCurve(Vector3 start, Vector3 end, float height, float t)
+    {
+        float parabolicT = t * 2 - 1;
+        if (Mathf.Abs(start.y - end.y) < 0.1f)
+        {
+            //start and end are roughly level, pretend they are - simpler solution with less steps
+            Vector3 travelDirection = end - start;
+            Vector3 result = start + t * travelDirection;
+            result.y += (-parabolicT * parabolicT + 1) * height;
+            return result;
+        }
+        else
+        {
+            //start and end are not level, gets more complicated
+            Vector3 travelDirection = end - start;
+            Vector3 levelDirecteion = end - new Vector3(start.x, end.y, start.z);
+            Vector3 right = Vector3.Cross(travelDirection, levelDirecteion);
+            Vector3 up = Vector3.Cross(right, travelDirection);
+            if (end.y > start.y) up = -up;
+            Vector3 result = start + t * travelDirection;
+            result += ((-parabolicT * parabolicT + 1) * height) * up.normalized;
+            return result;
+        }
+    }
+
+    IEnumerator SetBouncePad()
+    {
+        transform.parent = null;
+
+        Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
+
+        while (Vector3.Distance(bouncePadPos, transform.position) > 1)
+        {
+            transform.parent = null;
+
+            float travelSpeed = 5 * Time.deltaTime;
+            transform.position = CalculateParaBolicCurve(transform.position, bouncePadPos, 2, travelSpeed);
+
+            yield return null;
+        }
+
+
+        if (Vector3.Distance(bouncePadPos, transform.position) < 1)
+        {
+            transform.position = bouncePadPos;
+
+            isBouncePad = true;
+        }
     }
 
     void BouncePad()
