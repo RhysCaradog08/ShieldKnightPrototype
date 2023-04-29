@@ -8,6 +8,8 @@ public class ScrapBagController : MonoBehaviour
     public float rotateSpeed, suctionSpeed, suckRange;
 
     CapsuleCollider suckVortex;
+    [SerializeField] List <Rigidbody> inVortex = new List <Rigidbody>();
+    [SerializeField] List <Rigidbody> inBag = new List <Rigidbody>();
 
     public bool isSucking;
 
@@ -45,7 +47,11 @@ public class ScrapBagController : MonoBehaviour
         {
             suckVortex.enabled = true;
         }
-        else suckVortex.enabled = false;
+        else
+        {
+            suckVortex.enabled = false;
+            inVortex.Clear();
+        }
     }
 
     void SuckUp()
@@ -61,8 +67,35 @@ public class ScrapBagController : MonoBehaviour
             objectRB.MovePosition(suctionDirection * suctionSpeed * Time.deltaTime);
 
         }*/
+        foreach (Rigidbody rb in inVortex)
+        {
+            Debug.DrawLine(transform.position, rb.transform.position, Color.yellow);
 
-        Debug.DrawLine(transform.position, objectRB.transform.position, Color.yellow);
+            objectRB = rb;
+            objectRB.transform.parent = null;
+
+            if(objectRB.isKinematic == true)
+            {
+               objectRB.isKinematic = false;
+            }
+
+            Vector3 suctionDirection = objectRB.transform.position - transform.position;
+            float objectDistance = Vector3.Distance(transform.position, objectRB.transform.position);
+
+            objectRB.transform.position = Vector3.Lerp(objectRB.transform.position, transform.position, suctionSpeed * Time.deltaTime);
+
+            if (objectDistance < 3)
+            {
+                objectRB.transform.position = transform.position;
+                objectRB.isKinematic = true;
+                objectRB.gameObject.SetActive(false);
+
+                if (!inBag.Contains(objectRB))
+                {
+                    inBag.Add(objectRB);
+                }
+            }
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -71,14 +104,16 @@ public class ScrapBagController : MonoBehaviour
 
         if (other.GetComponent<Rigidbody>() != null)
         {
-            Debug.Log("Object Rb: " + other.name);
-            objectRB = other.GetComponent<Rigidbody>();
+            if (!inVortex.Contains(other.GetComponent<Rigidbody>()))
+            {
+                inVortex.Add(other.GetComponent<Rigidbody>());               
+            }
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (objectRB != null)
+        if (inVortex.Count > 0)
         {     
             SuckUp();
         }
@@ -86,11 +121,13 @@ public class ScrapBagController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.GetComponent<Rigidbody>() == objectRB)
+        Debug.Log("Remove " + other.name);
+        if (other.GetComponent<Rigidbody>() != null)
         {
-            Debug.Log("Object Rb: " + other.name);
-
-            objectRB = null;
+            if (inVortex.Contains(other.GetComponent<Rigidbody>()))
+            {
+                inVortex.Remove(other.GetComponent<Rigidbody>());
+            }
         }
     }
 }
