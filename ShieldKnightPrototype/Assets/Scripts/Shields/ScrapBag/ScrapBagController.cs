@@ -15,13 +15,10 @@ public class ScrapBagController : MonoBehaviour
     Rigidbody objectRB;
 
     [Header("Shoot Projectile")]
-    public float shootForce;
+    public float shootForce, shotFrequency;
+    private float shotDelay = 0;
 
-    [Header("Button Press Check")]
-    const float minButtonHold = 0.1f;
-    [SerializeField] float buttonHeldTime;
-
-    public bool isSucking, repeatedShots;
+    public bool enableVortex, canShootRepeatedly;
 
     private void Awake()
     {
@@ -37,7 +34,8 @@ public class ScrapBagController : MonoBehaviour
         suckVortex.radius = 3;
         suckVortex.enabled = false; 
 
-        isSucking = false;
+        enableVortex = false;
+        canShootRepeatedly = false;
     }
 
     // Update is called once per frame
@@ -49,11 +47,13 @@ public class ScrapBagController : MonoBehaviour
 
         RepeatedShotCheck();
 
-        if (Input.GetButtonDown("Throw"))
+        if(Input.GetButton("Throw") && Time.time >= shotDelay)
         {
-            if(inBag.Count > 0) 
+            if(inBag.Count > 0)
             {
+                Debug.Log("Shoot");
                 ShootProjectile();
+                shotDelay = Time.time + 1f / shotFrequency;
             }
         }
 
@@ -61,12 +61,17 @@ public class ScrapBagController : MonoBehaviour
         {
             if (inBag.Count < bagMaxCapacity)
             {
-                isSucking = true;
+                enableVortex = true;
             }
         }
-        else isSucking = false;
+        else enableVortex = false;
+        
+        if (inBag.Count >= bagMaxCapacity)
+        {
+            enableVortex = false;
+        }
 
-        if (isSucking)
+        if (enableVortex)
         {
             suckVortex.enabled = true;
         }
@@ -77,26 +82,6 @@ public class ScrapBagController : MonoBehaviour
         }
     }
 
-    void RepeatedShotCheck()
-    {
-        if (Input.GetButtonDown("Throw")) //Button is pressed down. Need to check to see if it is "held".
-        {
-            buttonHeldTime = Time.timeSinceLevelLoad;
-            repeatedShots = false;
-        }
-        else if (Input.GetButtonUp("Throw"))
-        {
-            repeatedShots = false;
-        }
-
-        if (Input.GetButton("Throw"))
-        {
-            if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold) //Button is considered "held" if it is actually held down.
-            {
-                repeatedShots = true;
-            }
-        }
-    }
 
     void SuckUp()
     {
@@ -127,7 +112,6 @@ public class ScrapBagController : MonoBehaviour
                 if (!inBag.Contains(objectRB))
                 {
                     inBag.Add(objectRB);
-                    bagMaxCapacity++;
                 }
             }
         }
@@ -135,32 +119,33 @@ public class ScrapBagController : MonoBehaviour
 
     void ShootProjectile()
     {
-        Debug.Log("Shoot");
-        for(int i = 0; i < inBag.Count; i++)
+        objectRB = inBag[0].GetComponent<Rigidbody>();
+
+        objectRB.gameObject.SetActive(true);
+        objectRB.isKinematic = false;
+        objectRB.transform.parent = null;
+
+
+        objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);
+
+        if (inBag.Contains(objectRB))
         {
-            objectRB = inBag[0].GetComponent<Rigidbody>();
-
-            objectRB.gameObject.SetActive(true);
-            objectRB.isKinematic = false;
-            objectRB.transform.parent = null;
-
-
-            objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);
-
-            Debug.Log("Shot " + objectRB.name);
-
-            if (inBag.Contains(objectRB))
-            {
-                inBag.Remove(objectRB);
-                bagMaxCapacity--;
-            }
+            inBag.Remove(objectRB);
         }
     }
 
+    IEnumerator RepeatedShots()
+    {
+        Debug.Log("Keep Shooting");
+        ShootProjectile();
+
+
+        yield return new WaitForSeconds(shotDelay);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
+        //Debug.Log(other.name);
 
         if (other.GetComponent<Rigidbody>() != null)
         {
@@ -181,7 +166,7 @@ public class ScrapBagController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("Remove " + other.name);
+        //Debug.Log("Remove " + other.name);
         if (other.GetComponent<Rigidbody>() != null)
         {
             if (inVortex.Contains(other.GetComponent<Rigidbody>()))
