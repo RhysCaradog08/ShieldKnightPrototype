@@ -1152,7 +1152,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 550356148}
-  m_LocalRotation: {x: 0.012678296, y: 0.89368343, z: -0.025302071, w: 0.44780463}
+  m_LocalRotation: {x: 0.012678297, y: 0.89368343, z: -0.025302071, w: 0.4478046}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2599,7 +2599,7 @@ PrefabInstance:
     - target: {fileID: 2492760539245509279, guid: 8b37846bb763e5d4bbcd682e10addc66,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 0.65
       objectReference: {fileID: 0}
     - target: {fileID: 2492760539245509279, guid: 8b37846bb763e5d4bbcd682e10addc66,
         type: 3}
@@ -2745,7 +2745,7 @@ PrefabInstance:
     - target: {fileID: 8505653035894834770, guid: 58bf2abc63c1cbe41b4bb561abcc4ac8,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 0.6
       objectReference: {fileID: 0}
     - target: {fileID: 8505653035894834770, guid: 58bf2abc63c1cbe41b4bb561abcc4ac8,
         type: 3}
@@ -3052,7 +3052,7 @@ PrefabInstance:
     - target: {fileID: 1124411836511480426, guid: 9f72a909eb3d8b54e9a9f7feae5563a6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1124411836511480426, guid: 9f72a909eb3d8b54e9a9f7feae5563a6,
         type: 3}
@@ -3199,6 +3199,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
         type: 3}
+      propertyPath: shootForce
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
       propertyPath: rotateSpeed
       value: 100
       objectReference: {fileID: 0}
@@ -3206,6 +3211,11 @@ PrefabInstance:
         type: 3}
       propertyPath: suctionSpeed
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
+      propertyPath: bagMaxCapacity
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3242,7 +3252,7 @@ PrefabInstance:
     - target: {fileID: 1359904112572317771, guid: 884b23f085aaa544ebf368a352844742,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.5
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 1359904112572317771, guid: 884b23f085aaa544ebf368a352844742,
         type: 3}

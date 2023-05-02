@@ -1,17 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class ScrapBagController : MonoBehaviour
 {
-    Rigidbody objectRB;
     public float rotateSpeed, suctionSpeed, suckRange;
 
-    CapsuleCollider suckVortex;
+    [Header("Suck Vortex")]
     [SerializeField] List <Rigidbody> inVortex = new List <Rigidbody>();
     [SerializeField] List <Rigidbody> inBag = new List <Rigidbody>();
+    [SerializeField] int bagMaxCapacity;
+    CapsuleCollider suckVortex;
+    Rigidbody objectRB;
 
-    public bool isSucking;
+    [Header("Shoot Projectile")]
+    public float shootForce;
+
+    [Header("Button Press Check")]
+    const float minButtonHold = 0.1f;
+    [SerializeField] float buttonHeldTime;
+
+    public bool isSucking, repeatedShots;
 
     private void Awake()
     {
@@ -37,9 +47,22 @@ public class ScrapBagController : MonoBehaviour
        
         transform.Rotate(transform.up, rotateY);
 
-        if(Input.GetButton("Throw"))
+        RepeatedShotCheck();
+
+        if (Input.GetButtonDown("Throw"))
         {
-            isSucking = true;
+            if(inBag.Count > 0) 
+            {
+                ShootProjectile();
+            }
+        }
+
+        if (Input.GetButton("Guard"))
+        {
+            if (inBag.Count < bagMaxCapacity)
+            {
+                isSucking = true;
+            }
         }
         else isSucking = false;
 
@@ -54,19 +77,29 @@ public class ScrapBagController : MonoBehaviour
         }
     }
 
+    void RepeatedShotCheck()
+    {
+        if (Input.GetButtonDown("Throw")) //Button is pressed down. Need to check to see if it is "held".
+        {
+            buttonHeldTime = Time.timeSinceLevelLoad;
+            repeatedShots = false;
+        }
+        else if (Input.GetButtonUp("Throw"))
+        {
+            repeatedShots = false;
+        }
+
+        if (Input.GetButton("Throw"))
+        {
+            if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold) //Button is considered "held" if it is actually held down.
+            {
+                repeatedShots = true;
+            }
+        }
+    }
+
     void SuckUp()
     {
-        /*objectRB.isKinematic = false;
-
-        Vector3 suctionDirection = objectRB.transform.position - transform.position;
-        float objectDistance = suctionDirection.magnitude;
-        Debug.Log(objectRB.name + " Distance " +  objectDistance);
-
-        if(objectDistance > 0) 
-        {
-            objectRB.MovePosition(suctionDirection * suctionSpeed * Time.deltaTime);
-
-        }*/
         foreach (Rigidbody rb in inVortex)
         {
             Debug.DrawLine(transform.position, rb.transform.position, Color.yellow);
@@ -86,6 +119,7 @@ public class ScrapBagController : MonoBehaviour
 
             if (objectDistance < 3)
             {
+                objectRB.transform.parent = this.transform;
                 objectRB.transform.position = transform.position;
                 objectRB.isKinematic = true;
                 objectRB.gameObject.SetActive(false);
@@ -93,10 +127,36 @@ public class ScrapBagController : MonoBehaviour
                 if (!inBag.Contains(objectRB))
                 {
                     inBag.Add(objectRB);
+                    bagMaxCapacity++;
                 }
             }
         }
     }
+
+    void ShootProjectile()
+    {
+        Debug.Log("Shoot");
+        for(int i = 0; i < inBag.Count; i++)
+        {
+            objectRB = inBag[0].GetComponent<Rigidbody>();
+
+            objectRB.gameObject.SetActive(true);
+            objectRB.isKinematic = false;
+            objectRB.transform.parent = null;
+
+
+            objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);
+
+            Debug.Log("Shot " + objectRB.name);
+
+            if (inBag.Contains(objectRB))
+            {
+                inBag.Remove(objectRB);
+                bagMaxCapacity--;
+            }
+        }
+    }
+
 
     private void OnTriggerEnter(Collider other)
     {
