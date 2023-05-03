@@ -6,18 +6,20 @@ public class ShieldSelect : MonoBehaviour
 {
     StandardShieldController shield;
     MushroomCapController mushroom;
+    ScrapBagController scrapBag;
 
     public int selectedShield = 0;
     public bool canChange;
 
     [Header("Shield Booleans")]
-    public bool hasShield, hasMushroom;
+    public bool hasShield, hasMushroomCap, hasScrapBag;
 
     // Start is called before the first frame update
     void Start()
     {
         shield = FindObjectOfType<StandardShieldController>();
         mushroom = FindObjectOfType<MushroomCapController>();
+        scrapBag = FindObjectOfType<ScrapBagController>();
 
         SelectShield();
         canChange = true;     
@@ -34,9 +36,15 @@ public class ShieldSelect : MonoBehaviour
 
         if (mushroom.gameObject.activeInHierarchy)
         {
-            hasMushroom = true;
+            hasMushroomCap = true;
         }
-        else hasMushroom = false;
+        else hasMushroomCap = false;
+
+        if (scrapBag.gameObject.activeInHierarchy)
+        {
+            hasScrapBag = true;
+        }
+        else hasScrapBag = false;
 
         int previousWeapon = selectedShield;
         //int previousUI = SelectedWeaponUI;
