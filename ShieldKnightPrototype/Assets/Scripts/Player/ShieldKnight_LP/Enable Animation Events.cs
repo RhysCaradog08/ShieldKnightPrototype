@@ -6,12 +6,14 @@ public class EnableAnimationEvents : MonoBehaviour
 {
     [SerializeField] StandardShieldController shield;
     [SerializeField] MushroomCapController mushroom;
+    [SerializeField] ScrapBagController scrapBag;
     public GameObject parryBox;
 
     private void Awake()
     {
         shield = FindObjectOfType<StandardShieldController>();
         mushroom = FindObjectOfType<MushroomCapController>();
+        scrapBag = FindObjectOfType<ScrapBagController>();
     }
 
     public void EnableThrowShield()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
@@ -38,5 +40,10 @@ public class EnableAnimationEvents : MonoBehaviour
     public void DisableParry()
     {
         parryBox.SetActive(false);
+    }
+
+    public void EnableShootProjectile()
+    {
+       scrapBag.canShoot = true;
     }
 }

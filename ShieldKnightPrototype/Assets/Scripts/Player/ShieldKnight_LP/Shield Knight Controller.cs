@@ -5,8 +5,9 @@ using UnityEngine;
 public class ShieldKnightController : MonoBehaviour
 {
     AnimationController animControl;
-    [SerializeField] StandardShieldController shield;
-    [SerializeField] MushroomCapController mushroom;
+    StandardShieldController shield;
+    MushroomCapController mushroom;
+    ScrapBagController scrapBag;
 
     Camera cam;
     Transform camPos;
@@ -31,13 +32,14 @@ public class ShieldKnightController : MonoBehaviour
     public bool buttonHeld;
 
     [Header("Action Booleans")]
-    public bool isThrowing, isBarging, isGuarding, isParrying, isSlamming;
+    public bool isMoving,isThrowing, isBarging, isGuarding, isParrying, isSlamming;
 
     private void Awake()
     {
         animControl = FindObjectOfType<AnimationController>();
         shield = FindObjectOfType<StandardShieldController>(); 
         mushroom = FindObjectOfType<MushroomCapController>();
+        scrapBag = FindObjectOfType<ScrapBagController>();
 
         cc = GetComponent<CharacterController>();        
         cam = Camera.main;
@@ -133,14 +135,17 @@ public class ShieldKnightController : MonoBehaviour
                 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 cc.Move(moveDir.normalized * speed * Time.deltaTime);
 
-                if (!isJumping)
+                if (!isJumping && !scrapBag.isAiming)
                 {
                     animControl.ChangeAnimationState(animControl.move);
                 }
             }
             else if (!isJumping && cc.isGrounded)
             {
-                animControl.ChangeAnimationState(animControl.idle);
+                if (!scrapBag.isAiming)
+                {
+                    animControl.ChangeAnimationState(animControl.idle);
+                }
             }
         }
 
@@ -177,12 +182,15 @@ public class ShieldKnightController : MonoBehaviour
 
         if (Input.GetButtonUp("Throw"))
         {
-            if (!isBarging || !isGuarding || !isParrying || !isSlamming)
+            if (!scrapBag.isActiveAndEnabled)
             {
-                if (!isThrowing)
+                if (!isBarging || !isGuarding || !isParrying || !isSlamming)
                 {
-                    isThrowing = true;
-                    stopTime = 0.5f;
+                    if (!isThrowing)
+                    {
+                        isThrowing = true;
+                        stopTime = 0.5f;
+                    }
                 }
             }
         }

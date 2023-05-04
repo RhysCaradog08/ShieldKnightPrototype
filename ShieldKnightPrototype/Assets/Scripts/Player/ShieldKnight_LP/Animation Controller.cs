@@ -7,7 +7,7 @@ public class AnimationController : MonoBehaviour
     public Animator anim;
     [SerializeField] string currentState;
 
-    //Animation States
+    [Header("Standard Animations")]
     public string idle = "ShieldKnight_Idle";
     public string move = "ShieldKnight_Move";
     public string jump = "ShieldKnight_Jump";
@@ -17,6 +17,10 @@ public class AnimationController : MonoBehaviour
     public string guard = "ShieldKnight_Guard";
     public string parry = "ShieldKnight_Parry";
     public string slam = "ShieldKnight_Slam";
+
+    [Header("Scrap Bag Animations")]
+    public string scrapBagAim = "ScrapBag_Aim";
+    public string scrapBagFloat = "ScrapBag_Float";
 
 
     private void Awake()

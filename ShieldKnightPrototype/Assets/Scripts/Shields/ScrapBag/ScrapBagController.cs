@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine.UIElements;
 public class ScrapBagController : MonoBehaviour
 {
     ShieldSelect select;
+    AnimationController animControl;
 
     [Header("Vortex")]
     public float suctionSpeed, suctionRange;
@@ -17,16 +19,17 @@ public class ScrapBagController : MonoBehaviour
 
     [Header("Shoot Projectile")]
     public float shootForce, shotFrequency;
-    private float shotDelay = 0;
+    [SerializeField] private float repeatShotDelay = 0, canShootDelay;
 
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
 
-    public bool enableVortex;
+    public bool isAiming, enableVortex, canShoot;
 
     private void Awake()
     {
         select = FindObjectOfType<ShieldSelect>();
+        animControl= FindObjectOfType<AnimationController>();
 
         vortex = GetComponent<CapsuleCollider>();
     }
@@ -38,9 +41,13 @@ public class ScrapBagController : MonoBehaviour
         vortex.height = suctionRange;
         vortex.center = new Vector3(0, 0, suctionRange/2 + 1);
         vortex.radius = 3;
-        vortex.enabled = false;
 
+        //Shoot Projectile
+        canShootDelay = 0;
+
+        isAiming = false;
         enableVortex = false;
+        canShoot = false;
     }
 
     // Update is called once per frame
@@ -48,27 +55,47 @@ public class ScrapBagController : MonoBehaviour
     {
         ScaleControl();
 
-        if(Input.GetButton("Throw") && Time.time >= shotDelay)
+        if (Input.GetButton("Throw"))
         {
-            if(inBag.Count > 0)
+            if (inBag.Count > 0)
             {
-                Debug.Log("Shoot");
-                ShootProjectile();
-                shotDelay = Time.time + 1f / shotFrequency;
+                isAiming = true;
 
-                select.canChange = false;
+                if (Time.time >= repeatShotDelay)
+                {
+                    Debug.Log("Shoot");
+                    ShootProjectile();
+                    repeatShotDelay = Time.time + 1 / shotFrequency;
+                }
             }
-            else select.canChange = true;
+            else if(inBag.Count < 1)
+            {
+                isAiming = false;
+            }
         }
 
         if (Input.GetButton("Guard"))
         {
             if (inBag.Count < bagMaxCapacity)
             {
+                isAiming = true;
                 enableVortex = true;
             }
         }
         else enableVortex = false;
+
+        if (isAiming)
+        {
+            select.canChange = false;
+
+            animControl.ChangeAnimationState(animControl.scrapBagAim);
+
+            if (Input.GetButtonUp("Throw") || Input.GetButtonUp("Guard"))
+            {
+                isAiming = false;
+            }
+        }
+        else select.canChange = true;
         
         if (inBag.Count >= bagMaxCapacity)
         {
@@ -79,14 +106,11 @@ public class ScrapBagController : MonoBehaviour
         {
             vortex.enabled = true;
 
-            select.canChange = false;
         }
         else
         {
             vortex.enabled = false;
             inVortex.Clear();
-
-            select.canChange = true;
         }
     }
 
@@ -147,9 +171,8 @@ public class ScrapBagController : MonoBehaviour
 
         objectRB.isKinematic = false;
         objectRB.transform.parent = null;
-        objectRB.transform.position = new Vector3(0, 0, 1.5f);
+        objectRB.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f);
         objectRB.gameObject.SetActive(true);
-
 
         objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);
 
