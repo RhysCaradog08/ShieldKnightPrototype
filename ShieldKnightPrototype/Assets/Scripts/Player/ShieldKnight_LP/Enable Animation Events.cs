@@ -41,9 +41,4 @@ public class EnableAnimationEvents : MonoBehaviour
     {
         parryBox.SetActive(false);
     }
-
-    public void EnableShootProjectile()
-    {
-       scrapBag.canShoot = true;
-    }
 }

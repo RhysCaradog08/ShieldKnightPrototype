@@ -19,13 +19,16 @@ public class ScrapBagController : MonoBehaviour
 
     [Header("Shoot Projectile")]
     public float shootForce, shotFrequency;
-    [SerializeField] private float repeatShotDelay = 0, canShootDelay, shootOffset;
+    [SerializeField] private float repeatShotDelay = 0;
     public Transform shootPoint;
+
+    [Header("Rolling")]
+    [SerializeField] SphereCollider rollCollider;
 
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
 
-    public bool isAiming, enableVortex, canShoot;
+    public bool isAiming, enableVortex, isRolling;
 
     private void Awake()
     {
@@ -33,6 +36,7 @@ public class ScrapBagController : MonoBehaviour
         animControl= FindObjectOfType<AnimationController>();
 
         vortex = GetComponent<CapsuleCollider>();
+        rollCollider = GetComponent<SphereCollider>();
     }
 
     // Start is called before the first frame update
@@ -43,12 +47,9 @@ public class ScrapBagController : MonoBehaviour
         vortex.center = new Vector3(0, 0, suctionRange/2 + 1);
         vortex.radius = 3;
 
-        //Shoot Projectile
-        canShootDelay = 0;
-
         isAiming = false;
         enableVortex = false;
-        canShoot = false;
+        isRolling = false;
     }
 
     // Update is called once per frame
@@ -56,39 +57,47 @@ public class ScrapBagController : MonoBehaviour
     {
         ScaleControl();
 
-        if(Input.GetButtonDown("Throw") && inBag.Count > 0)
+        if (!isRolling)
         {
-            repeatShotDelay = Time.time + 0.25f / shotFrequency;
-        }
-
-        if (Input.GetButton("Throw"))
-        {
-            if (inBag.Count > 0)
+            if (Input.GetButtonDown("Throw") && inBag.Count > 0)
             {
-                isAiming = true;
+                repeatShotDelay = Time.time + 0.25f / shotFrequency;
+            }
 
-                if (Time.time >= repeatShotDelay)
+            if (Input.GetButton("Throw"))
+            {
+                if (inBag.Count > 0)
                 {
-                    Debug.Log("Shoot");
-                    ShootProjectile();
-                    repeatShotDelay = Time.time + 1 / shotFrequency;
+                    isAiming = true;
+
+                    if (Time.time >= repeatShotDelay)
+                    {
+                        Debug.Log("Shoot");
+                        ShootProjectile();
+                        repeatShotDelay = Time.time + 1 / shotFrequency;
+                    }
+                }
+                else if (inBag.Count < 1)
+                {
+                    isAiming = false;
                 }
             }
-            else if(inBag.Count < 1)
+
+            if (Input.GetButton("Guard"))
             {
-                isAiming = false;
+                if (inBag.Count < bagMaxCapacity)
+                {
+                    isAiming = true;
+                    enableVortex = true;
+                }
             }
+            else enableVortex = false;
         }
 
-        if (Input.GetButton("Guard"))
+        if (Input.GetButtonDown("Barge") && !isAiming)
         {
-            if (inBag.Count < bagMaxCapacity)
-            {
-                isAiming = true;
-                enableVortex = true;
-            }
+            isRolling = !isRolling;
         }
-        else enableVortex = false;
 
         if (isAiming)
         {
@@ -118,6 +127,13 @@ public class ScrapBagController : MonoBehaviour
             vortex.enabled = false;
             inVortex.Clear();
         }
+
+        if(isRolling)
+        {
+            Debug.Log("Enable Roll Collder");
+            rollCollider.enabled = true;
+        }
+        else rollCollider.enabled = false;
     }
 
     void ScaleControl()
@@ -135,7 +151,6 @@ public class ScrapBagController : MonoBehaviour
             transform.localScale = bagEmptyScale * 2;
         }
     }
-
 
     void SuckUp()
     {
@@ -191,8 +206,6 @@ public class ScrapBagController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //Debug.Log(other.name);
-
         if (other.GetComponent<Rigidbody>() != null)
         {
             if (!inVortex.Contains(other.GetComponent<Rigidbody>()))
@@ -212,7 +225,6 @@ public class ScrapBagController : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        //Debug.Log("Remove " + other.name);
         if (other.GetComponent<Rigidbody>() != null)
         {
             if (inVortex.Contains(other.GetComponent<Rigidbody>()))
