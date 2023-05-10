@@ -19,7 +19,8 @@ public class ScrapBagController : MonoBehaviour
 
     [Header("Shoot Projectile")]
     public float shootForce, shotFrequency;
-    [SerializeField] private float repeatShotDelay = 0, canShootDelay;
+    [SerializeField] private float repeatShotDelay = 0, canShootDelay, shootOffset;
+    public Transform shootPoint;
 
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
@@ -54,6 +55,11 @@ public class ScrapBagController : MonoBehaviour
     void Update()
     {
         ScaleControl();
+
+        if(Input.GetButtonDown("Throw") && inBag.Count > 0)
+        {
+            repeatShotDelay = Time.time + 0.25f / shotFrequency;
+        }
 
         if (Input.GetButton("Throw"))
         {
@@ -169,9 +175,10 @@ public class ScrapBagController : MonoBehaviour
     {
         objectRB = inBag[0].GetComponent<Rigidbody>();
 
+        objectRB.transform.position = shootPoint.position;
         objectRB.isKinematic = false;
         objectRB.transform.parent = null;
-        objectRB.transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z + 1.5f);
+        objectRB.transform.localScale = Vector3.one;
         objectRB.gameObject.SetActive(true);
 
         objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);

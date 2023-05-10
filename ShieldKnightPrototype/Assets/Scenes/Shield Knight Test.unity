@@ -3026,7 +3026,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291376261}
-  m_LocalRotation: {x: 0.051764034, y: -0.596888, z: 0.038635172, w: 0.7997203}
+  m_LocalRotation: {x: 0.051764015, y: -0.596888, z: 0.038635153, w: 0.7997203}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3114,6 +3114,37 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f72a909eb3d8b54e9a9f7feae5563a6, type: 3}
+--- !u!1 &1317736040
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1317736041}
+  m_Layer: 0
+  m_Name: ShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 2974397684917235467, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1317736041
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1317736040}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2017296418}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1334950445 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3451340138168656004, guid: a9e9f3ca623384745b5af105080ea7d7,
@@ -5545,6 +5576,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
         type: 3}
+      propertyPath: shootPoint
+      value: 
+      objectReference: {fileID: 1317736041}
+    - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
       propertyPath: rotateSpeed
       value: 100
       objectReference: {fileID: 0}
@@ -5579,8 +5615,13 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4763905807705797549, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab, type: 3}
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3066944778613811954, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1317736041}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3292924875839792263, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
         type: 3}
