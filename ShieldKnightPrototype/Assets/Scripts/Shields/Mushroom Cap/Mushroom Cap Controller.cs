@@ -1,7 +1,6 @@
 using Basics.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.UI;
 using UnityEngine;
 
 public class MushroomCapController : MonoBehaviour
@@ -232,14 +231,8 @@ public class MushroomCapController : MonoBehaviour
             {
                 if (bouncePadDelay <= 0)
                 {
-                    /*transform.parent = null;
-
-                    Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;*/
-
                     StartCoroutine(SetBouncePad());
-                    /*transform.position = bouncePadPos;
-
-                    isBouncePad = true;*/
+                    isBouncePad = true;
                 }
             }
 
@@ -260,8 +253,8 @@ public class MushroomCapController : MonoBehaviour
 
         if (isBouncePad)
         {
-            BouncePad();
             select.canChange = false;
+            BouncePad();
 
             if(Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge") || Input.GetButtonDown("Guard"))
             {
@@ -387,6 +380,11 @@ public class MushroomCapController : MonoBehaviour
         meshCol.enabled = true;
 
         thrown = false;
+
+        if(isBouncePad)
+        {
+            isBouncePad = false;
+        }
     }
 
     void SlamImpact()
