@@ -12,6 +12,7 @@ public class TargetSelector : MonoBehaviour
     [SerializeField] Camera cam;
     public Transform player, aimTarget;
 
+    [SerializeField] GameObject lockOnMarker;
 
     Collider[] hitColliders;
     public List<GameObject> targetLocations = new List<GameObject>();
@@ -19,6 +20,8 @@ public class TargetSelector : MonoBehaviour
     public float targetAngle;
     public GameObject closest;
     public LayerMask ignoreLayers;
+
+    public bool canTarget, canLockOn, lockedOn;
 
     private void Awake()
     {
@@ -33,18 +36,68 @@ public class TargetSelector : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        canTarget = true;
+        canLockOn = true;
+        lockedOn = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetButtonUp("Throw"))
+        if (closest != null && lockedOn)
         {
-            ClearTargets();
+            transform.LookAt(closest.transform.position);
+            canTarget = false;
+            canLockOn = false;
+        }
+        else if (!lockedOn)
+        {
+            canTarget = true;
         }
 
-        if(closest != null)
+        if (Input.GetKeyDown(KeyCode.Z)) 
+        {
+            if (!lockedOn)
+            {
+                FindTargets();
+                FindClosestTarget();
+
+                if (canLockOn)
+                {
+                    AddLockOnMarker();
+                    lockedOn = true;
+                }
+            }
+            else if (lockedOn)
+            {
+                lockedOn = false;
+                ClearTargets();
+                RemoveLockOnMarker();
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Z))
+        {
+            targetLocations.Clear();
+        }
+
+        if (lockedOn && Vector3.Distance(transform.position, closest.transform.position) > range)
+        {
+            canLockOn = true;
+            lockedOn = false;
+            closest = null;
+            RemoveLockOnMarker();
+        }
+
+        if (Input.GetButtonUp("Throw"))
+        {
+            if (!lockedOn)
+            {
+                ClearTargets();
+            }
+        }
+
+        if (closest != null)
         {
             if(shield.isActiveAndEnabled)
             {
@@ -132,6 +185,17 @@ public class TargetSelector : MonoBehaviour
         Debug.DrawLine(transform.position, minusRotatedLine, Color.yellow);
     }
 
+    void AddLockOnMarker()
+    {
+        Vector3 markerPos = closest.transform.position;
+
+        lockOnMarker = ObjectPoolManager.instance.CallObject("LockOnMarker", closest.transform, new Vector3(markerPos.x, markerPos.y + (closest.transform.localScale.y + 3.5f), markerPos.z), Quaternion.Euler(180, 0, 0));
+    }
+
+    void RemoveLockOnMarker()
+    {
+        ObjectPoolManager.instance.RecallObject(lockOnMarker);
+    }
 
     void OnDrawGizmosSelected()
     {

@@ -121,13 +121,13 @@ public class StandardShieldController : MonoBehaviour
             if (hasTarget)
             {
                 sk.transform.LookAt(target.transform);
-                StartCoroutine(TargetedThrow());
+                //StartCoroutine(TargetedThrow());
 
-                /*if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
+                if (!ts.lockedOn) //Will throw to multiple targets if not locked on, otherwise only one target.
                 {
                     StartCoroutine(TargetedThrow());
                 }
-                else StartCoroutine(LockOnThrow());*/
+                else StartCoroutine(LockOnThrow());
             }
             else NonTargetThrow();
         }
@@ -141,8 +141,11 @@ public class StandardShieldController : MonoBehaviour
 
         if ((Input.GetButton("Throw") || Input.GetButtonDown("Barge")) && !thrown)
         {
-            ts.FindTargets();
-            ts.FindClosestTarget();
+            if (ts.canTarget)
+            {
+                ts.FindTargets();
+                ts.FindClosestTarget();
+            }
         }
 
         if (Input.GetButtonDown("Throw") && thrown) //If Player doesn't have possession of Shield it gets recalled to player.
@@ -227,14 +230,17 @@ public class StandardShieldController : MonoBehaviour
 
         if (hasTarget)
         {
-            if (!marker)
+            if (!ts.lockedOn)
             {
-                marker = ObjectPoolManager.instance.CallObject("TargetMarker", null, Vector3.zero, Quaternion.identity);
-            }
-            else if (marker != null)
-            {
-                marker.transform.parent = target.transform;
-                marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z - 0.5f);
+                if (!marker)
+                {
+                    marker = ObjectPoolManager.instance.CallObject("TargetMarker", null, Vector3.zero, Quaternion.identity);
+                }
+                else if (marker != null)
+                {
+                    marker.transform.parent = target.transform;
+                    marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z - 0.5f);
+                }
             }
         }
     }
@@ -251,6 +257,7 @@ public class StandardShieldController : MonoBehaviour
 
     IEnumerator TargetedThrow()  //Throws Shield towards any identified targets in range.
     {
+        Debug.Log("Targeted Throw");
         thrown = true;
 
         while (Vector3.Distance(target.transform.position, transform.position) > 0.1f)
@@ -273,12 +280,17 @@ public class StandardShieldController : MonoBehaviour
             }
         }
 
-        target = null;  //Once all targets are reached return Shield to Player.
+        if (!ts.lockedOn)
+        {
+            target = null;  //Once all targets are reached return Shield to Player.
+        }
+
         StartCoroutine(RecallShield());
     }
 
     IEnumerator LockOnThrow()
     {
+        Debug.Log("Lock On Throw");
         thrown = true;
 
         while (Vector3.Distance(transform.position, target.transform.position) > 0.1f)
@@ -365,7 +377,11 @@ public class StandardShieldController : MonoBehaviour
                     }
 
                     target = null;
-                    ts.ClearTargets();  
+
+                    if (!ts.lockedOn)
+                    {
+                        ts.ClearTargets();
+                    }
                 }
             }
             else 

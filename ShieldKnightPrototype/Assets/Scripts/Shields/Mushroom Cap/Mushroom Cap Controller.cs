@@ -177,29 +177,32 @@ public class MushroomCapController : MonoBehaviour
 
             if ((Input.GetButton("Throw") && !thrown))
             {
-                ts.FindTargets();
-                Transform targetToAdd;
-
-                for (int i = 0; i < ts.targetLocations.Count; i++)
+                if (ts.canTarget)
                 {
-                    targetToAdd = ts.targetLocations[i].transform;
+                    ts.FindTargets();
+                    Transform targetToAdd;
 
-                    if (!targets.Contains(targetToAdd))
+                    for (int i = 0; i < ts.targetLocations.Count; i++)
                     {
-                        if (targets.Count < 3)
-                        {
-                            targets.Add(targetToAdd);
-                        }
-                        else if (targets.Count == 3 && !targets.Contains(targetToAdd))
-                        {
-                            if (targets[2].GetComponent<MarkerCheck>())
-                            {
-                                markerCheck = targets[2].GetComponent<MarkerCheck>();
-                                markerCheck.RemoveMarker();
-                            }
-                            targets.Remove(targets[2]);
+                        targetToAdd = ts.targetLocations[i].transform;
 
-                            targets.Add(targetToAdd);
+                        if (!targets.Contains(targetToAdd))
+                        {
+                            if (targets.Count < 3)
+                            {
+                                targets.Add(targetToAdd);
+                            }
+                            else if (targets.Count == 3 && !targets.Contains(targetToAdd))
+                            {
+                                if (targets[2].GetComponent<MarkerCheck>())
+                                {
+                                    markerCheck = targets[2].GetComponent<MarkerCheck>();
+                                    markerCheck.RemoveMarker();
+                                }
+                                targets.Remove(targets[2]);
+
+                                targets.Add(targetToAdd);
+                            }
                         }
                     }
                 }
