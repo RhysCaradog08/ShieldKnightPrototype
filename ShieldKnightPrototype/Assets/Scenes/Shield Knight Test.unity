@@ -133,6 +133,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 256919063985077947, guid: 8b114dd01a94cf7469eec79ee6e8e023,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 256919063985077947, guid: 8b114dd01a94cf7469eec79ee6e8e023,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 89.65849
       objectReference: {fileID: 0}
@@ -1759,6 +1764,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e589bf6d00e763947bfeab14c42c41b2, type: 3}
+--- !u!1 &506340898 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4996211405732588812, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+    type: 3}
+  m_PrefabInstance: {fileID: 8168555438593160788}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &518446284
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2451,7 +2462,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1024900585}
-  m_LocalRotation: {x: 0.037208967, y: -0.5974921, z: 0.027771693, w: 0.80052954}
+  m_LocalRotation: {x: 0.037208963, y: -0.597492, z: 0.027771683, w: 0.8005296}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -2802,7 +2813,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1200537885}
-  m_LocalRotation: {x: 0.037208967, y: -0.5974921, z: 0.027771702, w: 0.8005295}
+  m_LocalRotation: {x: 0.037208967, y: -0.597492, z: 0.027771689, w: 0.8005296}
   m_LocalPosition: {x: 23.967167, y: 3.25, z: -77.6116}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3026,7 +3037,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1291376261}
-  m_LocalRotation: {x: 0.051764015, y: -0.596888, z: 0.038635153, w: 0.7997203}
+  m_LocalRotation: {x: 0.051764034, y: -0.596888, z: 0.038635172, w: 0.7997203}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -5486,6 +5497,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3066944778613811954, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3066944778613811954, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3066944778613811954, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3066944778613811954, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -5566,6 +5592,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
         type: 3}
+      propertyPath: model
+      value: 
+      objectReference: {fileID: 506340898}
+    - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
+      propertyPath: rollSpeed
+      value: 500
+      objectReference: {fileID: 0}
+    - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
       propertyPath: shotDelay
       value: 0
       objectReference: {fileID: 0}
@@ -5574,6 +5610,11 @@ PrefabInstance:
       propertyPath: suckRange
       value: 25
       objectReference: {fileID: 0}
+    - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
+        type: 3}
+      propertyPath: holdParent
+      value: 
+      objectReference: {fileID: 1307875163}
     - target: {fileID: 8630378249688887446, guid: 550d785bf6f0f4f4e9e3ebe9415f48ab,
         type: 3}
       propertyPath: shootForce

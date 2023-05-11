@@ -8,6 +8,7 @@ public class ScrapBagController : MonoBehaviour
 {
     ShieldSelect select;
     AnimationController animControl;
+    ShieldKnightController sk;
 
     [Header("Vortex")]
     public float suctionSpeed, suctionRange;
@@ -23,7 +24,12 @@ public class ScrapBagController : MonoBehaviour
     public Transform shootPoint;
 
     [Header("Rolling")]
+    public Transform holdParent;
+    public GameObject model;
+    Vector3 holdPos = new Vector3(0, 0.05f, -1), rollPos, skRollPos;
+    Quaternion holdRot = Quaternion.Euler(-90, 90, 0), rollRot = Quaternion.Euler(0, -90, 0);
     [SerializeField] SphereCollider rollCollider;
+    public float rollSpeed;
 
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
@@ -34,6 +40,7 @@ public class ScrapBagController : MonoBehaviour
     {
         select = FindObjectOfType<ShieldSelect>();
         animControl= FindObjectOfType<AnimationController>();
+        sk = FindObjectOfType<ShieldKnightController>(); 
 
         vortex = GetComponent<CapsuleCollider>();
         rollCollider = GetComponent<SphereCollider>();
@@ -46,6 +53,11 @@ public class ScrapBagController : MonoBehaviour
         vortex.height = suctionRange;
         vortex.center = new Vector3(0, 0, suctionRange/2 + 1);
         vortex.radius = 3;
+
+        //Rolling
+        transform.parent = holdParent; 
+        transform.localPosition = holdPos;
+        transform.localRotation = holdRot;
 
         isAiming = false;
         enableVortex = false;
@@ -128,12 +140,21 @@ public class ScrapBagController : MonoBehaviour
             inVortex.Clear();
         }
 
-        if(isRolling)
+        if (isRolling)
         {
-            Debug.Log("Enable Roll Collder");
             rollCollider.enabled = true;
+            Rolling();
         }
-        else rollCollider.enabled = false;
+        else
+        {
+            rollCollider.enabled = false;
+
+            transform.parent = holdParent;
+            transform.localPosition = holdPos;
+            transform.localRotation = holdRot;
+
+            sk.transform.position = sk.transform.position;
+        }
     }
 
     void ScaleControl()
@@ -141,14 +162,20 @@ public class ScrapBagController : MonoBehaviour
         if(inBag.Count < 1)
         {
            transform.localScale = bagEmptyScale;
+           rollPos = new Vector3(0, -3, 0);
+           skRollPos = new Vector3(transform.position.x, 4.5f, transform.position.z);
         }
         else if (inBag.Count > bagMaxCapacity / 2 && inBag.Count < bagMaxCapacity - 1)
         {
             transform.localScale = bagEmptyScale * 1.5f;
+            rollPos = new Vector3(0, -3.5f, 0);
+            skRollPos = new Vector3(transform.position.x, 5.5f, transform.position.z);
         }
         else if (inBag.Count > bagMaxCapacity - 1)
         {
             transform.localScale = bagEmptyScale * 2;
+            rollPos = rollPos = new Vector3(0, -4, 0);
+            skRollPos = new Vector3(transform.position.x, 6.5f, transform.position.z);
         }
     }
 
@@ -201,6 +228,20 @@ public class ScrapBagController : MonoBehaviour
         if (inBag.Contains(objectRB))
         {
             inBag.Remove(objectRB);
+        }
+    }
+
+    void Rolling()
+    {
+        transform.parent = transform.root;
+        transform.localPosition = rollPos;
+        transform.localRotation = rollRot; 
+
+        sk.transform.position = skRollPos;
+
+        if (sk.move.magnitude > 0)
+        {
+            model.transform.Rotate(Vector3.up, rollSpeed * Time.deltaTime, Space.Self);
         }
     }
 
