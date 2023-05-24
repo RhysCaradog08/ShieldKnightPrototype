@@ -47,7 +47,8 @@ public class MushroomCapController : MonoBehaviour
 
     [Header("Bounce Pad")]
     [SerializeField] float bouncePadRange, bouncePadDelay;
-    public bool isthrowingBP, isBouncePad;
+    Vector3 bouncePadPos;
+    public bool isThrowingBP, isBouncePad;
 
     private void Awake()
     {
@@ -234,6 +235,8 @@ public class MushroomCapController : MonoBehaviour
             {
                 if (bouncePadDelay <= 0)
                 {
+                    bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
+
                     StartCoroutine(SetBouncePad());
                     isBouncePad = true;
                 }
@@ -271,7 +274,7 @@ public class MushroomCapController : MonoBehaviour
             select.canChange = true;
         }
 
-        if(isthrowingBP)
+        if(isThrowingBP)
         {
             select.canChange = false;
         }
@@ -461,15 +464,13 @@ public class MushroomCapController : MonoBehaviour
     {
         transform.parent = null;
 
-        Vector3 bouncePadPos = sk.transform.position + sk.transform.forward * bouncePadRange;
-
         while (Vector3.Distance(bouncePadPos, transform.position) > 1)
         {
-            isthrowingBP = true;
+            isThrowingBP = true;
             transform.parent = null;
 
             float travelSpeed = 5 * Time.deltaTime;
-            transform.position = CalculateParaBolicCurve(transform.position, bouncePadPos, 2, travelSpeed);
+            transform.position = Vector3.Lerp(transform.position, bouncePadPos, travelSpeed);//CalculateParaBolicCurve(transform.position, bouncePadPos, 2, travelSpeed);
 
             yield return null;
         }
@@ -479,7 +480,7 @@ public class MushroomCapController : MonoBehaviour
         {
             transform.position = bouncePadPos;
 
-            isthrowingBP = false;
+            isThrowingBP = false;
             isBouncePad = true;
         }
     }
