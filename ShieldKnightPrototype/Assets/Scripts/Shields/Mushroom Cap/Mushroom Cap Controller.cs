@@ -47,7 +47,7 @@ public class MushroomCapController : MonoBehaviour
 
     [Header("Bounce Pad")]
     [SerializeField] float bouncePadRange, bouncePadDelay;
-    public bool isBouncePad;
+    public bool isthrowingBP, isBouncePad;
 
     private void Awake()
     {
@@ -271,6 +271,11 @@ public class MushroomCapController : MonoBehaviour
             select.canChange = true;
         }
 
+        if(isthrowingBP)
+        {
+            select.canChange = false;
+        }
+
         if (sk.isSlamming)
         {
             mcAnim.ChangeAnimationState(mcAnim.slam);
@@ -460,6 +465,7 @@ public class MushroomCapController : MonoBehaviour
 
         while (Vector3.Distance(bouncePadPos, transform.position) > 1)
         {
+            isthrowingBP = true;
             transform.parent = null;
 
             float travelSpeed = 5 * Time.deltaTime;
@@ -473,6 +479,7 @@ public class MushroomCapController : MonoBehaviour
         {
             transform.position = bouncePadPos;
 
+            isthrowingBP = false;
             isBouncePad = true;
         }
     }
@@ -495,7 +502,6 @@ public class MushroomCapController : MonoBehaviour
                 StartCoroutine(RecallShield());
             }
         }
-
     }
 
     void OnTriggerEnter(Collider col)

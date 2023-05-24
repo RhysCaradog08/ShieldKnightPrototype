@@ -5,6 +5,12 @@ using UnityEngine;
 public class Parry : MonoBehaviour
 {
     public float parryForce;
+    Vector3 parryDirection;
+
+    private void Update()
+    {
+        //Debug.DrawLine(transform.position, parryDirection * parryForce, Color.red);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -12,11 +18,21 @@ public class Parry : MonoBehaviour
         {
             Debug.Log("Parry!!!");
 
-            other.gameObject.AddComponent<ParriedObject>();
+            if (!other.gameObject.GetComponent<ParriedObject>())
+            {
+                other.gameObject.AddComponent<ParriedObject>();
+            }
 
-            Rigidbody projRb = other.GetComponent<Rigidbody>();
+            Rigidbody projRB = other.GetComponent<Rigidbody>();
 
-            projRb.AddForce(transform.forward * parryForce, ForceMode.Impulse);
+            /*if(projRB != null) 
+            {
+                Debug.Log(projRB.name);
+            }*/
+
+            parryDirection = projRB.transform.position + transform.position;
+
+            projRB.AddForce(parryDirection * parryForce, ForceMode.Impulse);
         }
     }
 }

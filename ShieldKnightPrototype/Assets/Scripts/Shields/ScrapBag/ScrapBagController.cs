@@ -141,11 +141,15 @@ public class ScrapBagController : MonoBehaviour
 
         if (isRolling)
         {
+            select.canChange = false;
+
             rollCollider.enabled = true;
             Rolling();
         }
         else
         {
+            select.canChange = true;
+
             rollCollider.enabled = false;
 
             transform.parent = holdParent;

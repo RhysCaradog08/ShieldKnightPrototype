@@ -47,7 +47,6 @@ public class ShieldSelect : MonoBehaviour
         else hasScrapBag = false;
 
         int previousWeapon = selectedShield;
-        //int previousUI = SelectedWeaponUI;
 
         if (Input.GetKeyDown(KeyCode.Tab))
         {
@@ -56,12 +55,10 @@ public class ShieldSelect : MonoBehaviour
                 if (selectedShield >= transform.childCount - 1)
                 {
                     selectedShield = 0;
-                    //SelectedWeaponUI = 0;
                 }
                 else
                 {
                     selectedShield++;
-                    //SelectedWeaponUI++;
                 }
             }
         }
@@ -70,11 +67,6 @@ public class ShieldSelect : MonoBehaviour
         {
             SelectShield();
         }
-
-        /*if(previousUI != SelectedWeaponUI)
-        {
-            SelectWeaponUI();
-        }*/
     }
 
      public void SelectShield()
@@ -90,17 +82,4 @@ public class ShieldSelect : MonoBehaviour
 
         }
     }
-
-    /*public void SelectWeaponUI()
-    {
-        int i = 0;
-        foreach (GameObject weaponicon in weaponIcon)
-        {
-            if(i == SelectedWeaponUI)
-                weaponIcon[i].SetActive(true);
-            else
-                weaponIcon[i].SetActive(false);
-            i++;
-        }
-    }*/
 }
