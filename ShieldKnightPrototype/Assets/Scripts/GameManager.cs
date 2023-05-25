@@ -29,17 +29,11 @@ public class GameManager : MonoBehaviour
 
         if (isPaused)
         {
-            Time.timeScale = Mathf.Epsilon;
-
-            PauseMenu.SetActive(true);
-            hud.SetActive(false);
+            PauseGame();
         }
         else 
         {
-            Time.timeScale = 1;
-
-            PauseMenu.SetActive(false);
-            hud.SetActive(true);
+            ResumeGame();
         }
 
         if(Input.GetKeyDown(KeyCode.R))
@@ -62,7 +56,27 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    private void OnApplicationQuit()
+    void PauseGame()
+    {
+        Time.timeScale = Mathf.Epsilon;
+
+        PauseMenu.SetActive(true);
+        hud.SetActive(false);
+
+        Cursor.visible = true;
+    }
+
+    void ResumeGame()
+    {
+        Time.timeScale = 1;
+
+        PauseMenu.SetActive(false);
+        hud.SetActive(true);
+
+        Cursor.visible = false;
+    }
+
+    public void OnApplicationQuit()
     {
         Application.Quit();
     }
