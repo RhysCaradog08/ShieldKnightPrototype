@@ -6,13 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-    public Text debugText;
-    CoilShieldController coil;
-
-    private void Awake()
-    {
-        coil = FindObjectOfType<CoilShieldController>();
-    }
+    [SerializeField] GameObject hud, PauseMenu;
+    [SerializeField] bool isPaused;
 
     // Start is called before the first frame update
     void Start()
@@ -20,20 +15,31 @@ public class GameManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = false;
         Application.targetFrameRate = 60;
+
+        isPaused = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-        /*if(coil.isActiveAndEnabled)
-        {
-            debugText.text = "Has Coil";
-        }
-        else debugText.text = "";*/
-
         if (Input.GetButtonDown("Cancel"))
         {
-            Application.Quit();
+            isPaused = !isPaused;
+        }
+
+        if (isPaused)
+        {
+            Time.timeScale = Mathf.Epsilon;
+
+            PauseMenu.SetActive(true);
+            hud.SetActive(false);
+        }
+        else 
+        {
+            Time.timeScale = 1;
+
+            PauseMenu.SetActive(false);
+            hud.SetActive(true);
         }
 
         if(Input.GetKeyDown(KeyCode.R))
@@ -54,5 +60,10 @@ public class GameManager : MonoBehaviour
                 Cursor.lockState = CursorLockMode.Confined;
             }
         }
+    }
+
+    private void OnApplicationQuit()
+    {
+        Application.Quit();
     }
 }
