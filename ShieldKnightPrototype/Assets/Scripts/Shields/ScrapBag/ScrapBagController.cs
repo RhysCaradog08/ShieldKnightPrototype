@@ -16,6 +16,7 @@ public class ScrapBagController : MonoBehaviour
     [SerializeField] int bagMaxCapacity;
     CapsuleCollider vortex;
     Rigidbody objectRB;
+    [SerializeField] GameObject vortexFX;
 
     [Header("Shoot Projectile")]
     public float shootForce, shotFrequency;
@@ -48,7 +49,7 @@ public class ScrapBagController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //SuckVortex
+        //Vortex
         vortex.height = suctionRange;
         vortex.center = new Vector3(0, 0, suctionRange/2 + 1);
         vortex.radius = 3;
@@ -131,11 +132,12 @@ public class ScrapBagController : MonoBehaviour
         if (enableVortex)
         {
             vortex.enabled = true;
-
+            vortexFX.SetActive(true);
         }
         else
         {
             vortex.enabled = false;
+            vortexFX.SetActive(false);
             inVortex.Clear();
         }
 

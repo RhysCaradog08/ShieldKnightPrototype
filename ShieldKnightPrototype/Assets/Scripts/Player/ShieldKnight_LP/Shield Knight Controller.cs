@@ -205,7 +205,10 @@ public class ShieldKnightController : MonoBehaviour
             }
             else if (!cc.isGrounded)
             {
-                isSlamming = true;
+                if(!scrapBag.isActiveAndEnabled)
+                {
+                    isSlamming = true;
+                }
             }
         }
         else if (Input.GetButtonUp("Guard") && cc.isGrounded)
