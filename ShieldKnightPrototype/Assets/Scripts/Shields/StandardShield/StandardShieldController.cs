@@ -145,6 +145,19 @@ public class StandardShieldController : MonoBehaviour
             {
                 ts.FindTargets();
                 ts.FindClosestTarget();
+
+                if (!ts.lockedOn && hasTarget)
+                {
+                    if (!marker)
+                    {
+                        marker = ObjectPoolManager.instance.CallObject("TargetMarker", null, Vector3.zero, Quaternion.identity);
+                    }
+                    else if (marker != null)
+                    {
+                        marker.transform.parent = target.transform;
+                        marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z - 0.5f);
+                    }
+                }
             }
         }
 
@@ -226,22 +239,6 @@ public class StandardShieldController : MonoBehaviour
         if(sk.stopTime > 0 && !sk.isThrowing)
         {
             sk.isParrying = true;
-        }
-
-        if (hasTarget)
-        {
-            if (!ts.lockedOn)
-            {
-                if (!marker)
-                {
-                    marker = ObjectPoolManager.instance.CallObject("TargetMarker", null, Vector3.zero, Quaternion.identity);
-                }
-                else if (marker != null)
-                {
-                    marker.transform.parent = target.transform;
-                    marker.transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 4.5f, target.transform.position.z - 0.5f);
-                }
-            }
         }
     }
 

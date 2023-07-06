@@ -50,9 +50,10 @@ public class TargetSelector : MonoBehaviour
             canTarget = false;
             canLockOn = false;
         }
-        else if (!lockedOn)
+        else if (!lockedOn && !closest)
         {
             canTarget = true;
+            canLockOn = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Z)) 
@@ -64,6 +65,7 @@ public class TargetSelector : MonoBehaviour
 
                 if (canLockOn)
                 {
+                    Debug.Log("Lock On Traget");
                     AddLockOnMarker();
                     lockedOn = true;
                 }
