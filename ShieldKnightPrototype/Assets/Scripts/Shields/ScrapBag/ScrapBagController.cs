@@ -2,12 +2,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Basics.ObjectPool;
 
 public class ScrapBagController : MonoBehaviour
 {
     ShieldSelect select;
     AnimationController animControl;
     ShieldKnightController sk;
+    ScrapBagAnimationController scrapBagAnim;
 
     [Header("Vortex")]
     public float suctionSpeed, suctionRange;
@@ -22,6 +24,7 @@ public class ScrapBagController : MonoBehaviour
     public float shootForce, shotFrequency;
     [SerializeField] private float repeatShotDelay = 0;
     public Transform shootPoint;
+    GameObject smokeBurst;
 
     [Header("Rolling")]
     public Transform holdParent;
@@ -34,13 +37,14 @@ public class ScrapBagController : MonoBehaviour
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
 
-    public bool isAiming, enableVortex, isRolling;
+    public bool isAiming, enableVortex, isRolling, expellingScrap;
 
     private void Awake()
     {
         select = FindObjectOfType<ShieldSelect>();
         animControl= FindObjectOfType<AnimationController>();
-        sk = FindObjectOfType<ShieldKnightController>(); 
+        sk = FindObjectOfType<ShieldKnightController>();
+        scrapBagAnim = FindObjectOfType<ScrapBagAnimationController>();
 
         vortex = GetComponent<CapsuleCollider>();
         rollCollider = GetComponent<SphereCollider>();
@@ -53,6 +57,7 @@ public class ScrapBagController : MonoBehaviour
         vortex.height = suctionRange;
         vortex.center = new Vector3(0, 0, suctionRange/2 + 1);
         vortex.radius = 3;
+        vortexFX.SetActive(false);
 
         //Rolling
         transform.parent = holdParent; 
@@ -62,6 +67,7 @@ public class ScrapBagController : MonoBehaviour
         isAiming = false;
         enableVortex = false;
         isRolling = false;
+        expellingScrap = false;
     }
 
     // Update is called once per frame
@@ -81,17 +87,20 @@ public class ScrapBagController : MonoBehaviour
                 if (inBag.Count > 0)
                 {
                     isAiming = true;
+                    expellingScrap = true;
 
-                    if (Time.time >= repeatShotDelay)
+                    /*if (Time.time >= repeatShotDelay)
                     {
-                        Debug.Log("Shoot");
-                        ShootProjectile();
+                        Debug.Log("Shoot");                       
+                        //ShootProjectile();
                         repeatShotDelay = Time.time + 1 / shotFrequency;
                     }
+                    else expellingScrap = false;*/
                 }
                 else if (inBag.Count < 1)
                 {
                     isAiming = false;
+                    expellingScrap = false;
                 }
             }
 
@@ -123,6 +132,11 @@ public class ScrapBagController : MonoBehaviour
             }
         }
         else select.canChange = true;
+
+        if(expellingScrap)
+        {
+            scrapBagAnim.ChangeAnimationState(scrapBagAnim.expel);
+        }
         
         if (inBag.Count >= bagMaxCapacity)
         {
@@ -133,12 +147,18 @@ public class ScrapBagController : MonoBehaviour
         {
             vortex.enabled = true;
             vortexFX.SetActive(true);
+            scrapBagAnim.ChangeAnimationState(scrapBagAnim.suck);
         }
         else
         {
             vortex.enabled = false;
             vortexFX.SetActive(false);
             inVortex.Clear();
+        }
+
+        if(!expellingScrap && !enableVortex)
+        {
+            scrapBagAnim.ChangeAnimationState(scrapBagAnim.idle);
         }
 
         if (isRolling)
@@ -218,15 +238,18 @@ public class ScrapBagController : MonoBehaviour
         }
     }
 
-    void ShootProjectile()
+    public void ShootProjectile()
     {
         objectRB = inBag[0].GetComponent<Rigidbody>();
 
         objectRB.transform.position = shootPoint.position;
+        objectRB.transform.rotation = Quaternion.Euler(Vector3.zero);
         objectRB.isKinematic = false;
         objectRB.transform.parent = null;
         objectRB.transform.localScale = Vector3.one;
         objectRB.gameObject.SetActive(true);
+
+        smokeBurst = ObjectPoolManager.instance.CallObject("SmokeBurst", objectRB.transform, objectRB.transform.position, Quaternion.identity, 1);
 
         objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);
 

@@ -27,6 +27,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -89,6 +90,13 @@ MonoBehaviour:
   - objectToPool: {fileID: 6661881024213805056, guid: 93f33292c0d2e6a42a9cd6dcdaf69080,
       type: 3}
     stringID: ShieldProjectile
+    startCount: 3
+    activePool: []
+    inactivePool: []
+    parentTransform: {fileID: 0}
+  - objectToPool: {fileID: 7761021866606135360, guid: 58b0bcad847a0104888b4cedff427597,
+      type: 3}
+    stringID: Cloud_Burst
     startCount: 3
     activePool: []
     inactivePool: []
