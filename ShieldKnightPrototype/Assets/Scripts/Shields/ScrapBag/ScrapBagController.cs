@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Basics.ObjectPool;
+using UnityEngine.UI;
+using TMPro;
 
 public class ScrapBagController : MonoBehaviour
 {
@@ -25,6 +27,7 @@ public class ScrapBagController : MonoBehaviour
     [SerializeField] private float repeatShotDelay = 0;
     public Transform shootPoint;
     GameObject smokeBurst;
+    public TextMeshProUGUI scrapCounter;
 
     [Header("Rolling")]
     public Transform holdParent;
@@ -75,6 +78,8 @@ public class ScrapBagController : MonoBehaviour
     {
         ScaleControl();
 
+        scrapCounter.text = inBag.Count.ToString();
+
         if (!isRolling)
         {
             if (Input.GetButtonDown("Throw") && inBag.Count > 0)
@@ -84,7 +89,7 @@ public class ScrapBagController : MonoBehaviour
 
             if (Input.GetButton("Throw"))
             {
-                if (inBag.Count > 0)
+                if (inBag.Count > 0 && !enableVortex)
                 {
                     isAiming = true;
                     expellingScrap = true;
@@ -99,6 +104,8 @@ public class ScrapBagController : MonoBehaviour
                 }
                 else if (inBag.Count < 1)
                 {
+                    new WaitForSeconds(1);
+
                     isAiming = false;
                     expellingScrap = false;
                 }
@@ -106,7 +113,7 @@ public class ScrapBagController : MonoBehaviour
 
             if (Input.GetButton("Guard"))
             {
-                if (inBag.Count < bagMaxCapacity)
+                if (inBag.Count < bagMaxCapacity && !expellingScrap)
                 {
                     isAiming = true;
                     enableVortex = true;
