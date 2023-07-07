@@ -12,6 +12,7 @@ public class ScrapBagController : MonoBehaviour
     AnimationController animControl;
     ShieldKnightController sk;
     ScrapBagAnimationController scrapBagAnim;
+    TargetSelector ts;
 
     [Header("Vortex")]
     public float suctionSpeed, suctionRange;
@@ -48,6 +49,7 @@ public class ScrapBagController : MonoBehaviour
         animControl= FindObjectOfType<AnimationController>();
         sk = FindObjectOfType<ShieldKnightController>();
         scrapBagAnim = FindObjectOfType<ScrapBagAnimationController>();
+        ts = FindObjectOfType<TargetSelector>();
 
         vortex = GetComponent<CapsuleCollider>();
         rollCollider = GetComponent<SphereCollider>();

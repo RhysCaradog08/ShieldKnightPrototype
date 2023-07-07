@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4608288648347156761}
   - component: {fileID: 4900299008147383495}
+  - component: {fileID: 8386989058998691178}
   - component: {fileID: 3506334854818597306}
   - component: {fileID: 7159875904572468473}
   - component: {fileID: 698315720167530260}
@@ -35,7 +36,7 @@ Transform:
   - {fileID: 2650344117709275834}
   - {fileID: 4562167117944886669}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &4900299008147383495
 CharacterController:
@@ -63,6 +64,24 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8386989058998691178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385585061553561584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a222120ba9f2ac4381afea0daeeb46c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shield: {fileID: 0}
+  mushroom: {fileID: 0}
+  scrapBag: {fileID: 0}
+  hasShield: 0
+  hasMushroom: 0
+  hasScrap: 0
 --- !u!114 &3506334854818597306
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,8 +94,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b19cfce4849737f4c92ad343930a6e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shield: {fileID: 0}
-  mushroom: {fileID: 0}
   cc: {fileID: 0}
   speed: 0
   moveSpeed: 25
@@ -91,12 +108,12 @@ MonoBehaviour:
   jumpHeight: 10
   jumpSpeed: 20
   timeToJumpApex: 0.5
-  fallMultiplier: 1
   lowJumpMultiplier: 10
   hasJumped: 0
   isJumping: 0
   canPressSpace: 0
   buttonHeld: 0
+  isMoving: 0
   isThrowing: 0
   isBarging: 0
   isGuarding: 0
@@ -125,6 +142,8 @@ MonoBehaviour:
   guard: ShieldKnight_Guard
   parry: ShieldKnight_Parry
   slam: ShieldKnight_Slam
+  scrapBagAim: ScrapBag_Aim
+  scrapBagFloat: ScrapBag_Float
 --- !u!114 &698315720167530260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,9 +158,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: {fileID: 0}
   mushroom: {fileID: 0}
+  scrapBag: {fileID: 0}
   cam: {fileID: 0}
   player: {fileID: 0}
   aimTarget: {fileID: 0}
+  lockOnMarker: {fileID: 0}
   targetLocations: []
   range: 30
   targetAngle: 25
@@ -149,6 +170,9 @@ MonoBehaviour:
   ignoreLayers:
     serializedVersion: 2
     m_Bits: 72
+  canTarget: 0
+  canLockOn: 0
+  lockedOn: 0
 --- !u!1 &7621472561945570529
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,6 +884,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shield: {fileID: 0}
   mushroom: {fileID: 0}
+  scrapBag: {fileID: 0}
   parryBox: {fileID: 7621472561945570529}
 --- !u!1 &5417810433948702759 stripped
 GameObject:
@@ -882,4 +907,5 @@ MonoBehaviour:
   selectedShield: 0
   canChange: 0
   hasShield: 0
-  hasMushroom: 0
+  hasMushroomCap: 0
+  hasScrapBag: 0

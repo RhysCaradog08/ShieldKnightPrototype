@@ -4,10 +4,8 @@ using UnityEngine;
 
 public class ShieldKnightController : MonoBehaviour
 {
+    PlayerManager pm;
     AnimationController animControl;
-    StandardShieldController shield;
-    MushroomCapController mushroom;
-    ScrapBagController scrapBag;
 
     Camera cam;
     Transform camPos;
@@ -36,10 +34,8 @@ public class ShieldKnightController : MonoBehaviour
 
     private void Awake()
     {
+        pm = FindObjectOfType<PlayerManager>();
         animControl = FindObjectOfType<AnimationController>();
-        shield = FindObjectOfType<StandardShieldController>(); 
-        mushroom = FindObjectOfType<MushroomCapController>();
-        scrapBag = FindObjectOfType<ScrapBagController>();
 
         cc = GetComponent<CharacterController>();        
         cam = Camera.main;
@@ -135,14 +131,14 @@ public class ShieldKnightController : MonoBehaviour
                 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 cc.Move(moveDir.normalized * speed * Time.deltaTime);
 
-                if (!isJumping && !scrapBag.isAiming)
+                if (!isJumping && !pm.scrapBag.isAiming)
                 {
                     animControl.ChangeAnimationState(animControl.move);
                 }
             }
             else if (!isJumping && cc.isGrounded)
             {
-                if (!scrapBag.isAiming)
+                if (!pm.scrapBag.isAiming)
                 {
                     animControl.ChangeAnimationState(animControl.idle);
                 }
@@ -182,7 +178,7 @@ public class ShieldKnightController : MonoBehaviour
 
         if (Input.GetButtonUp("Throw"))
         {
-            if (!scrapBag.isActiveAndEnabled)
+            if (!pm.scrapBag.isActiveAndEnabled)
             {
                 if (!isBarging || !isGuarding || !isParrying || !isSlamming)
                 {
@@ -205,7 +201,7 @@ public class ShieldKnightController : MonoBehaviour
             }
             else if (!cc.isGrounded)
             {
-                if(!scrapBag.isActiveAndEnabled)
+                if(!pm.scrapBag.isActiveAndEnabled)
                 {
                     isSlamming = true;
                 }

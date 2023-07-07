@@ -4,30 +4,26 @@ using UnityEngine;
 
 public class EnableAnimationEvents : MonoBehaviour
 {
-    [SerializeField] StandardShieldController shield;
-    [SerializeField] MushroomCapController mushroom;
-    [SerializeField] ScrapBagController scrapBag;
+    PlayerManager pm;
     public GameObject parryBox;
 
     private void Awake()
     {
-        shield = FindObjectOfType<StandardShieldController>();
-        mushroom = FindObjectOfType<MushroomCapController>();
-        scrapBag = FindObjectOfType<ScrapBagController>();
+        pm = FindObjectOfType<PlayerManager>();
     }
 
     public void EnableThrowShield()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
     {
-        if (shield.isActiveAndEnabled)
+        if (pm.shield.isActiveAndEnabled)
         {
-            shield.canThrow = true;
+            pm.shield.canThrow = true;
         }
 
-        if(mushroom.isActiveAndEnabled) 
+        if(pm.mushroom.isActiveAndEnabled) 
         {
-            if (!mushroom.thrown)
+            if (!pm.mushroom.thrown)
             {
-                mushroom.canThrow = true;
+                pm.mushroom.canThrow = true;
             }
         }
     }
@@ -44,6 +40,6 @@ public class EnableAnimationEvents : MonoBehaviour
 
     public void ExpelScrap()
     {
-        scrapBag.ShootProjectile();
+        pm.scrapBag.ShootProjectile();
     }
 }
