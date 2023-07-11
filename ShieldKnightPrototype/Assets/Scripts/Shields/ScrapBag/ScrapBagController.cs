@@ -43,6 +43,8 @@ public class ScrapBagController : MonoBehaviour
 
     [Header("Parachute")]
     public float descentSpeed;
+    Vector3 parachutePos = new Vector3(0, -0.25f, -2);
+    Quaternion parachuteRot = Quaternion.Euler(12, 0, 0);
     public bool parachuteOpen;
 
     [Header("Scale")]
@@ -195,7 +197,12 @@ public class ScrapBagController : MonoBehaviour
 
         if (parachuteOpen)
         {
-            scrapBagAnim.ChangeAnimationState(scrapBagAnim.parachute);
+            Parachute();
+        }
+        else 
+        {
+            transform.localPosition = holdPos;
+            transform.localRotation = holdRot;
         }
 
         if(!expellingScrap && !enableVortex && !parachuteOpen)
@@ -299,6 +306,14 @@ public class ScrapBagController : MonoBehaviour
         {
             model.transform.Rotate(Vector3.up, rollSpeed * Time.deltaTime, Space.Self);
         }
+    }
+
+    void Parachute()
+    {
+        scrapBagAnim.ChangeAnimationState(scrapBagAnim.parachute);
+
+        transform.localPosition = parachutePos;
+        transform.localRotation = parachuteRot;
     }
 
     private void OnTriggerEnter(Collider other)

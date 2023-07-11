@@ -182,14 +182,14 @@ AnimatorState:
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
   m_TimeParameter: 
---- !u!1102 &-3388220658592619211
+--- !u!1102 &-3809378592497514168
 AnimatorState:
   serializedVersion: 6
   m_ObjectHideFlags: 1
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ScrapBag_Float
+  m_Name: ShieldKnight_Parachute
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -202,7 +202,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 6863708d17029c2449e0334269265541, type: 2}
+  m_Motion: {fileID: 7400000, guid: 4622302330ff4ed45b9b827872922c15, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -299,7 +299,7 @@ AnimatorStateMachine:
     m_State: {fileID: -4260451576655506852}
     m_Position: {x: 1000, y: 200, z: 0}
   - serializedVersion: 1
-    m_State: {fileID: -3388220658592619211}
+    m_State: {fileID: -3809378592497514168}
     m_Position: {x: 1000, y: 300, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions: []

@@ -119,6 +119,7 @@ public class ShieldKnightController : MonoBehaviour
             if(pm.hasScrapBag)
             {
                 velocity.y = pm.scrapBag.descentSpeed;
+                animControl.ChangeAnimationState(animControl.parachute);
             }
         }
 

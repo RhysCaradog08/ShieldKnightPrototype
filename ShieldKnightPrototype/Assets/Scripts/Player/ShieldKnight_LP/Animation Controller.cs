@@ -20,7 +20,7 @@ public class AnimationController : MonoBehaviour
 
     [Header("Scrap Bag Animations")]
     public string scrapBagAim = "ScrapBag_Aim";
-    public string scrapBagFloat = "ScrapBag_Float";
+    public string parachute = "ShieldKnight_Parachute";
 
 
     private void Awake()

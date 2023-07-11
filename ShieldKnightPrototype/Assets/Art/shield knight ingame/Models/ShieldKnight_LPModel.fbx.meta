@@ -83,11 +83,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: PoseLib
-      takeName: PoseLib
+      name: ShieldKnight_Parachute
+      takeName: ShieldKnight_Parachute
       internalID: 4376693675098876757
       firstFrame: 0
-      lastFrame: 1
+      lastFrame: 10
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
