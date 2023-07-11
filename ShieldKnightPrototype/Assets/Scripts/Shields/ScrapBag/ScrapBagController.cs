@@ -22,13 +22,15 @@ public class ScrapBagController : MonoBehaviour
     CapsuleCollider vortex;
     Rigidbody objectRB;
     [SerializeField] GameObject vortexFX;
+    public bool isAiming, enableVortex;
 
-    [Header("Shoot Projectile")]
+    [Header("Shoot Scrap")]
     public float shootForce, shotFrequency;
     [SerializeField] private float repeatShotDelay = 0;
     public Transform shootPoint;
     GameObject smokeBurst;
     public TextMeshProUGUI scrapCounter;
+    public bool expellingScrap;
 
     [Header("Rolling")]
     public Transform holdParent;
@@ -37,14 +39,14 @@ public class ScrapBagController : MonoBehaviour
     Quaternion holdRot = Quaternion.Euler(-90, 90, 0), rollRot = Quaternion.Euler(0, -90, 0);
     [SerializeField] SphereCollider rollCollider;
     public float rollSpeed;
+    public bool isRolling;
 
     [Header("Parachute")]
     public float descentSpeed;
+    public bool parachuteOpen;
 
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
-
-    public bool isAiming, enableVortex, isRolling, expellingScrap;
 
     private void Awake()
     {
@@ -66,16 +68,20 @@ public class ScrapBagController : MonoBehaviour
         vortex.center = new Vector3(0, 0, suctionRange/2 + 1);
         vortex.radius = 3;
         vortexFX.SetActive(false);
+        enableVortex = false;
+        isAiming = false;
 
         //Rolling
         transform.parent = holdParent; 
         transform.localPosition = holdPos;
         transform.localRotation = holdRot;
-
-        isAiming = false;
-        enableVortex = false;
         isRolling = false;
+
+        //Shooting Scrap
         expellingScrap = false;
+
+        //Parachute
+        parachuteOpen = false;
     }
 
     // Update is called once per frame
@@ -132,6 +138,12 @@ public class ScrapBagController : MonoBehaviour
             isRolling = !isRolling;
         }
 
+        if (!sk.cc.isGrounded && Input.GetButton("Guard"))
+        {
+            parachuteOpen = true;
+        }
+        else parachuteOpen = false;
+
         if (isAiming)
         {
             animControl.ChangeAnimationState(animControl.scrapBagAim);
@@ -165,11 +177,6 @@ public class ScrapBagController : MonoBehaviour
             inVortex.Clear();
         }
 
-        if(!expellingScrap && !enableVortex)
-        {
-            scrapBagAnim.ChangeAnimationState(scrapBagAnim.idle);
-        }
-
         if (isRolling)
         {
             rollCollider.enabled = true;
@@ -186,7 +193,17 @@ public class ScrapBagController : MonoBehaviour
             sk.transform.position = sk.transform.position;
         }
 
-        if (isAiming || isRolling)
+        if (parachuteOpen)
+        {
+            scrapBagAnim.ChangeAnimationState(scrapBagAnim.parachute);
+        }
+
+        if(!expellingScrap && !enableVortex && !parachuteOpen)
+        {
+            scrapBagAnim.ChangeAnimationState(scrapBagAnim.idle);
+        }
+
+        if (isAiming || isRolling || parachuteOpen)
         {
             select.canChange = false;
         }

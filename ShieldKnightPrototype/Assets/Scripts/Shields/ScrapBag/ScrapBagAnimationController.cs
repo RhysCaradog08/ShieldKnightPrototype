@@ -11,6 +11,7 @@ public class ScrapBagAnimationController : MonoBehaviour
     public string idle = "ScrapBag_Idle";
     public string suck = "ScrapBag_Suck";
     public string expel = "ScrapBag_Expel";
+    public string parachute = "ScrapBag_Parachute";
 
     private void Awake()
     {
