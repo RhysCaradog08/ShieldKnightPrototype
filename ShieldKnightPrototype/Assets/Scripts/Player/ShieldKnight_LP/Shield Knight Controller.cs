@@ -30,7 +30,7 @@ public class ShieldKnightController : MonoBehaviour
     public bool buttonHeld;
 
     [Header("Action Booleans")]
-    public bool isMoving,isThrowing, isBarging, isGuarding, isParrying, isSlamming;
+    public bool isMoving,isThrowing, isBarging, isGuarding, isParrying, isSlamming, parachuteOpen;
 
     private void Awake()
     {
@@ -64,6 +64,7 @@ public class ShieldKnightController : MonoBehaviour
         isGuarding = false;
         isParrying = false;
         isSlamming = false;
+        parachuteOpen = false;
     }
 
     // Update is called once per frame
@@ -114,13 +115,19 @@ public class ShieldKnightController : MonoBehaviour
             isJumping = false;
         }
 
-        if(!cc.isGrounded && Input.GetButton("Guard"))
+        if (!cc.isGrounded && Input.GetButton("Guard"))
         {
-            if(pm.hasScrapBag)
+            if (pm.hasScrapBag)
             {
-                velocity.y = pm.scrapBag.descentSpeed;
-                animControl.ChangeAnimationState(animControl.parachute);
+                parachuteOpen = true;               
             }
+        }
+        else parachuteOpen = false;
+
+        if(parachuteOpen)
+        {
+            velocity.y = pm.scrapBag.descentSpeed;
+            animControl.ChangeAnimationState(animControl.parachute);
         }
 
         if (isThrowing || isBarging || isGuarding || isParrying || isSlamming)
@@ -140,7 +147,7 @@ public class ShieldKnightController : MonoBehaviour
                 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 cc.Move(moveDir.normalized * speed * Time.deltaTime);
 
-                if (!isJumping && !pm.scrapBag.isAiming)
+                if (!isJumping && !pm.scrapBag.isAiming && !parachuteOpen)
                 {
                     animControl.ChangeAnimationState(animControl.move);
                 }
