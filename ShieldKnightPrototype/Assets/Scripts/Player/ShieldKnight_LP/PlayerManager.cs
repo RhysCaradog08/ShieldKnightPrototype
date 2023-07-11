@@ -5,38 +5,43 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     public StandardShieldController shield;
-    public MushroomCapController mushroom;
+    public MushroomCapController mushroomCap;
     public ScrapBagController scrapBag;
 
-    public bool hasShield, hasMushroom, hasScrap;
+    public bool hasShield, hasMushroomCap, hasScrapBag;
 
     // Start is called before the first frame update
     void Start()
     {
-        shield = FindObjectOfType<StandardShieldController>();
+        /*shield = FindObjectOfType<StandardShieldController>();
         mushroom = FindObjectOfType<MushroomCapController>();
-        scrapBag = FindObjectOfType<ScrapBagController>();
+        scrapBag = FindObjectOfType<ScrapBagController>();*/
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(shield.isActiveAndEnabled)
+       ShieldCheck();
+    }
+
+    void ShieldCheck()
+    {
+        if (shield.isActiveAndEnabled)
         {
             hasShield = true;
         }
         else hasShield = false;
 
-        if (mushroom.isActiveAndEnabled)
+        if (mushroomCap.isActiveAndEnabled)
         {
-            hasMushroom = true;
+            hasMushroomCap = true;
         }
-        else hasMushroom = false;
+        else hasMushroomCap = false;
 
         if (scrapBag.isActiveAndEnabled)
         {
-            hasScrap = true;
+            hasScrapBag = true;
         }
-        else hasScrap= false;
+        else hasScrapBag = false;
     }
 }

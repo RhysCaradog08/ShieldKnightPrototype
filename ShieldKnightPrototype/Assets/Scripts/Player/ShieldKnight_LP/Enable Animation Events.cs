@@ -14,16 +14,16 @@ public class EnableAnimationEvents : MonoBehaviour
 
     public void EnableThrowShield()  //Sets canThrow bool in ShieldController for animation event in Throw animation.
     {
-        if (pm.shield.isActiveAndEnabled)
+        if (pm.hasShield)
         {
             pm.shield.canThrow = true;
         }
 
-        if(pm.mushroom.isActiveAndEnabled) 
+        if(pm.hasMushroomCap) 
         {
-            if (!pm.mushroom.thrown)
+            if (!pm.mushroomCap.thrown)
             {
-                pm.mushroom.canThrow = true;
+                pm.mushroomCap.canThrow = true;
             }
         }
     }

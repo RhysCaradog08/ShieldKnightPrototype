@@ -4,23 +4,12 @@ using UnityEngine;
 
 public class ShieldSelect : MonoBehaviour
 {
-    StandardShieldController shield;
-    MushroomCapController mushroom;
-    ScrapBagController scrapBag;
-
     public int selectedShield = 0;
     public bool canChange;
-
-    [Header("Shield Booleans")]
-    public bool hasShield, hasMushroomCap, hasScrapBag;
 
     // Start is called before the first frame update
     void Start()
     {
-        shield = FindObjectOfType<StandardShieldController>();
-        mushroom = FindObjectOfType<MushroomCapController>();
-        scrapBag = FindObjectOfType<ScrapBagController>();
-
         SelectShield();
         canChange = true;     
     }
@@ -28,24 +17,6 @@ public class ShieldSelect : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (shield.gameObject.activeInHierarchy)
-        {
-            hasShield = true;
-        }
-        else hasShield = false;
-
-        if (mushroom.gameObject.activeInHierarchy)
-        {
-            hasMushroomCap = true;
-        }
-        else hasMushroomCap = false;
-
-        if (scrapBag.gameObject.activeInHierarchy)
-        {
-            hasScrapBag = true;
-        }
-        else hasScrapBag = false;
-
         int previousWeapon = selectedShield;
 
         if (Input.GetKeyDown(KeyCode.Tab))

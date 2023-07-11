@@ -8,6 +8,7 @@ public class StandardShieldController : MonoBehaviour
 {
     [SerializeField] ShieldKnightController sk;
     TargetSelector ts;
+    ShieldSelect select;
 
     public LayerMask ignoreLayer;
 
@@ -46,6 +47,7 @@ public class StandardShieldController : MonoBehaviour
     {
         sk = FindObjectOfType<ShieldKnightController>();
         ts = FindObjectOfType<TargetSelector>();
+        select = FindObjectOfType<ShieldSelect>();
 
         shieldRB = GetComponentInChildren<Rigidbody>();
 
@@ -236,10 +238,16 @@ public class StandardShieldController : MonoBehaviour
         }
         else sk.isGuarding = false;
 
-        if(sk.stopTime > 0 && !sk.isThrowing)
+        if (sk.stopTime > 0 && !sk.isThrowing)
         {
             sk.isParrying = true;
         }
+    
+        if (thrown || sk.isSlamming || sk.isBarging || sk.isParrying || sk.isGuarding) 
+        {
+            select.canChange = false;
+        }
+        else select.canChange = true;
     }
 
     void NonTargetThrow()  //Throws Shield in players forward vector if no targets are identified.

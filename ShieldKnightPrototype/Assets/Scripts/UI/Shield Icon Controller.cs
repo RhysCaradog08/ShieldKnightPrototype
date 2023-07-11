@@ -4,33 +4,33 @@ using UnityEngine;
 
 public class ShieldIconsController : MonoBehaviour
 {
-    ShieldSelect select;
+    PlayerManager pm;
 
     [SerializeField] GameObject shieldIcon, mushroomIcon, scrapIcon;
 
     void Start()
     {
-        select = FindObjectOfType<ShieldSelect>();
+        pm = FindObjectOfType<PlayerManager>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (select.hasShield)
+        if (pm.hasShield)
         {
             shieldIcon.SetActive(true);
             mushroomIcon.SetActive(false);
             scrapIcon.SetActive(false);
         }
 
-        if (select.hasMushroomCap)
+        if (pm.hasMushroomCap)
         {
             shieldIcon.SetActive(false);
             mushroomIcon.SetActive(true);
             scrapIcon.SetActive(false);
         }
 
-        if (select.hasScrapBag)
+        if (pm.hasScrapBag)
         {
             shieldIcon.SetActive(false);
             mushroomIcon.SetActive(false);
