@@ -38,6 +38,9 @@ public class ScrapBagController : MonoBehaviour
     [SerializeField] SphereCollider rollCollider;
     public float rollSpeed;
 
+    [Header("Parachute")]
+    public float descentSpeed;
+
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
 

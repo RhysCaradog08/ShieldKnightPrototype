@@ -114,6 +114,14 @@ public class ShieldKnightController : MonoBehaviour
             isJumping = false;
         }
 
+        if(!cc.isGrounded && Input.GetButton("Guard"))
+        {
+            if(pm.hasScrapBag)
+            {
+                velocity.y = pm.scrapBag.descentSpeed;
+            }
+        }
+
         if (isThrowing || isBarging || isGuarding || isParrying || isSlamming)
         {
             canMove = false;
