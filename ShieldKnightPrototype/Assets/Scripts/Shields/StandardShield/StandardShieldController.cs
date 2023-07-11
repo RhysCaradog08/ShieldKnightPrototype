@@ -243,7 +243,7 @@ public class StandardShieldController : MonoBehaviour
             sk.isParrying = true;
         }
     
-        if (thrown || sk.isSlamming || sk.isBarging || sk.isParrying || sk.isGuarding) 
+        if (thrown || sk.isBarging || sk.isParrying || sk.isGuarding || sk.isSlamming) 
         {
             select.canChange = false;
         }

@@ -84,10 +84,10 @@ public class ScrapBagController : MonoBehaviour
 
         if (!isRolling)
         {
-            if (Input.GetButtonDown("Throw") && inBag.Count > 0)
+            /*if (Input.GetButtonDown("Throw") && inBag.Count > 0)
             {
                 repeatShotDelay = Time.time + 0.25f / shotFrequency;
-            }
+            }*/
 
             if (Input.GetButton("Throw"))
             {
@@ -113,7 +113,7 @@ public class ScrapBagController : MonoBehaviour
                 }
             }
 
-            if (Input.GetButton("Guard"))
+            if (Input.GetButton("Guard") && sk.cc.isGrounded)
             {
                 if (inBag.Count < bagMaxCapacity && !expellingScrap)
                 {
@@ -131,8 +131,6 @@ public class ScrapBagController : MonoBehaviour
 
         if (isAiming)
         {
-            select.canChange = false;
-
             animControl.ChangeAnimationState(animControl.scrapBagAim);
 
             if (Input.GetButtonUp("Throw") || Input.GetButtonUp("Guard"))
@@ -140,7 +138,6 @@ public class ScrapBagController : MonoBehaviour
                 isAiming = false;
             }
         }
-        else select.canChange = true;
 
         if(expellingScrap)
         {
@@ -172,15 +169,11 @@ public class ScrapBagController : MonoBehaviour
 
         if (isRolling)
         {
-            select.canChange = false;
-
             rollCollider.enabled = true;
             Rolling();
         }
         else
         {
-            select.canChange = true;
-
             rollCollider.enabled = false;
 
             transform.parent = holdParent;
@@ -189,6 +182,12 @@ public class ScrapBagController : MonoBehaviour
 
             sk.transform.position = sk.transform.position;
         }
+
+        if (isAiming || isRolling)
+        {
+            select.canChange = false;
+        }
+        else select.canChange = true;
     }
 
     void ScaleControl()

@@ -259,7 +259,6 @@ public class MushroomCapController : MonoBehaviour
 
         if (isBouncePad)
         {
-            select.canChange = false;
             BouncePad();
 
             if(Input.GetButtonDown("Throw") || Input.GetButtonDown("Barge") || Input.GetButtonDown("Guard"))
@@ -268,15 +267,6 @@ public class MushroomCapController : MonoBehaviour
                 bouncePadDelay = 1;
                 StartCoroutine(RecallShield());
             }
-        }
-        else if (!isBouncePad)
-        {
-            select.canChange = true;
-        }
-
-        if(isThrowingBP)
-        {
-            select.canChange = false;
         }
 
         if (sk.isSlamming)
@@ -309,6 +299,11 @@ public class MushroomCapController : MonoBehaviour
             }
         }
 
+        if (thrown || isThrowingBP || isBouncePad || sk.isGuarding || sk.isSlamming) 
+        {
+            select.canChange = false;
+        }
+        else select.canChange = true;
     }
 
     void SortTargetsByDistance()
