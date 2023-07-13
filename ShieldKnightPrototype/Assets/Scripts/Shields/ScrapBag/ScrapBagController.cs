@@ -278,13 +278,15 @@ public class ScrapBagController : MonoBehaviour
         objectRB = inBag[0].GetComponent<Rigidbody>();
 
         objectRB.transform.position = shootPoint.position;
-        objectRB.transform.rotation = Quaternion.Euler(Vector3.zero);
+        //objectRB.transform.rotation = Quaternion.Euler(0, 0, -90);
         objectRB.isKinematic = false;
         objectRB.transform.parent = null;
         objectRB.transform.localScale = Vector3.one;
         objectRB.gameObject.SetActive(true);
 
-        smokeBurst = ObjectPoolManager.instance.CallObject("SmokeBurst", objectRB.transform, objectRB.transform.position, Quaternion.identity, 1);
+
+        Vector3 smokeDirection = transform.position - objectRB.transform.position;
+        smokeBurst = ObjectPoolManager.instance.CallObject("SmokeBurst", objectRB.transform, objectRB.transform.position, Quaternion.LookRotation(smokeDirection, objectRB.transform.up), 1);
 
         objectRB.AddForce(transform.forward * shootForce, ForceMode.Impulse);
 
