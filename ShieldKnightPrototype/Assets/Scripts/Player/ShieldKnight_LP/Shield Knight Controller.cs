@@ -5,7 +5,7 @@ using UnityEngine;
 public class ShieldKnightController : MonoBehaviour
 {
     PlayerManager pm;
-    AnimationController animControl;
+    public AnimationController animControl;
 
     Camera cam;
     Transform camPos;
@@ -24,13 +24,13 @@ public class ShieldKnightController : MonoBehaviour
     public float jumpHeight, jumpSpeed, timeToJumpApex, lowJumpMultiplier;
     public bool hasJumped, isJumping, canPressSpace;
 
-    [Header("Button Press Check")]
+    [Header("Button Held Check")]
     const float minButtonHold = 0.25f;
     float buttonHeldTime;
     public bool buttonHeld;
 
     [Header("Action Booleans")]
-    public bool isMoving,isThrowing, isBarging, isGuarding, isParrying, isSlamming, parachuteOpen;
+    public bool isMoving, isThrowing, isBarging, isGuarding, isParrying, isSlamming, parachuteOpen;
 
     private void Awake()
     {
@@ -194,7 +194,7 @@ public class ShieldKnightController : MonoBehaviour
 
         if (Input.GetButtonUp("Throw"))
         {
-            if (!pm.scrapBag.isActiveAndEnabled)
+            if (!pm.hasScrapBag)
             {
                 if (!isBarging || !isGuarding || !isParrying || !isSlamming)
                 {
@@ -205,8 +205,17 @@ public class ShieldKnightController : MonoBehaviour
                     }
                 }
             }
-        }
 
+            if(pm.hasScrapBag)
+            {
+                if(pm.scrapBag.swipingBag && !isThrowing)
+                {
+                    Debug.Log("Swipe Bag");
+                    isThrowing = true;
+                    stopTime = 0.5f;
+                }
+            }
+        }
 
         if (Input.GetButtonDown("Guard")) //&& cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
         {

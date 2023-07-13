@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 5397800436538418797}
   - component: {fileID: 7775973940537690546}
   - component: {fileID: 2017296420}
+  - component: {fileID: 9161222730571873193}
   m_Layer: 0
   m_Name: Scrap Bag
   m_TagString: Untagged
@@ -66,7 +67,7 @@ Transform:
   - {fileID: 5628878730911971254}
   - {fileID: 1317736041}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8630378249688887446
 MonoBehaviour:
@@ -86,17 +87,27 @@ MonoBehaviour:
   inBag: []
   bagMaxCapacity: 5
   vortexFX: {fileID: 6036832587673902224}
+  isAiming: 0
+  enableVortex: 0
   shootForce: 100
   shotFrequency: 1.5
   repeatShotDelay: 0
   shootPoint: {fileID: 1317736041}
+  scrapCounter: {fileID: 0}
+  expellingScrap: 0
   holdParent: {fileID: 0}
   model: {fileID: 4996211405732588812}
+  holdPos: {x: 0, y: 0.05, z: -1}
+  rollPos: {x: 0, y: 0, z: 0}
+  skRollPos: {x: 0, y: 0, z: 0}
   rollCollider: {fileID: 0}
   rollSpeed: 500
-  isAiming: 0
-  enableVortex: 0
   isRolling: 0
+  descentSpeed: 0
+  parachuteOpen: 0
+  swipeTrigger: {fileID: 0}
+  swipingBag: 0
+  buttonHeld: 0
 --- !u!114 &5397800436538418797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -114,6 +125,7 @@ MonoBehaviour:
   idle: ScrapBag_Idle
   suck: ScrapBag_Suck
   expel: ScrapBag_Expel
+  parachute: ScrapBag_Parachute
 --- !u!135 &7775973940537690546
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -158,6 +170,27 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &9161222730571873193
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3292924875839792263}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 5, y: 5, z: 5}
+  m_Center: {x: -1, y: -1, z: 0}
 --- !u!1001 &5302832553143504989
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -528,6 +561,26 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5473358570193990168, guid: a4363840987a5144fb6c99dca2a4b7cb,
         type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.4777146
+      objectReference: {fileID: 0}
+    - target: {fileID: 5473358570193990168, guid: a4363840987a5144fb6c99dca2a4b7cb,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.47771424
+      objectReference: {fileID: 0}
+    - target: {fileID: 5473358570193990168, guid: a4363840987a5144fb6c99dca2a4b7cb,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.52133393
+      objectReference: {fileID: 0}
+    - target: {fileID: 5473358570193990168, guid: a4363840987a5144fb6c99dca2a4b7cb,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.52133375
+      objectReference: {fileID: 0}
+    - target: {fileID: 5473358570193990168, guid: a4363840987a5144fb6c99dca2a4b7cb,
+        type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 89.98021
       objectReference: {fileID: 0}
@@ -661,9 +714,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de86bc6138ae70a42bd16bdd453d9ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shield: {fileID: 0}
-  mushroom: {fileID: 0}
-  scrapBag: {fileID: 0}
   parryBox: {fileID: 0}
 --- !u!4 &5628878730911971254 stripped
 Transform:

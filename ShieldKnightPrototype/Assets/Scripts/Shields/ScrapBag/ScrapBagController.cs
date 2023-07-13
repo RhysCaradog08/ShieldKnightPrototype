@@ -35,7 +35,7 @@ public class ScrapBagController : MonoBehaviour
     [Header("Rolling")]
     public Transform holdParent;
     public GameObject model;
-    Vector3 holdPos = new Vector3(0, 0.05f, -1), rollPos, skRollPos;
+    [SerializeField] Vector3 holdPos = new Vector3(0, 0.05f, -1), rollPos, skRollPos;
     Quaternion holdRot = Quaternion.Euler(-90, 90, 0), rollRot = Quaternion.Euler(0, -90, 0);
     [SerializeField] SphereCollider rollCollider;
     public float rollSpeed;
@@ -47,8 +47,17 @@ public class ScrapBagController : MonoBehaviour
     Quaternion parachuteRot = Quaternion.Euler(12, 0, 0);
     public bool parachuteOpen;
 
+    [Header("Bag Swipe")]
+    [SerializeField] BoxCollider swipeTrigger;
+    public bool swipingBag;
+
     [Header("Scale")]
     Vector3 bagEmptyScale = Vector3.one;
+
+    [Header("Button Held Check")]
+    const float minButtonHold = 0.1f;
+    float buttonHeldTime;
+    public bool buttonHeld;
 
     private void Awake()
     {
@@ -60,6 +69,7 @@ public class ScrapBagController : MonoBehaviour
 
         vortex = GetComponent<CapsuleCollider>();
         rollCollider = GetComponent<SphereCollider>();
+        swipeTrigger = GetComponent<BoxCollider>();
     }
 
     // Start is called before the first frame update
@@ -84,6 +94,10 @@ public class ScrapBagController : MonoBehaviour
 
         //Parachute
         parachuteOpen = false;
+
+        //Swiping Bag
+        swipingBag = false;
+        swipeTrigger.enabled = false;
     }
 
     // Update is called once per frame
@@ -95,13 +109,12 @@ public class ScrapBagController : MonoBehaviour
 
         if (!isRolling)
         {
-            /*if (Input.GetButtonDown("Throw") && inBag.Count > 0)
-            {
-                repeatShotDelay = Time.time + 0.25f / shotFrequency;
-            }*/
+            ButtonHeldCheck();
 
-            if (Input.GetButton("Throw"))
+            if (buttonHeld)
             {
+                swipingBag = false;
+
                 if (inBag.Count > 0 && !enableVortex)
                 {
                     isAiming = true;
@@ -124,15 +137,24 @@ public class ScrapBagController : MonoBehaviour
                 }
             }
 
-            if (Input.GetButton("Guard") && sk.cc.isGrounded)
+            if (sk.cc.isGrounded)
             {
-                if (inBag.Count < bagMaxCapacity && !expellingScrap)
+                if (Input.GetButtonDown("Throw") && inBag.Count < 1)
                 {
-                    isAiming = true;
-                    enableVortex = true;
+                    swipeTrigger.enabled = true;
+                    swipingBag = true;
                 }
+
+                if (Input.GetButton("Guard"))
+                {
+                    if (inBag.Count < bagMaxCapacity && !expellingScrap)
+                    {
+                        isAiming = true;
+                        enableVortex = true;
+                    }
+                }
+                else enableVortex = false;
             }
-            else enableVortex = false;
         }
 
         if (Input.GetButtonDown("Barge") && !isAiming)
@@ -189,8 +211,6 @@ public class ScrapBagController : MonoBehaviour
             rollCollider.enabled = false;
 
             transform.parent = holdParent;
-            transform.localPosition = holdPos;
-            transform.localRotation = holdRot;
 
             sk.transform.position = sk.transform.position;
         }
@@ -199,18 +219,29 @@ public class ScrapBagController : MonoBehaviour
         {
             Parachute();
         }
-        else 
+
+        if (swipingBag)
         {
-            transform.localPosition = holdPos;
-            transform.localRotation = holdRot;
+            transform.rotation = Quaternion.Euler(0, -90, -180);
+
+            if (inBag.Count > 0)
+            {
+                swipeTrigger.enabled = false;
+            }
         }
 
-        if(!expellingScrap && !enableVortex && !parachuteOpen)
+        if (!expellingScrap && !enableVortex && !parachuteOpen && !swipingBag)
         {
             scrapBagAnim.ChangeAnimationState(scrapBagAnim.idle);
+
+            if (!isRolling)
+            {
+                transform.localPosition = holdPos;
+                transform.localRotation = holdRot;
+            }
         }
 
-        if (isAiming || isRolling || parachuteOpen)
+        if (isAiming || isRolling || parachuteOpen || swipingBag)
         {
             select.canChange = false;
         }
@@ -223,19 +254,19 @@ public class ScrapBagController : MonoBehaviour
         {
            transform.localScale = bagEmptyScale;
            rollPos = new Vector3(0, -3, 0);
-           skRollPos = new Vector3(transform.position.x, 4.5f, transform.position.z);
+           skRollPos = new Vector3(sk.transform.position.x, 4.5f, sk.transform.position.z);
         }
         else if (inBag.Count > bagMaxCapacity / 2 && inBag.Count < bagMaxCapacity - 1)
         {
             transform.localScale = bagEmptyScale * 1.5f;
             rollPos = new Vector3(0, -3.5f, 0);
-            skRollPos = new Vector3(transform.position.x, 5.5f, transform.position.z);
+            skRollPos = new Vector3(sk.transform.position.x, 5.5f, sk.transform.position.z);
         }
         else if (inBag.Count > bagMaxCapacity - 1)
         {
             transform.localScale = bagEmptyScale * 2;
             rollPos = rollPos = new Vector3(0, -4, 0);
-            skRollPos = new Vector3(transform.position.x, 6.5f, transform.position.z);
+            skRollPos = new Vector3(sk.transform.position.x, 6.5f, sk.transform.position.z);
         }
     }
 
@@ -278,7 +309,6 @@ public class ScrapBagController : MonoBehaviour
         objectRB = inBag[0].GetComponent<Rigidbody>();
 
         objectRB.transform.position = shootPoint.position;
-        //objectRB.transform.rotation = Quaternion.Euler(0, 0, -90);
         objectRB.isKinematic = false;
         objectRB.transform.parent = null;
         objectRB.transform.localScale = Vector3.one;
@@ -294,13 +324,18 @@ public class ScrapBagController : MonoBehaviour
         {
             inBag.Remove(objectRB);
         }
+
+        if(!inBag.Contains(objectRB))
+        {
+            objectRB = null;
+        }
     }
 
     void Rolling()
     {
         transform.parent = transform.root;
         transform.localPosition = rollPos;
-        transform.localRotation = rollRot; 
+        transform.localRotation = rollRot;
 
         sk.transform.position = skRollPos;
 
@@ -318,10 +353,52 @@ public class ScrapBagController : MonoBehaviour
         transform.localRotation = parachuteRot;
     }
 
+    void BagSwipe()
+    {
+        swipeTrigger.enabled = true;
+
+        transform.rotation = Quaternion.Euler(0, -90, -180);
+    }
+
+    void ButtonHeldCheck()
+    {
+        if (Input.GetButtonDown("Throw"))//Button is pressed down. Need to check to see if it is "held".
+        {
+            if (sk.cc.isGrounded && sk.stopTime <= 0)
+            {
+                buttonHeldTime = Time.timeSinceLevelLoad;
+                buttonHeld = false;
+            }
+        }
+        else if (Input.GetButtonUp("Throw") && sk.cc.isGrounded)
+        {
+            if (!buttonHeld)//If button is released without being held.
+            {
+                sk.stopTime = 0.5f;
+            }
+            buttonHeld = false;
+        }
+
+        if (Input.GetButton("Throw") && sk.cc.isGrounded)
+        {
+            if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
+            {
+                buttonHeld = true;
+            }
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<Rigidbody>() != null)
         {
+            if (swipeTrigger.enabled)
+            {
+                if(inBag.Contains(other.GetComponent<Rigidbody>()) && inBag.Count < 1)
+                {
+                    inBag.Add(other.GetComponent<Rigidbody>());
+                }
+            }
             if (!inVortex.Contains(other.GetComponent<Rigidbody>()))
             {
                 inVortex.Add(other.GetComponent<Rigidbody>());               
@@ -347,4 +424,6 @@ public class ScrapBagController : MonoBehaviour
             }
         }
     }
+
+
 }

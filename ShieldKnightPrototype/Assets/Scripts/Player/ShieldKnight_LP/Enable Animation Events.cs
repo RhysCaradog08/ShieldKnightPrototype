@@ -42,4 +42,17 @@ public class EnableAnimationEvents : MonoBehaviour
     {
         pm.scrapBag.ShootProjectile();
     }
+
+    public void StopSwipingBag()
+    {
+        if (pm.hasScrapBag)
+        {
+            if (pm.scrapBag.swipingBag)
+            {
+                new WaitForSeconds(1);
+
+                pm.scrapBag.swipingBag = false;
+            }
+        }
+    }
 }
