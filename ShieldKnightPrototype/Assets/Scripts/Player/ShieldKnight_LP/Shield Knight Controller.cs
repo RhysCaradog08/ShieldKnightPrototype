@@ -232,9 +232,9 @@ public class ShieldKnightController : MonoBehaviour
                 }
             }
         }
-        else if (Input.GetButtonUp("Guard") && cc.isGrounded)
+        else if (Input.GetButtonUp("Guard")) // && cc.isGrounded)
         {
-            if (!buttonHeld)//If button is released without being held.
+            if (!buttonHeld && cc.isGrounded)//If button is released without being held.
             {
                 stopTime = 0.5f;
             }
