@@ -124,16 +124,7 @@ public class ShieldKnightController : MonoBehaviour
             isJumping = false;
         }
 
-        if (!cc.isGrounded && Input.GetButton("Guard"))
-        {
-            if (pm.hasScrapBag)
-            {
-                parachuteOpen = true;               
-            }
-        }
-        else parachuteOpen = false;
-
-        if(parachuteOpen)
+        if(pm.scrapBag.parachuteOpen)
         {
             velocity.y = pm.scrapBag.descentSpeed;
             animControl.ChangeAnimationState(animControl.parachute);
@@ -156,14 +147,14 @@ public class ShieldKnightController : MonoBehaviour
                 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
                 cc.Move(moveDir.normalized * speed * Time.deltaTime);
 
-                if (!isJumping && !pm.scrapBag.isAiming && !parachuteOpen)
+                if (!isJumping && !pm.scrapBag.isAiming && !pm.scrapBag.parachuteOpen)
                 {
                     animControl.ChangeAnimationState(animControl.move);
                 }
             }
             else if (!isJumping && cc.isGrounded)
             {
-                if (!pm.scrapBag.isAiming || !pm.shield.shieldSlamming)
+                if (!pm.scrapBag.isAiming && !pm.shield.shieldSlamming)
                 {
                     animControl.ChangeAnimationState(animControl.idle);
                 }
@@ -185,7 +176,7 @@ public class ShieldKnightController : MonoBehaviour
     {
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
         {
-                canPressSpace = true;
+            canPressSpace = true;
         }
 
         if (cc.isGrounded)

@@ -164,7 +164,10 @@ public class ScrapBagController : MonoBehaviour
 
         if (!sk.cc.isGrounded && Input.GetButton("Guard"))
         {
-            parachuteOpen = true;
+            if (inBag.Count < 1)
+            {
+                parachuteOpen = true;
+            }           
         }
         else parachuteOpen = false;
 
