@@ -34,13 +34,6 @@ public class MushroomCapController : MonoBehaviour
     float lerpTime = 1f;
     [SerializeField] MeshCollider meshCol;
 
-    [Header("Slam")]
-    public float distToGround, slamForce,  slamRadius, damageDelay;
-    GameObject slamStars;
-    Transform squashedObject;
-    [SerializeField] List<Transform> slamObjects = new List<Transform>();
-    public bool mushroomSlamming, showSlamVFX;
-
     [Header("Bounce")]
     public float bounceHeight, bounceTime;
     public bool isBouncing;
@@ -78,10 +71,6 @@ public class MushroomCapController : MonoBehaviour
         //Bounce Pad
         isBouncePad = false;
         isBouncing = true;
-
-        //Slamming
-        mushroomSlamming = false;
-        showSlamVFX = false;
     }
 
     // Update is called once per frame
@@ -281,34 +270,6 @@ public class MushroomCapController : MonoBehaviour
         if (sk.isSlamming)
         {
             mcAnim.ChangeAnimationState(mcAnim.slam);
-
-            //sk.isSlamming = true;
-            sk.velocity.y = -slamForce;
-
-            RaycastHit hit;
-
-            if (Physics.Raycast(transform.position, -sk.transform.up, out hit))
-            {
-                distToGround = hit.distance;
-
-                Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
-
-                if (distToGround < 5)
-                {
-                    Debug.Log("Bounce");
-                    Bounce();
-                    /*Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.green);
-
-                    if (!showSlamVFX)
-                    {
-                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, hit.point, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
-                        showSlamVFX = true;
-                    }
-
-                    Debug.Log("Hit Ground");
-                    SlamImpact();*/
-                }
-            }
         }
 
         if (thrown || isThrowingBP || isBouncePad || sk.isGuarding || sk.isSlamming) 
@@ -405,36 +366,7 @@ public class MushroomCapController : MonoBehaviour
         }
     }
 
-    void SlamImpact()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
-
-        foreach (Collider col in colliders)
-        {
-            if (col.gameObject.layer == 15)
-            {
-                if (!slamObjects.Contains(col.transform))
-                {
-                    slamObjects.Add(col.transform.GetChild(0));
-                }
-
-                Vector3 squashedSize = new Vector3(col.transform.GetChild(0).localScale.x, 0.75f, col.transform.localScale.z);
-                col.transform.GetChild(0).localScale = squashedSize;
-
-                /*EnemyHealth enemy = col.GetComponent<EnemyHealth>();
-
-                if (enemy != null)
-                {
-                    if (damageDelay <= 0)
-                    {
-                        enemy.TakeDamage(10);
-                    }
-                }*/
-            }
-        }
-    }
-
-    void Bounce()
+    public void Bounce()
     {
         Debug.Log("Bounce");
         sk.isSlamming = false;

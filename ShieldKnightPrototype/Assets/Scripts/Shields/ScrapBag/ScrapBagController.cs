@@ -171,6 +171,14 @@ public class ScrapBagController : MonoBehaviour
         }
         else parachuteOpen = false;
 
+        if (!sk.cc.isGrounded && Input.GetButtonDown("Guard"))
+        {
+            if(inBag.Count > 0)
+            {
+                sk.isSlamming = true;
+            }
+        }
+
         if (isAiming)
         {
             animControl.ChangeAnimationState(animControl.scrapBagAim);
@@ -389,6 +397,11 @@ public class ScrapBagController : MonoBehaviour
                 buttonHeld = true;
             }
         }
+    }
+
+    public void BagSlam()
+    {
+            //Have any rigibodies in bag disperse in random directions.
     }
 
     private void OnTriggerEnter(Collider other)

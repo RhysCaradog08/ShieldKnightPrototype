@@ -1,3 +1,4 @@
+using Basics.ObjectPool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,6 +29,14 @@ public class ShieldKnightController : MonoBehaviour
     const float minButtonHold = 0.25f;
     float buttonHeldTime;
     public bool buttonHeld;
+
+    [Header("Slam")]
+    public float slamForce, distToGround, slamPushBack, slamRadius, slamLift, damageDelay;
+    public LayerMask ignoreLayer;
+    GameObject slamStars;
+    Transform squashedObject;
+    [SerializeField] List<Transform> slamObjects = new List<Transform>();
+    public bool showSlamVFX;
 
     [Header("Action Booleans")]
     public bool isMoving, isThrowing, isBarging, isGuarding, isParrying, isSlamming, parachuteOpen;
@@ -164,8 +173,24 @@ public class ShieldKnightController : MonoBehaviour
         if (isSlamming)
         {
             canPressSpace = false;
+            Slam();
         }
-        else canPressSpace = true;
+        else
+        {
+            showSlamVFX = false;
+
+            if (slamObjects.Count > 0)
+            {
+                foreach (Transform so in slamObjects)
+                {
+                    so.transform.localScale = Vector3.one;
+                }
+
+                slamObjects.Clear();
+            }
+
+            canPressSpace = true;
+        }
 
         cc.Move(velocity * Time.deltaTime);
 
@@ -294,6 +319,81 @@ public class ShieldKnightController : MonoBehaviour
         if(isSlamming)
         {
             animControl.ChangeAnimationState(animControl.slam);
+        }
+    }
+
+    void Slam()
+    {
+        velocity.y = -slamForce;
+
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, -transform.up, out hit, Mathf.Infinity, ignoreLayer))
+        {
+            Debug.Log(hit.transform.name);
+            distToGround = hit.distance;
+
+            Debug.DrawLine(transform.position, -transform.up * 10, Color.red);
+            //Debug.Log("Distance to Ground: " + distToGround);
+
+            if (distToGround < 5)
+            {
+                Debug.DrawLine(transform.position, -transform.up * 10, Color.green);
+
+                if (!showSlamVFX)
+                {
+                    slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, hit.point, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
+                    showSlamVFX = true;
+                }
+
+                Debug.Log("Hit Ground");
+                SlamImpact();
+
+                if (pm.hasShield && stopTime < 0.01f)
+                {
+                    stopTime = 1;
+                }
+
+                if (pm.hasMushroomCap)
+                {
+                    pm.mushroomCap.Bounce();
+                }
+            }
+        }
+    }
+
+    void SlamImpact()
+    {
+        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
+
+        foreach (Collider col in colliders)
+        {
+            if (col.gameObject.layer == 15)
+            {
+                if (!slamObjects.Contains(col.transform))
+                {
+                    slamObjects.Add(col.transform.GetChild(0));
+                }
+
+                Vector3 squashedSize = new Vector3(col.transform.GetChild(0).localScale.x, 0.25f, col.transform.localScale.z);
+                col.transform.GetChild(0).localScale = squashedSize;
+
+                if (col.GetComponent<Rigidbody>() != null)
+                {
+                    Rigidbody slamRB = col.GetComponent<Rigidbody>();
+                    slamRB.AddExplosionForce(slamPushBack, transform.position, slamRadius, slamLift, ForceMode.Impulse);
+                }
+
+                /*EnemyHealth enemy = col.GetComponent<EnemyHealth>();
+
+                if (enemy != null)
+                {
+                    if (damageDelay <= 0)
+                    {
+                        enemy.TakeDamage(10);
+                    }
+                }*/
+            }
         }
     }
 }

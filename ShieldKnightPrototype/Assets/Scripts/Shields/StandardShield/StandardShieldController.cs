@@ -10,8 +10,6 @@ public class StandardShieldController : MonoBehaviour
     TargetSelector ts;
     ShieldSelect select;
 
-    public LayerMask ignoreLayer;
-
     [SerializeField] Rigidbody shieldRB;
     [SerializeField] GameObject marker;
     GameObject hitStars;
@@ -35,11 +33,7 @@ public class StandardShieldController : MonoBehaviour
     public bool canBarge;
 
     [Header("Slam")]
-    public float slamForce, distToGround, slamPushBack, slamRadius, slamLift, damageDelay;
-    GameObject slamStars;
-    Transform squashedObject;
-    [SerializeField] List<Transform> slamObjects = new List<Transform>();
-    public bool shieldSlamming, showSlamVFX;
+    public bool shieldSlamming;
 
     Vector3 startScale;
 
@@ -72,7 +66,6 @@ public class StandardShieldController : MonoBehaviour
 
         //Slam
         shieldSlamming = false;
-        showSlamVFX = false;
 
         startScale = transform.localScale;
     }
@@ -177,51 +170,6 @@ public class StandardShieldController : MonoBehaviour
         if (!sk.cc.isGrounded && shieldSlamming)
         {
             sk.isSlamming = true;
-            sk.velocity.y = -slamForce;
-
-            RaycastHit hit;
-
-            if (Physics.Raycast(transform.position, -sk.transform.up, out hit, Mathf.Infinity, ignoreLayer))
-            {
-                Debug.Log(hit.transform.name);
-                distToGround = hit.distance;
-
-                Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
-                //Debug.Log("Distance to Ground: " + distToGround);
-
-                if (distToGround < 5)
-                {
-                    Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.green);
-
-                    if (!showSlamVFX)
-                    {
-                        slamStars = ObjectPoolManager.instance.CallObject("SlamStars", null, hit.point, Quaternion.Euler(-90, transform.rotation.y, transform.rotation.z), 1);
-                        showSlamVFX = true;
-                    }
-
-                    Debug.Log("Hit Ground");
-                    SlamImpact();
-
-                    if (sk.stopTime < 0.01f)
-                    {
-                        sk.stopTime= 1;
-                    }
-                }
-            }
-        }
-        else
-        {
-            showSlamVFX = false;
-
-            if (slamObjects.Count > 0)
-            {
-                foreach (Transform so in slamObjects)
-                {
-                    so.transform.localScale = Vector3.one;
-                }
-
-                slamObjects.Clear();
-            }
         }
 
         if (sk.cc.isGrounded && sk.buttonHeld)
@@ -396,42 +344,6 @@ public class StandardShieldController : MonoBehaviour
             yield return null;
         }
     }
-
-    void SlamImpact()
-    {
-        Collider[] colliders = Physics.OverlapSphere(transform.position, slamRadius);
-
-        foreach (Collider col in colliders)
-        {
-            if (col.gameObject.layer == 15)
-            {
-                if(!slamObjects.Contains(col.transform))
-                {
-                    slamObjects.Add(col.transform.GetChild(0));
-                }
-
-                Vector3 squashedSize = new Vector3(col.transform.GetChild(0).localScale.x, 0.25f, col.transform.localScale.z);
-                col.transform.GetChild(0).localScale = squashedSize;
-
-                if (col.GetComponent<Rigidbody>() != null)
-                {
-                    Rigidbody slamRB = col.GetComponent<Rigidbody>();
-                    slamRB.AddExplosionForce(slamPushBack, transform.position, slamRadius, slamLift, ForceMode.Impulse);
-                }
-
-                /*EnemyHealth enemy = col.GetComponent<EnemyHealth>();
-
-                if (enemy != null)
-                {
-                    if (damageDelay <= 0)
-                    {
-                        enemy.TakeDamage(10);
-                    }
-                }*/
-            }
-        }
-    }
-
     private void OnCollisionEnter(Collision col)
     {
         if (thrown)
@@ -442,12 +354,5 @@ public class StandardShieldController : MonoBehaviour
                 transform.rotation = Quaternion.Euler(-90, 0, 0);
             }
         }
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        //Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
-        Gizmos.DrawWireSphere(transform.position, slamRadius);
     }
 }
