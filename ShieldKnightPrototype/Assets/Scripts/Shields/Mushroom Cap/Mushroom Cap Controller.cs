@@ -35,11 +35,11 @@ public class MushroomCapController : MonoBehaviour
     [SerializeField] MeshCollider meshCol;
 
     [Header("Slam")]
-    public float slamForce,  slamRadius, damageDelay;
+    public float distToGround, slamForce,  slamRadius, damageDelay;
     GameObject slamStars;
     Transform squashedObject;
     [SerializeField] List<Transform> slamObjects = new List<Transform>();
-    bool showSlamVFX;
+    public bool mushroomSlamming, showSlamVFX;
 
     [Header("Bounce")]
     public float bounceHeight, bounceTime;
@@ -78,6 +78,10 @@ public class MushroomCapController : MonoBehaviour
         //Bounce Pad
         isBouncePad = false;
         isBouncing = true;
+
+        //Slamming
+        mushroomSlamming = false;
+        showSlamVFX = false;
     }
 
     // Update is called once per frame
@@ -269,21 +273,29 @@ public class MushroomCapController : MonoBehaviour
             }
         }
 
+        if (!sk.cc.isGrounded && Input.GetButtonDown("Guard"))
+        {
+            sk.isSlamming = true;
+        }
+
         if (sk.isSlamming)
         {
             mcAnim.ChangeAnimationState(mcAnim.slam);
+
+            //sk.isSlamming = true;
             sk.velocity.y = -slamForce;
 
             RaycastHit hit;
 
             if (Physics.Raycast(transform.position, -sk.transform.up, out hit))
             {
-                float distToGround = hit.distance;
+                distToGround = hit.distance;
 
                 Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
 
-                if (distToGround < 3)
+                if (distToGround < 5)
                 {
+                    Debug.Log("Bounce");
                     Bounce();
                     /*Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.green);
 
@@ -424,6 +436,7 @@ public class MushroomCapController : MonoBehaviour
 
     void Bounce()
     {
+        Debug.Log("Bounce");
         sk.isSlamming = false;
         bounceTime = 0.2f;
 

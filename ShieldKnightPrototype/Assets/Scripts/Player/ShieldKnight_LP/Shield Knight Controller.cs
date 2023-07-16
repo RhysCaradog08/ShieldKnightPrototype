@@ -78,7 +78,6 @@ public class ShieldKnightController : MonoBehaviour
         if(stopTime <= 0)
         {
             stopTime = 0;
-            //canMove = true; 
 
             if(isThrowing)
             {
@@ -88,6 +87,16 @@ public class ShieldKnightController : MonoBehaviour
             if(isParrying)
             {
                 isParrying = false;
+            }
+
+            if(isSlamming)
+            {
+                isSlamming = false;
+            }
+
+            if(pm.shield.shieldSlamming && cc.isGrounded)
+            {
+                pm.shield.shieldSlamming = false;
             }
         }
 
@@ -154,12 +163,18 @@ public class ShieldKnightController : MonoBehaviour
             }
             else if (!isJumping && cc.isGrounded)
             {
-                if (!pm.scrapBag.isAiming)
+                if (!pm.scrapBag.isAiming || !pm.shield.shieldSlamming)
                 {
                     animControl.ChangeAnimationState(animControl.idle);
                 }
             }
         }
+
+        if (isSlamming)
+        {
+            canPressSpace = false;
+        }
+        else canPressSpace = true;
 
         cc.Move(velocity * Time.deltaTime);
 
@@ -170,7 +185,7 @@ public class ShieldKnightController : MonoBehaviour
     {
         if (Input.GetButtonUp("Jump") && !hasJumped) //Check to stop infinite jumping.
         {
-            canPressSpace = true;
+                canPressSpace = true;
         }
 
         if (cc.isGrounded)
@@ -217,35 +232,31 @@ public class ShieldKnightController : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Guard")) //&& cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
+        if (!isSlamming)
         {
-            if (cc.isGrounded && stopTime <= 0)
+            if (Input.GetButtonDown("Guard")) //&& cc.isGrounded)//Button is pressed down. Need to check to see if it is "held".
             {
-                buttonHeldTime = Time.timeSinceLevelLoad;
-                buttonHeld = false;
-            }
-            else if (!cc.isGrounded)
-            {
-                if(!pm.scrapBag.isActiveAndEnabled)
+                if (cc.isGrounded && stopTime <= 0)
                 {
-                    isSlamming = true;
+                    buttonHeldTime = Time.timeSinceLevelLoad;
+                    buttonHeld = false;
                 }
             }
-        }
-        else if (Input.GetButtonUp("Guard")) // && cc.isGrounded)
-        {
-            if (!buttonHeld && cc.isGrounded)//If button is released without being held.
+            else if (Input.GetButtonUp("Guard")) // && cc.isGrounded)
             {
-                stopTime = 0.5f;
+                if (!buttonHeld && cc.isGrounded)//If button is released without being held.
+                {
+                    stopTime = 0.5f;
+                }
+                buttonHeld = false;
             }
-            buttonHeld = false;
-        }
 
-        if (Input.GetButton("Guard") && cc.isGrounded)
-        {
-            if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
+            if (Input.GetButton("Guard") && cc.isGrounded)
             {
-                buttonHeld = true;
+                if (Time.timeSinceLevelLoad - buttonHeldTime > minButtonHold)//Button is considered "held" if it is actually held down.
+                {
+                    buttonHeld = true;
+                }
             }
         }
     }

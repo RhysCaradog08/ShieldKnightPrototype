@@ -36,7 +36,7 @@ Transform:
   - {fileID: 2650344117709275834}
   - {fileID: 4562167117944886669}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &4900299008147383495
 CharacterController:
@@ -94,6 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b19cfce4849737f4c92ad343930a6e6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animControl: {fileID: 0}
   cc: {fileID: 0}
   speed: 0
   moveSpeed: 25
@@ -119,6 +120,7 @@ MonoBehaviour:
   isGuarding: 0
   isParrying: 0
   isSlamming: 0
+  parachuteOpen: 0
 --- !u!114 &7159875904572468473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +145,7 @@ MonoBehaviour:
   parry: ShieldKnight_Parry
   slam: ShieldKnight_Slam
   scrapBagAim: ScrapBag_Aim
-  scrapBagFloat: ScrapBag_Float
+  parachute: ShieldKnight_Parachute
 --- !u!114 &698315720167530260
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -32,14 +32,14 @@ public class StandardShieldController : MonoBehaviour
     [SerializeField] float bargeDelay;
     public float bargeTime, bargeSpeed, bargeStartSpeed;
     public GameObject closest;
-    public bool canBarge, isBarging;
+    public bool canBarge;
 
     [Header("Slam")]
-    public float slamForce, slamDelay, slamPushBack, slamRadius, slamLift, damageDelay;
+    public float slamForce, distToGround, slamPushBack, slamRadius, slamLift, damageDelay;
     GameObject slamStars;
     Transform squashedObject;
     [SerializeField] List<Transform> slamObjects = new List<Transform>();
-    bool showSlamVFX;
+    public bool shieldSlamming, showSlamVFX;
 
     Vector3 startScale;
 
@@ -68,8 +68,11 @@ public class StandardShieldController : MonoBehaviour
         //Barge
         bargeStartSpeed = bargeSpeed;
         canBarge = true;
-        isBarging = false;
         closest = null;
+
+        //Slam
+        shieldSlamming = false;
+        showSlamVFX = false;
 
         startScale = transform.localScale;
     }
@@ -102,20 +105,6 @@ public class StandardShieldController : MonoBehaviour
             {
                 sk.isBarging = false;
             }  
-        }
-
-        if (slamDelay > 0)
-        {
-            slamDelay -= Time.deltaTime;
-        }
-        if (slamDelay <= 0)
-        {
-            slamDelay = 0;
-
-            if (sk.cc.isGrounded && sk.isSlamming)
-            {
-                sk.isSlamming = false;
-            }
         }
 
         if (canThrow)
@@ -180,8 +169,14 @@ public class StandardShieldController : MonoBehaviour
             }
         }
 
-        if (sk.isSlamming)
+        if(!sk.cc.isGrounded && Input.GetButtonDown("Guard"))
         {
+            shieldSlamming = true;
+        }
+
+        if (!sk.cc.isGrounded && shieldSlamming)
+        {
+            sk.isSlamming = true;
             sk.velocity.y = -slamForce;
 
             RaycastHit hit;
@@ -189,12 +184,12 @@ public class StandardShieldController : MonoBehaviour
             if (Physics.Raycast(transform.position, -sk.transform.up, out hit, Mathf.Infinity, ignoreLayer))
             {
                 Debug.Log(hit.transform.name);
-                float distToGround = hit.distance;
+                distToGround = hit.distance;
 
                 Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.red);
                 //Debug.Log("Distance to Ground: " + distToGround);
 
-                if (distToGround < 3)
+                if (distToGround < 5)
                 {
                     Debug.DrawLine(sk.transform.position, -sk.transform.up * 10, Color.green);
 
@@ -207,9 +202,9 @@ public class StandardShieldController : MonoBehaviour
                     Debug.Log("Hit Ground");
                     SlamImpact();
 
-                    if (slamDelay <= 0)
+                    if (sk.stopTime < 0.01f)
                     {
-                        slamDelay = 0.5f;
+                        sk.stopTime= 1;
                     }
                 }
             }
@@ -240,7 +235,10 @@ public class StandardShieldController : MonoBehaviour
 
         if (sk.stopTime > 0 && !sk.isThrowing)
         {
-            sk.isParrying = true;
+            if (!shieldSlamming)
+            {
+                sk.isParrying = true;
+            }
         }
     
         if (thrown || sk.isBarging || sk.isParrying || sk.isGuarding || sk.isSlamming) 
