@@ -89,7 +89,7 @@ public class ShieldKnightController : MonoBehaviour
                 isParrying = false;
             }
 
-            if(isSlamming)
+            if(isSlamming && cc.isGrounded)
             {
                 isSlamming = false;
             }
