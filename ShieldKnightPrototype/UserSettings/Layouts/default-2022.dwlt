@@ -146,7 +146,7 @@ MonoBehaviour:
   m_MinSize: {x: 300, y: 100}
   m_MaxSize: {x: 24288, y: 16192}
   vertical: 0
-  controlID: 144
+  controlID: 117
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -171,7 +171,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 100
+  controlID: 1571
 --- !u!114 &8
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_MinSize: {x: 200, y: 50}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 76
+  controlID: 58
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -233,7 +233,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 1
   m_Script: {fileID: 12006, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: ConsoleWindow
+  m_Name: ProjectBrowser
   m_EditorClassIdentifier: 
   m_Children: []
   m_Position:
@@ -242,16 +242,16 @@ MonoBehaviour:
     y: 719
     width: 1623
     height: 220
-  m_MinSize: {x: 100, y: 100}
-  m_MaxSize: {x: 4000, y: 4000}
-  m_ActualView: {fileID: 16}
+  m_MinSize: {x: 231, y: 271}
+  m_MaxSize: {x: 10001, y: 10021}
+  m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
   - {fileID: 16}
   - {fileID: 17}
   - {fileID: 18}
-  m_Selected: 1
-  m_LastSelected: 0
+  m_Selected: 0
+  m_LastSelected: 1
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -412,10 +412,10 @@ MonoBehaviour:
     m_SaveData: []
   m_SceneHierarchy:
     m_TreeViewState:
-      scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: f6f9ffff
-      m_LastClickedID: -1546
-      m_ExpandedIDs: 1efaffff22faffff26faffff2afaffff46faffff62faffff66faffff6efaffff7afaffff10fbffff
+      scrollPos: {x: 0, y: 91}
+      m_SelectedIDs: 6ef9ffff
+      m_LastClickedID: -1682
+      m_ExpandedIDs: 6ef9ffffb4f9ffffb8f9ffffbcf9ffffc0f9ffffdcf9fffff8f9fffffcf9ffff04faffff10faffff10fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -782,9 +782,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -0.21138312, y: 1.4699508, z: 1.1409248}
+    m_Target: {x: 77.60384, y: 498.75208, z: -52.7179}
     speed: 2
-    m_Value: {x: -0.21138312, y: 1.4699508, z: 1.1409248}
+    m_Value: {x: 77.60384, y: 498.75208, z: -52.7179}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -830,13 +830,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+    m_Target: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
     speed: 2
-    m_Value: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+    m_Value: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_Size:
-    m_Target: 3.829803
+    m_Target: 17.83721
     speed: 2
-    m_Value: 3.829803
+    m_Value: 17.83721
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -908,23 +908,23 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/Scripts/Shields/ScrapBag
+    - Assets/Scripts/Shields/ProjectileShield
     m_Globs: []
     m_OriginalText: 
     m_ImportLogFlags: 0
   m_ViewMode: 1
   m_StartGridSize: 64
   m_LastFolders:
-  - Assets/Scripts/Shields/ScrapBag
+  - Assets/Scripts/Shields/ProjectileShield
   m_LastFoldersGridSize: 64
   m_LastProjectPath: C:\Users\Reece\Documents\Github\ShieldKnightPrototype\ShieldKnightPrototype\ShieldKnightPrototype
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 433}
-    m_SelectedIDs: f8590000
-    m_LastClickedID: 23032
-    m_ExpandedIDs: 0000000066590000685900006a5900006c5900006e59000070590000c2590000ce59000000ca9a3b
+    scrollPos: {x: 0, y: 373}
+    m_SelectedIDs: aaf80000
+    m_LastClickedID: 63658
+    m_ExpandedIDs: 0000000066590000685900006a5900006c5900006e5900007059000096f8000000ca9a3b
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -977,8 +977,8 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_ListAreaState:
-    m_SelectedInstanceIDs: 18faffff
-    m_LastClickedInstanceID: -1512
+    m_SelectedInstanceIDs: 
+    m_LastClickedInstanceID: 0
     m_HadKeyboardFocusLastEvent: 1
     m_ExpandedInstanceIDs: c62300003c150000ea530000785c0000e26800004857000044570000c0530000
     m_RenameOverlay:
@@ -1078,7 +1078,7 @@ MonoBehaviour:
     m_SaveData: []
   m_LockTracker:
     m_IsLocked: 0
-  m_LastSelectedObjectID: -1546
+  m_LastSelectedObjectID: -1682
 --- !u!114 &18
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1151,14 +1151,14 @@ MonoBehaviour:
       e31: 0
       e32: 0
       e33: 1
-    - e00: 0.52
+    - e00: 0.50933415
       e01: 0
       e02: 0
-      e03: 431.5
+      e03: 225.80695
       e10: 0
-      e11: 0.52
+      e11: 0.50933415
       e12: 0
-      e13: 15
+      e13: -22.919434
       e20: 0
       e21: 0
       e22: 1
@@ -1168,10 +1168,10 @@ MonoBehaviour:
       e32: 0
       e33: 1
   m_PreviewAnimator: {fileID: 0}
-  m_AnimatorController: {fileID: 9100000, guid: f5977341f0923de4199494de354e4e03,
+  m_AnimatorController: {fileID: 9100000, guid: 209bfaed62b17b14c92c4dc9b3c36101,
     type: 2}
   m_BreadCrumbs:
-  - m_Target: {fileID: 723365008805143861, guid: f5977341f0923de4199494de354e4e03,
+  - m_Target: {fileID: 2384215121270230933, guid: 209bfaed62b17b14c92c4dc9b3c36101,
       type: 2}
     m_ScrollPosition: {x: 0, y: 0}
   stateMachineGraph: {fileID: 0}
