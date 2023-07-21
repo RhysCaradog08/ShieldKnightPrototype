@@ -351,12 +351,18 @@ public class ShieldKnightController : MonoBehaviour
 
                 if (pm.hasShield && stopTime < 0.01f)
                 {
-                    stopTime = 1;
+                    stopTime = 0.5f;
                 }
 
                 if (pm.hasMushroomCap)
                 {
                     pm.mushroomCap.Bounce();
+                }
+
+                if(pm.hasScrapBag && stopTime < 0.01f)
+                {
+                    stopTime = 0.5f;
+                    pm.scrapBag.BagSlam();
                 }
             }
         }

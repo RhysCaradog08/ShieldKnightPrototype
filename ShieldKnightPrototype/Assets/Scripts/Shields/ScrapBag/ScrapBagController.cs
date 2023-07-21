@@ -5,6 +5,8 @@ using UnityEngine;
 using Basics.ObjectPool;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.UIElements;
+using Random = UnityEngine.Random;
 
 public class ScrapBagController : MonoBehaviour
 {
@@ -147,10 +149,15 @@ public class ScrapBagController : MonoBehaviour
 
                 if (Input.GetButton("Guard"))
                 {
-                    if (inBag.Count < bagMaxCapacity && !expellingScrap)
+                    if (sk.stopTime <= 0)
                     {
-                        isAiming = true;
-                        enableVortex = true;
+                        if (inBag.Count < bagMaxCapacity && !expellingScrap)
+                        {
+                            Debug.Log("Suck Up!");
+
+                            isAiming = true;
+                            enableVortex = true;
+                        }
                     }
                 }
                 else enableVortex = false;
@@ -307,7 +314,7 @@ public class ScrapBagController : MonoBehaviour
                 objectRB.isKinematic = true;
                 objectRB.gameObject.SetActive(false);
 
-                if (!inBag.Contains(objectRB))
+                if (!inBag.Contains(objectRB) && inBag.Count < bagMaxCapacity)
                 {
                     inBag.Add(objectRB);
                 }
@@ -333,6 +340,7 @@ public class ScrapBagController : MonoBehaviour
 
         if (inBag.Contains(objectRB))
         {
+            Debug.Log("Remove item from list");
             inBag.Remove(objectRB);
         }
 
@@ -401,16 +409,47 @@ public class ScrapBagController : MonoBehaviour
 
     public void BagSlam()
     {
-            //Have any rigibodies in bag disperse in random directions.
+        Debug.Log("Bag Slam");
+
+        //Have any rigibodies in bag disperse in random directions.
+
+        for(int i =0; i < inBag.Count; i++) 
+        {
+            Rigidbody rb = inBag[i];
+
+            rb.transform.parent = null;
+            rb.isKinematic = false;
+            rb.transform.localScale = Vector3.one;
+
+            rb.gameObject.SetActive(true);
+
+            float randomValue = Random.value;
+            float angle = Math.Clamp(randomValue, 25f, 75f);
+
+            Vector3 V = GetPointOnUnitSphereCap(transform.rotation, angle);
+            rb.AddForce(V * shootForce / 4, ForceMode.Impulse);
+
+            inBag.Remove(rb);
+        }
+    }
+
+    Vector3 GetPointOnUnitSphereCap(Quaternion targetDirection, float angle)
+    {
+        float angleInRad = Mathf.Clamp(90 - angle, Mathf.Epsilon, 90 - Mathf.Epsilon) * Mathf.Deg2Rad;
+        float distance = Mathf.Tan(angleInRad);
+        Vector3  PointOnCircle = Random.insideUnitCircle;
+        Vector3 V = new Vector3(PointOnCircle.x, PointOnCircle.y, distance);
+        V.Normalize();
+        return targetDirection * V;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<Rigidbody>() != null)
         {
-            if (swipeTrigger.enabled)
+            if (swipeTrigger.enabled && inBag.Count < 1)
             {
-                if(inBag.Contains(other.GetComponent<Rigidbody>()) && inBag.Count < 1)
+                if(inBag.Contains(other.GetComponent<Rigidbody>()))
                 {
                     inBag.Add(other.GetComponent<Rigidbody>());
                 }

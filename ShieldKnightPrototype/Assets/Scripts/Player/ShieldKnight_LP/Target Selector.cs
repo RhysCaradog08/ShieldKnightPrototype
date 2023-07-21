@@ -63,7 +63,7 @@ public class TargetSelector : MonoBehaviour
 
                 if (canLockOn)
                 {
-                    Debug.Log("Lock On Traget");
+                    Debug.Log("Lock On Target");
                     AddLockOnMarker();
                     lockedOn = true;
                 }
