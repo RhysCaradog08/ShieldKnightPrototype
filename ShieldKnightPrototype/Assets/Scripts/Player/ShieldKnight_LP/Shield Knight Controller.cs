@@ -361,9 +361,9 @@ public class ShieldKnightController : MonoBehaviour
 
                 if(pm.hasScrapBag && stopTime < 0.01f)
                 {
+                    pm.scrapBag.inBag.Clear();
                     stopTime = 0.5f;
                     //pm.scrapBag.BagSlam();
-                    pm.scrapBag.inBag.Clear();
                 }
             }
         }
