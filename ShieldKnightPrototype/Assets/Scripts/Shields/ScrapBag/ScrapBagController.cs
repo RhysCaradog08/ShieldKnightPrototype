@@ -19,7 +19,7 @@ public class ScrapBagController : MonoBehaviour
     [Header("Vortex")]
     public float suctionSpeed, suctionRange;
     [SerializeField] List <Rigidbody> inVortex = new List <Rigidbody>();
-    [SerializeField] List <Rigidbody> inBag = new List <Rigidbody>();
+    public List <Rigidbody> inBag = new List <Rigidbody>();
     [SerializeField] int bagMaxCapacity;
     CapsuleCollider vortex;
     Rigidbody objectRB;
