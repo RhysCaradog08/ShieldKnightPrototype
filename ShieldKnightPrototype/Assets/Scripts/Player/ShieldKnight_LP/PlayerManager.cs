@@ -14,7 +14,7 @@ public class PlayerManager : MonoBehaviour
     void Start()
     {
         /*shield = FindObjectOfType<StandardShieldController>();
-        mushroom = FindObjectOfType<MushroomCapController>();
+        mushroomCap = FindObjectOfType<MushroomCapController>();
         scrapBag = FindObjectOfType<ScrapBagController>();*/
     }
 

@@ -162,6 +162,23 @@ public class ScrapBagController : MonoBehaviour
                 }
                 else enableVortex = false;
             }
+
+            if (!sk.cc.isGrounded && Input.GetButton("Guard"))
+            {
+                if (inBag.Count < 1)
+                {
+                    parachuteOpen = true;
+                }
+            }
+            else parachuteOpen = false;
+
+            if (!sk.cc.isGrounded && Input.GetButtonDown("Guard"))
+            {
+                if (inBag.Count > 0)
+                {
+                    sk.isSlamming = true;
+                }
+            }
         }
 
         if (Input.GetButtonDown("Barge") && !isAiming)
@@ -169,22 +186,7 @@ public class ScrapBagController : MonoBehaviour
             isRolling = !isRolling;
         }
 
-        if (!sk.cc.isGrounded && Input.GetButton("Guard"))
-        {
-            if (inBag.Count < 1)
-            {
-                parachuteOpen = true;
-            }           
-        }
-        else parachuteOpen = false;
-
-        if (!sk.cc.isGrounded && Input.GetButtonDown("Guard"))
-        {
-            if(inBag.Count > 0)
-            {
-                sk.isSlamming = true;
-            }
-        }
+        
 
         if (isAiming)
         {
