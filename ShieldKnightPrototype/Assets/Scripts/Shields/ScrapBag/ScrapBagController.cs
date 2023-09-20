@@ -186,8 +186,6 @@ public class ScrapBagController : MonoBehaviour
             isRolling = !isRolling;
         }
 
-        
-
         if (isAiming)
         {
             animControl.ChangeAnimationState(animControl.scrapBagAim);
